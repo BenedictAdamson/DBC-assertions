@@ -23,11 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.annotation.Nonnull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * <p>
  * Auxiliary test code for classes that implement the {@link Comparable}
  * interface.
  */
+@SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
 public class ComparableTest {
 
     public static <T extends Comparable<T>> void assertComparableConsistentWithEquals(@Nonnull final T object1,
