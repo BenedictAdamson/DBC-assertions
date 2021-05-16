@@ -6,14 +6,9 @@
       (the release repository) and MC-SNAPSHOT.repo (the SNAPSHOT repository). 
       Therefore if you use this POM to deploy artifacts, your settings.xml configuration 
       file should contain credentials (in a servers/server element) for those servers. -->
-   <!-- This POM provides plugin management for dockerfile-maven-plugin. 
-      Using that plugin will require credentials (in a servers/server element) 
-      for any Docker registries you use, with an id equal to the DNS name of the 
-      registry server. If you use the (default) Docker Hub registry, you will need 
-      credentials for the server index.docker.io. -->
    <groupId>uk.badamson.mc</groupId>
-   <artifactId>MC-des</artifactId>
-   <version>3.0.0-SNAPSHOT</version>
+   <artifactId>DBC-assertions</artifactId>
+   <version>1.0.0-SNAPSHOT</version>
    <packaging>jar</packaging>
    <organization>
       <name>Benedict Adamson</name>
@@ -26,14 +21,12 @@
       </license>
    </licenses>
    <scm>
-      <connection>scm:git:git@github.com:BenedictAdamson/MC-des.git</connection>
-      <developerConnection>scm:git:git@github.com:BenedictAdamson/MC-des.git</developerConnection>
-      <url>https://github.com/BenedictAdamson/MC-des</url>
+      <connection>scm:git:git@github.com:BenedictAdamson/DBC-assertions.git</connection>
+      <developerConnection>scm:git:git@github.com:BenedictAdamson/DBC-assertions.git</developerConnection>
+      <url>https://github.com/BenedictAdamson/DBC-assertions</url>
    </scm>
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <jackson.version>2.11.4</jackson.version>
-      <reactor.version>3.4.5</reactor.version>
       <spotbugs.version>4.2.3</spotbugs.version>
    </properties>
    <dependencyManagement>
@@ -82,12 +75,6 @@
                   <include>**/*.java</include>
                </testIncludes>
             </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>3.0.0-M5</version>
-            <!-- For running integration tests. -->
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -198,42 +185,13 @@
          <version>${spotbugs.version}</version>
       </dependency>
       <dependency>
-         <groupId>io.projectreactor</groupId>
-         <artifactId>reactor-core</artifactId>
-         <version>${reactor.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>io.projectreactor</groupId>
-         <artifactId>reactor-test</artifactId>
-         <version>${reactor.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>io.projectreactor</groupId>
-         <artifactId>reactor-tools</artifactId>
-         <version>${reactor.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.fasterxml.jackson.core</groupId>
-         <artifactId>jackson-databind</artifactId>
-         <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>com.fasterxml.jackson.datatype</groupId>
-         <artifactId>jackson-datatype-jsr310</artifactId>
-         <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
          <groupId>org.hamcrest</groupId>
          <artifactId>hamcrest</artifactId>
          <version>2.2</version>
-         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.junit.jupiter</groupId>
          <artifactId>junit-jupiter-api</artifactId>
-         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.junit.jupiter</groupId>
@@ -244,7 +202,6 @@
          <groupId>org.opentest4j</groupId>
          <artifactId>opentest4j</artifactId>
          <version>1.2.0</version>
-         <scope>test</scope>
       </dependency>
    </dependencies>
 </project>

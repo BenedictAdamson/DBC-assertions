@@ -1,4 +1,4 @@
-package uk.badamson.mc;
+package uk.badamson.dbc.assertions;
 /*
  * © Copyright Benedict Adamson 2018,2021.
  *

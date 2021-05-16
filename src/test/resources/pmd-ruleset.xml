@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
 	<description>
-        PMD ruleset for MC-des
+        PMD ruleset for DBC-assertions
     </description>
 
 	<rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
