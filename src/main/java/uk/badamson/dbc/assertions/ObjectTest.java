@@ -20,7 +20,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * <p>
- * Unit tests for the {@link Object} class.
+ * Verification methods to assist in unit testing all classes (which are
+ * directly or indirectly derived from the {@link Object} class).
  * </p>
  */
 @SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
@@ -28,12 +29,92 @@ public final class ObjectTest {
 
     private static void assertEqualsSelf(@Nonnull final Object object) {
         /*
-         * A faulty equals method is unlikely to given !this.equals(this), but check for
+         * A faulty equals method is unlikely to give !this.equals(this), but check for
          * completeness.
          */
         assertThat("An object is always equivalent to itself", equals(object, object));
     }
 
+    /**
+     * <p>
+     * Assert that a given object conforms to all the invariants imposed by the
+     * {@link Object} base class, throwing an {@link AssertionError} if it does not.
+     * </p>
+     * 
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * In your unit tests of mutators, you will check that the mutators make the
+     * desired changes, using test code similar to this:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void mutate_a() {
+     *    final var thing = new Monster();
+     *    
+     *    thing.mutate("a");
+     *    
+     *    assertEquals(thing.getSpecies(), "a");
+     * }
+     * </pre>
+     *
+     * <p>
+     * But you can do do better than that. The class you are testing does not only
+     * have the behaviour that you have specified for it. It must also conform to
+     * some invariants imposed by the {@link Object} class. For thorough testing,
+     * you should check that the mutated object (still) conforms to those
+     * invariants. There are several of them. Checking them can be fiddly.
+     * Explicitly checking them all directly in your test method would be verbose,
+     * error prone, and in some cases provide low value (because in that particular
+     * test, it is unlikely that the invariant would be broken).
+     * <p>
+     * </p>
+     * This method provides a convenient and abstract way to check that the mutated
+     * object still conforms to the invariants imposed by the {@link Object} class.
+     * Simply delegate to this method in your class:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void mutate_a() {
+     *    final var thing = new Monster();
+     *    
+     *    thing.mutate("a");
+     *    
+     *    ObjectTest.assertInvariants(thing);
+     *    assertEquals(thing.getSpecies(), "a");
+     * }
+     * </pre>
+     * 
+     * <h2>How to Use this Method for Thorough Testing</h2>
+     * <p>
+     * The invariants imposed by {@link Object} pertain to the
+     * {@link Object#equals(Object)} and {@link Object#hashCode()} methods. In
+     * practice, only mishandling of {@code null} values is likely to cause code to
+     * break those invariants. Therefore if you wish to thoroughly unit test your
+     * code, you should have some test cases that set values to {@code null}. For
+     * example:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void mutate_a() {
+     *    final var thing = new Monster();
+     *    
+     *    thing.mutate(null);
+     *    
+     *    ObjectTest.assertInvariants(thing);
+     *    assertEquals(thing.getSpecies(), null);
+     * }
+     * </pre>
+     * 
+     * @param object
+     *            The object to test.
+     * @throws NullPointerException
+     *             If {@code object} is null.
+     * @throws AssertionError
+     *             If {@code object} breaks an invariant.
+     */
     public static void assertInvariants(@Nonnull final Object object) {
         assert object != null;
         assertAll(() -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
