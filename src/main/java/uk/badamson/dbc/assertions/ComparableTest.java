@@ -10,6 +10,7 @@ package uk.badamson.dbc.assertions;
  */
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 import javax.annotation.Nonnull;
 
@@ -25,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
 public class ComparableTest {
 
-    public static <T extends Comparable<T>> void assertComparableConsistentWithEquals(@Nonnull final T object1,
+    public static <T extends Comparable<T>> void assertCompareToConsistentWithEquals(@Nonnull final T object1,
             @Nonnull final T object2) {
         final var compareTo = compareTo(object1, object2);
         final var equals = ObjectTest.equals(object1, object2);
@@ -55,8 +56,13 @@ public class ComparableTest {
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
-        assertInvariants(object, object);
-        assertCompareToNullThrowsNPE(object);
+        assertAll(
+                /*
+                 * For completeness, check that this.compareTo(this) does not throw an
+                 * exception, although it is unlikely that a faulty implementation would throw
+                 * an exception.
+                 */
+                () -> compareTo(object, object), () -> assertCompareToNullThrowsNPE(object));
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
