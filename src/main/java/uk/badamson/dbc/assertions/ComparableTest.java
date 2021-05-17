@@ -56,21 +56,21 @@ public class ComparableTest {
      * {@link Comparable} interface, throwing an {@link AssertionError} if it does
      * not.
      * </p>
-     * 
+     *
      * <h2>How to Use this Method</h2>
      * <p>
      * In your unit tests of mutators and constructors of classes that implement the
      * {@link Comparable} class, you will check that the mutators and constructors
      * make the desired changes, using test code similar to this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void increment_1() {
      *    final var amount = new Amount(1);
-     *    
+     *
      *    amount.increment();
-     *    
+     *
      *    assertEquals(2, amount.intValue());
      * }
      * </pre>
@@ -90,20 +90,20 @@ public class ComparableTest {
      * object still conforms to the invariants imposed by the {@link Comparable}
      * interface. Simply delegate to this method in your test, like this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void increment_1() {
      *    final var amount = new Amount(1);
-     *    
+     *
      *    amount.increment();
-     *    
+     *
      *    ObjectTest.assertInvariants(amount);
      *    ComparableTest.assertInvariants(amount);
      *    assertEquals(2, amount.intValue());
      * }
      * </pre>
-     * 
+     *
      * @param <T>
      *            The class of {@code object}
      * @param object
@@ -124,10 +124,80 @@ public class ComparableTest {
                 () -> compareTo(object, object), () -> assertCompareToNullThrowsNPE(object));
     }
 
+    /**
+     * <p>
+     * Assert that a pair of objects conform to all the relationship (pairwise)
+     * invariants imposed by the {@link Comparable} base class, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * If the type you are testing implements the {@link Comparable} interface, you
+     * will be testing that your {@link Comparable#compareTo(Object)} method is
+     * correct, by constructing significant pairs of objects, then checking that
+     * their comparison is as expected, using test code similar to this:
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void compareTo_1_2() {
+     *    final var a1 = new Amount(1);
+     *    final var a2 = new Amount(2);
+     *
+     *    assertTrue(a1.compareTo(a2) < 0);
+     * }
+     * </pre>
+     *
+     * <p>
+     * But you can do do better than that. The class you are testing does not only
+     * have the behaviour that you have specified for it. It must also conform to
+     * some invariants imposed by the {@link Comparable} interface. You should check
+     * that the objects conform to those invariants. There are couple of them.
+     * Explicitly checking them all directly in your test method would be verbose,
+     * error prone, and in some cases provide low value (because in that particular
+     * test, it is unlikely that the invariant would be broken).
+     * <p>
+     * </p>
+     * This method provides a convenient and abstract way to check that the objects
+     * conform to the relationship invariants imposed by the {@link Comparable}
+     * class. Simply delegate to this method in your test, like this:
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void compareTo_1_2() {
+     *    final var a1 = new Amount(1);
+     *    final var a2 = new Amount(2);
+     *
+     *    ObjectTest.assertInvariants(a1, a2);
+     *    ComparableTest.assertInvariants(a1, a2);
+     *    assertTrue(a1.compareTo(a2) < 0);
+     * }
+     * </pre>
+     * <p>
+     * In many cases you will also want to delegate to the
+     * {@link #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)}
+     * method.
+     * </p>
+     *
+     * @param <T>
+     *            The class of {@code object1} and {@code object2}
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object1} break an invariant.
+     *
+     * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
+     */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
-        assert object1 != null;
-        assert object2 != null;
-
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
         assertThat("compareTo is symmetric", Integer.signum(c12) == -Integer.signum(c21));

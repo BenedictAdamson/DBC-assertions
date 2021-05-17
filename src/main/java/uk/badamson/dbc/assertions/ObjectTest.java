@@ -40,20 +40,20 @@ public final class ObjectTest {
      * Assert that a given object conforms to all the invariants imposed by the
      * {@link Object} base class, throwing an {@link AssertionError} if it does not.
      * </p>
-     * 
+     *
      * <h2>How to Use this Method</h2>
      * <p>
      * In your unit tests of mutators, you will check that the mutators make the
      * desired changes, using test code similar to this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
      *    final var thing = new Monster();
-     *    
+     *
      *    thing.mutate("a");
-     *    
+     *
      *    assertEquals(thing.getSpecies(), "a");
      * }
      * </pre>
@@ -73,19 +73,19 @@ public final class ObjectTest {
      * object still conforms to the invariants imposed by the {@link Object} class.
      * Simply delegate to this method in your test, like this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
      *    final var thing = new Monster();
-     *    
+     *
      *    thing.mutate("a");
-     *    
+     *
      *    ObjectTest.assertInvariants(thing);
      *    assertEquals(thing.getSpecies(), "a");
      * }
      * </pre>
-     * 
+     *
      * <h2>How to Use this Method for Thorough Testing</h2>
      * <p>
      * The invariants imposed by {@link Object} pertain to the
@@ -95,19 +95,19 @@ public final class ObjectTest {
      * code, you should have some test cases that set values to {@code null}. For
      * example:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
      *    final var thing = new Monster();
-     *    
+     *
      *    thing.mutate(null);
-     *    
+     *
      *    ObjectTest.assertInvariants(thing);
      *    assertEquals(thing.getSpecies(), null);
      * }
      * </pre>
-     * 
+     *
      * @param object
      *            The object to test.
      * @throws NullPointerException
@@ -125,22 +125,22 @@ public final class ObjectTest {
      * <p>
      * Assert that a pair of objects conform to all the relationship (pairwise)
      * invariants imposed by the {@link Object} base class, throwing an
-     * {@link AssertionError} they doe not.
+     * {@link AssertionError} if they do not.
      * </p>
-     * 
+     *
      * <h2>How to Use this Method</h2>
      * <p>
      * In your unit tests, you will check factory methods and getters, using test
      * code similar to this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
      *    final var parent = new Monster();
-     *    
+     *
      *    final var child = parent.spawn();
-     *    
+     *
      *    assertNotNull(child);// guard
      *    assertSame(parent, child.getParent());
      * }
@@ -162,14 +162,14 @@ public final class ObjectTest {
      * conform to the relationship invariants imposed by the {@link Object} class.
      * Simply delegate to this method in your test, like this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
      *    final var parent = new Monster();
-     *    
+     *
      *    final var child = parent.spawn();
-     *    
+     *
      *    assertNotNull(child);// guard
      *    assertInvariants(parent);
      *    assertInvariants(child);
@@ -177,7 +177,7 @@ public final class ObjectTest {
      *    assertSame(thing, child.getParent());
      * }
      * </pre>
-     * 
+     *
      * <h2>How to Use this Method for Thorough Testing</h2>
      * <p>
      * The relationship invariants imposed by {@link Object} pertain to the
@@ -189,18 +189,18 @@ public final class ObjectTest {
      * pass those pairs of objects to this method for checking. For example, like
      * this:
      * </p>
-     * 
+     *
      * <pre>
      * {@code @Test}
      * public void equals_a_b() {
      *    final var a = new Monster("a");
      *    final var b = new Monster("b");
-     *    
+     *
      *    ObjectTest.assertInvariants(a, b);
      *    assertNotEquals(a, b);
      * }
      * </pre>
-     * 
+     *
      * @param object1
      *            An object to test.
      * @param object2
