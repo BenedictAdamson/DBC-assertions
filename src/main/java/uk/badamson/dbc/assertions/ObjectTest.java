@@ -281,11 +281,35 @@ public final class ObjectTest {
     }
 
     @Nonnull
-    private static String identityString(@Nonnull final Object object) {
-        return object.getClass().toString() + "@" + System.identityHashCode(object);
+    private static String identityString(@Nullable final Object object) {
+        if (object == null) {
+            return "null";
+        } else {
+            return object.getClass().getName().toString() + "@" + Integer.toHexString(System.identityHashCode(object));
+        }
     }
 
-    static String safeToString(@Nonnull final Object object) {
+    /**
+     * <p>
+     * Provide a {@link String} representation of a given object, in a manner that
+     * is safe in cases where the {@link Object#toString()} method (or its override)
+     * throws an exception.
+     * </p>
+     * <p>
+     * This method is intended for use in test assertion failure messages, to
+     * identify the object that failed the assertion. However, because the
+     * {@link Object#toString()} method (and its overrides) can <em>themselves</em>
+     * be faulty and throw exceptions, and {@code object} could be null, directly
+     * calling a {@code object.toString()} method in test code is unwise. This
+     * method returns the text given by {@code object.toString()}, if possible, but
+     * if {@code object} is {@code null} is returns "null", and if
+     * {@code object.toString()} throws an exception, it instead returns a fall-back
+     * value. The fall-back value is the text that {@link Object#toString()} returns
+     * if {@link Object#hashCode()} is not overridden.
+     * </p>
+     */
+    @Nonnull
+    public static String safeToString(@Nullable final Object object) {
         try {
             return object.toString();
         } catch (final Exception e) {
