@@ -56,6 +56,7 @@ public class ComparableTest {
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
+        assert object != null;
         assertAll(
                 /*
                  * For completeness, check that this.compareTo(this) does not throw an
@@ -66,6 +67,9 @@ public class ComparableTest {
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
+        assert object1 != null;
+        assert object2 != null;
+
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
         assertThat("compareTo is symmetric", Integer.signum(c12) == -Integer.signum(c21));
