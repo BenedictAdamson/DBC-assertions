@@ -1,3 +1,4 @@
+package uk.badamson.dbc.assertions;
 /*
  * Copyright 2015-2021 the original author or authors.
  *
@@ -6,9 +7,11 @@
  * accompanies this distribution and is available at
  *
  * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * This is an adapted copy of the AssertAll class of JUnit 5:
+ * https://github.com/junit-team/junit5/blob/main/junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertAll.java
+ * The uk.badamson.dbc.assertions package has it so it does not have a dependency on JUnit 5.
  */
-
-package org.junit.jupiter.api;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,9 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.function.Executable;
-import org.junit.platform.commons.util.Preconditions;
-import org.junit.platform.commons.util.UnrecoverableExceptions;
 import org.opentest4j.MultipleFailuresError;
 
 /**
@@ -30,57 +30,51 @@ import org.opentest4j.MultipleFailuresError;
  */
 class AssertAll {
 
-	private AssertAll() {
-		/* no-op */
-	}
+    static void assertAll(final Collection<Executable> executables) {
+        assertAll(null, executables);
+    }
 
-	static void assertAll(Executable... executables) {
-		assertAll(null, executables);
-	}
+    static void assertAll(final Executable... executables) {
+        assertAll(null, executables);
+    }
 
-	static void assertAll(String heading, Executable... executables) {
-		Preconditions.notEmpty(executables, "executables array must not be null or empty");
-		Preconditions.containsNoNullElements(executables, "individual executables must not be null");
-		assertAll(heading, Arrays.stream(executables));
-	}
+    static void assertAll(final Stream<Executable> executables) {
+        assertAll(null, executables);
+    }
 
-	static void assertAll(Collection<Executable> executables) {
-		assertAll(null, executables);
-	}
+    static void assertAll(final String heading, final Collection<Executable> executables) {
+        assertAll(heading, executables.stream());
+    }
 
-	static void assertAll(String heading, Collection<Executable> executables) {
-		Preconditions.notNull(executables, "executables collection must not be null");
-		Preconditions.containsNoNullElements(executables, "individual executables must not be null");
-		assertAll(heading, executables.stream());
-	}
+    static void assertAll(final String heading, final Executable... executables) {
+        assertAll(heading, Arrays.stream(executables));
+    }
 
-	static void assertAll(Stream<Executable> executables) {
-		assertAll(null, executables);
-	}
+    static void assertAll(final String heading, final Stream<Executable> executables) {
+        final List<Throwable> failures = executables //
+                .map(executable -> {
+                    try {
+                        executable.execute();
+                        return null;
+                    } catch (final Throwable t) {
+                        if (t instanceof OutOfMemoryError) {
+                            throw (OutOfMemoryError) t;
+                        }
+                        return t;
+                    }
+                }) //
+                .filter(Objects::nonNull) //
+                .collect(Collectors.toList());
 
-	static void assertAll(String heading, Stream<Executable> executables) {
-		Preconditions.notNull(executables, "executables stream must not be null");
+        if (!failures.isEmpty()) {
+            final MultipleFailuresError multipleFailuresError = new MultipleFailuresError(heading, failures);
+            failures.forEach(multipleFailuresError::addSuppressed);
+            throw multipleFailuresError;
+        }
+    }
 
-		List<Throwable> failures = executables //
-				.peek(executable -> Preconditions.notNull(executable, "individual executables must not be null"))//
-				.map(executable -> {
-					try {
-						executable.execute();
-						return null;
-					}
-					catch (Throwable t) {
-						UnrecoverableExceptions.rethrowIfUnrecoverable(t);
-						return t;
-					}
-				}) //
-				.filter(Objects::nonNull) //
-				.collect(Collectors.toList());
-
-		if (!failures.isEmpty()) {
-			MultipleFailuresError multipleFailuresError = new MultipleFailuresError(heading, failures);
-			failures.forEach(multipleFailuresError::addSuppressed);
-			throw multipleFailuresError;
-		}
-	}
+    private AssertAll() {
+        /* no-op */
+    }
 
 }
