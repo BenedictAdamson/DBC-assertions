@@ -2,6 +2,13 @@
 Java unit-testing assertions to assist a Design By Contract style of programming.
 And in particular, to ensure that the *Liskov Substitution Principle* is honoured.
 
+This library should be test framework agnostic;
+it should work with any test framework that recognizes an `AssertionError` exception as indicating a test failure.
+It delegates to [Hamcrest](http://hamcrest.org/) for checking assertions,
+and directly throws [opentest4j](https://github.com/ota4j-team/opentest4j) assertions,
+rather than using a test framework.
+It should not pull in a dependency on a test framework.
+
 ## License
 
 This is licensed using the *Eclipse Public License - v 2.0*.
