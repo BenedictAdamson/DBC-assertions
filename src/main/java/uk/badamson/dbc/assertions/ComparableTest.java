@@ -115,7 +115,7 @@ public class ComparableTest {
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
         assert object != null;
-        assertAll(
+        assertAll("Comparable invariants [" + object.toString() + "]",
                 /*
                  * For completeness, check that this.compareTo(this) does not throw an
                  * exception, although it is unlikely that a faulty implementation would throw
@@ -200,7 +200,8 @@ public class ComparableTest {
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
-        assertThat("compareTo is symmetric", Integer.signum(c12) == -Integer.signum(c21));
+        assertThat("compareTo is symmetric [" + object1.toString() + ", " + object2.toString() + "]",
+                Integer.signum(c12) == -Integer.signum(c21));
     }
 
     /**
@@ -242,7 +243,8 @@ public class ComparableTest {
         final int c12 = compareTo(object1, object2);
         final int c23 = compareTo(object2, object3);
         final int c13 = compareTo(object1, object3);
-        assertThat("compareTo is transitive", !(c12 > 0 && c23 > 0 && !(c13 > 0)));
+        assertThat("compareTo is transitive [" + object1.toString() + ", " + object2.toString() + ", "
+                + object3.toString() + "]", !(c12 > 0 && c23 > 0 && !(c13 > 0)));
     }
 
     /**
@@ -279,7 +281,9 @@ public class ComparableTest {
             @Nonnull final T object2) {
         final var compareTo = compareTo(object1, object2);
         final var equals = ObjectTest.equals(object1, object2);
-        assertThat("Natural ordering is consistent with equals", compareTo == 0 == equals);
+        assertThat(
+                "Natural ordering is consistent with equals [" + object1.toString() + ", " + object2.toString() + "]",
+                compareTo == 0 == equals);
     }
 
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
@@ -294,7 +298,9 @@ public class ComparableTest {
              * NullPointerException if the object has any null attributes.
              */
             throw ObjectTest.createUnexpectedException(
-                    "compareTo must not throw exceptions for non null objects of the same class", e);
+                    "compareTo must not throw exceptions for non null objects of the same class [" + object1.toString()
+                            + ", " + object2.toString() + "]",
+                    e);
         }
     }
 

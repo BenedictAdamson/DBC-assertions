@@ -117,7 +117,8 @@ public final class ObjectTest {
      */
     public static void assertInvariants(@Nonnull final Object object) {
         assert object != null;
-        assertAll(() -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
+        assertAll("Object invariants [" + object.toString() + "]",
+                () -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
                 () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
 
@@ -222,7 +223,7 @@ public final class ObjectTest {
         final int hashCode1 = hashCode(object1);
         final int hashCode2 = hashCode(object2);
 
-        assertAll("equals",
+        assertAll("equals [" + object1.toString() + ", " + object2.toString() + "]",
                 /*
                  * A faulty equals method is unlikely to be asymmetric (except for failing to
                  * handle null attributes, which we have already checked), but check for
@@ -259,7 +260,8 @@ public final class ObjectTest {
              * attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("equals() must not throw exceptions", e);
+            throw createUnexpectedException(
+                    "equals() must not throw exceptions [" + object1.toString() + ", " + object2.toString() + "]", e);
         }
     }
 
@@ -272,7 +274,7 @@ public final class ObjectTest {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("hashCode() must not throw exceptions", e);
+            throw createUnexpectedException("hashCode() must not throw exceptions [" + object.toString() + "]", e);
         }
     }
 }

@@ -86,7 +86,15 @@ public class ObjectTestTest {
 
                 @Override
                 public int hashCode() {
-                    throw new NullPointerException();
+                    throw new RuntimeException();
+                }
+
+                /*
+                 * Override because the default toString delegates to hashCode()
+                 */
+                @Override
+                public String toString() {
+                    return "Fake";
                 }
 
             };
