@@ -1,31 +1,14 @@
 // Jenkinsfile for the DBC-assertions project
 
 /* 
- * © Copyright Benedict Adamson 2018-21.
- * 
- * This file is part of DBC-assertions.
+ * Copyright 2018,2021 the original author or authors.
  *
- * DBC-assertions is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * All rights reserved. This program and the accompanying materials are
+ * made available under the terms of the Eclipse Public License v2.0 which
+ * accompanies this distribution and is available at
  *
- * DBC-assertions is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with DBC-assertions.  If not, see <https://www.gnu.org/licenses/>.
+ * https://www.eclipse.org/legal/epl-v20.html
  */
- 
- /*
-  * Jenkins plugins used:
-  * Config File Provider
-  *     - Should configure the file settings.xml with ID 'maven-settings' as the Maven settings file
-  * JUnit
-  * Warnings 5
-  */
  
 pipeline { 
     agent {
@@ -49,7 +32,7 @@ pipeline {
         stage('Build and verify') {
             when{
                 not{
-                    branch 'master'
+                    branch 'main'
                 }
             } 
             steps {
@@ -60,7 +43,7 @@ pipeline {
         }
         stage('Build, verify and deploy') {
             when{
-                 branch 'master'
+                 branch 'main'
             } 
             steps {
                 configFileProvider([configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]){ 
