@@ -232,7 +232,7 @@ public final class ObjectTest {
                 /*
                  * The programmer might have implemented the equals method but forgot to also
                  * implement the hashCode() method, which will fail this assertion for the case
-                 * that equals12 && (object1 == object2).
+                 * that equals12 && (object1 != object2).
                  */
                 () -> assertThat("hashCode() is consistent with equals()", !(equals12 && hashCode1 != hashCode2)));
     }
