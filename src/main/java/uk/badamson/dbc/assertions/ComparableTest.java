@@ -127,7 +127,7 @@ public class ComparableTest {
     /**
      * <p>
      * Assert that a pair of objects conform to all the relationship (pairwise)
-     * invariants imposed by the {@link Comparable} base class, throwing an
+     * invariants imposed by the {@link Comparable} interface, throwing an
      * {@link AssertionError} if they do not.
      * </p>
      *
@@ -193,7 +193,7 @@ public class ComparableTest {
      *             <li>If {@code object2} is null.</li>
      *             </ul>
      * @throws AssertionError
-     *             If {@code object1} and {@code object1} break an invariant.
+     *             If {@code object1} and {@code object2} break an invariant.
      *
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
@@ -203,6 +203,40 @@ public class ComparableTest {
         assertThat("compareTo is symmetric", Integer.signum(c12) == -Integer.signum(c21));
     }
 
+    /**
+     * <p>
+     * Assert that a triplet of objects conform to the relationship invariant
+     * imposed by the {@link Comparable} interface, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link #assertInvariants(Comparable, Comparable)}
+     * method, provided out of completeness, for use in very thorough unit tests. In
+     * practice, its invariants are unlikely to be broken if the
+     * {@link #assertInvariants(Comparable, Comparable)} invariants are all met.
+     * </p>
+     *
+     * @param <T>
+     *            The class of {@code object1}, {@code object2} and {@code object3}
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @param object3
+     *            An object to test.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             <li>If {@code object3} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1}, {@code object2} and {@code object3} break an
+     *             invariant.
+     *
+     * @see #assertInvariants(Comparable, Comparable)
+     */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final T object3) {
         final int c12 = compareTo(object1, object2);
