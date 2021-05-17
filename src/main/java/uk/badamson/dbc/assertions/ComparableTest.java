@@ -245,6 +245,36 @@ public class ComparableTest {
         assertThat("compareTo is transitive", !(c12 > 0 && c23 > 0 && !(c13 > 0)));
     }
 
+    /**
+     * <p>
+     * Assert that a pair of objects conform to the relationship (pairwise)
+     * invariant required for their {@link Comparable#compareTo(Object)} method to
+     * be consistent with {@linkplain Object#equals(Object)}, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link #assertInvariants(Comparable, Comparable)}
+     * method, for use in the typical case that the natural ordering is consistent
+     * with equals.
+     * </p>
+     *
+     * @param <T>
+     *            The class of {@code object1} and {@code object2}
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object2} break the invariant.
+     *
+     * @see #assertInvariants(Comparable, Comparable)
+     */
     public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
             @Nonnull final T object2) {
         final var compareTo = compareTo(object1, object2);
