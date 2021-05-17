@@ -145,7 +145,7 @@ public class ComparableTest {
      *    final var a1 = new Amount(1);
      *    final var a2 = new Amount(2);
      *
-     *    assertTrue(a1.compareTo(a2) < 0);
+     *    {@code assertTrue(a1.compareTo(a2) < 0);}
      * }
      * </pre>
      *
@@ -172,7 +172,7 @@ public class ComparableTest {
      *
      *    ObjectTest.assertInvariants(a1, a2);
      *    ComparableTest.assertInvariants(a1, a2);
-     *    assertTrue(a1.compareTo(a2) < 0);
+     *    {@code assertTrue(a1.compareTo(a2) < 0);}
      * }
      * </pre>
      * <p>
