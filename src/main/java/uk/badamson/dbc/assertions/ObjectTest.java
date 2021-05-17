@@ -15,6 +15,7 @@ import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,6 +39,20 @@ public final class ObjectTest {
 
         try {
             return valueOfAttribute.apply(object);
+        } catch (final Exception e) {
+            throw createUnexpectedException("Acccessing attribute " + attributeName
+                    + " should not throw exception for [" + safeToString(object) + "]", e);
+        }
+    }
+
+    private static <T> long access(@Nonnull final T object, @Nonnull final String attributeName,
+            @Nonnull final ToLongFunction<T> valueOfAttribute) {
+        Objects.requireNonNull(object, "object");
+        Objects.requireNonNull(attributeName, "attributeName");
+        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+
+        try {
+            return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
             throw createUnexpectedException("Acccessing attribute " + attributeName
                     + " should not throw exception for [" + safeToString(object) + "]", e);
@@ -256,6 +271,82 @@ public final class ObjectTest {
                 () -> assertThat("hashCode() is consistent with equals()", !(equals12 && hashCode1 != hashCode2)));
     }
 
+    /**
+     * <p>
+     * Assert that a pair of objects of a class satisfy a pairwise invariant
+     * necessary for the class to have <i>value semantics</i>, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * <dfn>Value semantics</dfn> is a constraint on the {@code equals(Object)}
+     * method of a class. It requires that the method returns {@code true} if, and
+     * only if, the given object is an instance of the same class <em>and</em> the
+     * pairs of {@code long} <i>attributes</i> of the two objects are equal.
+     * </p>
+     * <p>
+     * If follows that if you have two non-null instances of that class, and you
+     * access the values of one of the {@code long} attributes for both objects, an
+     * invariant is that if the {@code equals(Object)} method returns {@code true},
+     * the attributes must be equal. This method tests that invariant for one
+     * attribute. So the method can be general, you provide it with an accessor
+     * function for getting the value of the attribute from the two objects.
+     * </p>
+     *
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * Use this as a supplement to the {@link #assertInvariants(Object, Object)}
+     * method, when testing a class that you have defined to have <i>value
+     * semantics</i>. Call the method for each {@code long} <i>attribute</i> of the
+     * class, in addition to asserting equality or non equality of the objects, to
+     * provide better test failure diagnostic messages. Especially for cases in
+     * which the two objects should be equal. Like this:
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void equals_equivalent() {
+     *    final var amount1 = new Amount(1L);
+     *    final var amount2 = new Amount(1L);
+     *
+     *    ObjectTest.assertInvariants(amount1, amount2);
+     *    ObjectTest.assertValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());
+     *    assertEquals(amount1, amount2);
+     * }
+     * </pre>
+     *
+     * @param <T>
+     *            The class of {@code object1} and {@code object2}
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @param attributeName
+     *            The name of the attribute to examine.
+     * @param valueOfAttribute
+     *            A function for accessing the value of the attribute for the two
+     *            objects under test.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             <li>If {@code attributeName} is null.</li>
+     *             <li>If {@code valueOfAttribute} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object2} break the invariant.
+     */
+    public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
+            @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
+        final long attribute1 = access(object1, attributeName, valueOfAttribute);
+        final long attribute2 = access(object2, attributeName, valueOfAttribute);
+        final boolean equals = equals(object1, object2);
+
+        assertThat("Value semantics with attribute " + attributeName + " for [" + safeToString(object1) + ", "
+                + safeToString(object2) + "]", !(equals && attribute1 != attribute2));
+    }
+
     private static void assertNeverEqualsNull(@Nonnull final Object object) {
         /*
          * A faulty equals method is unlikely to give this.equals(null). But a naive
@@ -274,8 +365,8 @@ public final class ObjectTest {
      * <p>
      * <dfn>Value semantics</dfn> is a constraint on the {@code equals(Object)}
      * method of a class. It requires that the method returns {@code true} if, and
-     * only if, the given object is an instance of the same class <em>and</em> all
-     * the <i>attributes</i> of the two objects are equivalent (have
+     * only if, the given object is an instance of the same class <em>and</em> the
+     * pairs of object <i>attributes</i> of the two objects are equivalent (have
      * {@code equals(Object)} return {@code true}).
      * </p>
      * <p>
@@ -293,8 +384,8 @@ public final class ObjectTest {
      * <p>
      * Use this as a supplement to the {@link #assertInvariants(Object, Object)}
      * method, when testing a class that you have defined to have <i>value
-     * semantics</i>. Call the method for each <i>attribute</i> of the class, in
-     * addition to asserting equality or non equality of the objects, to provide
+     * semantics</i>. Call the method for each object <i>attribute</i> of the class,
+     * in addition to asserting equality or non equality of the objects, to provide
      * better test failure diagnostic messages. Especially for cases in which the
      * two objects should be equal. Like this:
      * </p>
