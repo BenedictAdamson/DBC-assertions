@@ -302,7 +302,7 @@ public final class ObjectTest {
      * be faulty and throw exceptions, and {@code object} could be null, directly
      * calling a {@code object.toString()} method in test code is unwise. This
      * method returns the text given by {@code object.toString()}, if possible, but
-     * if {@code object} is {@code null} is returns "null", and if
+     * if {@code object} is {@code null} it returns "null", and if
      * {@code object.toString()} throws an exception, it instead returns a fall-back
      * value. The fall-back value is the text that {@link Object#toString()} returns
      * if {@link Object#hashCode()} is not overridden.
