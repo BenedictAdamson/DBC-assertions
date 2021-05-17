@@ -285,7 +285,7 @@ public final class ObjectTest {
         if (object == null) {
             return "null";
         } else {
-            return object.getClass().getName().toString() + "@" + Integer.toHexString(System.identityHashCode(object));
+            return object.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(object));
         }
     }
 
