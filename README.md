@@ -78,7 +78,7 @@ The class you are testing does not only have the behaviour that you have specifi
 It must also conform to some invariants imposed by the `Object` base class,
 and also for any interfaces your class implements.
 You should also check that the objects conform to those invariants.
-There several of them. Checking them can be fiddly.
+There are several of them. Checking them can be fiddly.
 Explicitly checking them all directly in your test method would be verbose, error prone,
 and in some cases provide low value
 (because in that particular test, it is unlikely that the invariant would be broken).
