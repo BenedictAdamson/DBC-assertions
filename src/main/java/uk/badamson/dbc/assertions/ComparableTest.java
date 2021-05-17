@@ -35,8 +35,9 @@ public class ComparableTest {
 
     public static <T extends Comparable<T>> void assertComparableConsistentWithEquals(@Nonnull final T object1,
             @Nonnull final T object2) {
-        assertTrue(object1.compareTo(object2) == 0 == object1.equals(object2),
-                "Natural ordering is consistent with equals");
+        final var compareTo = compareTo(object1, object2);
+        final var equals = ObjectTest.equals(object1, object2);
+        assertTrue(compareTo == 0 == equals, "Natural ordering is consistent with equals");
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
@@ -47,10 +48,19 @@ public class ComparableTest {
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
+        compareTo(object1, object2);
+    }
+
+    private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
         try {
-            object1.compareTo(object2);// require only that it does not throw an exception
+            return object1.compareTo(object2);
         } catch (final Exception e) {
-            throw new AssertionError("Does not throw exceptions");
+            /*
+             * A typical compareTo implementation will delegate to the compareTo methods of
+             * some attributes of the object. A naive implementation might throw a
+             * NullPointerException if the object has any null attributes.
+             */
+            throw new AssertionError("compareTo must not throw exceptions for non null objects of the same class", e);
         }
     }
 
