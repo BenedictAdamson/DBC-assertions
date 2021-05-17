@@ -22,13 +22,7 @@ import java.util.stream.Stream;
 
 import org.opentest4j.MultipleFailuresError;
 
-/**
- * {@code AssertAll} is a collection of utility methods that support asserting
- * multiple conditions in tests at once.
- *
- * @since 5.0
- */
-class AssertAll {
+final class AssertAll {
 
     static void assertAll(final Collection<Executable> executables) {
         assertAll(null, executables);
