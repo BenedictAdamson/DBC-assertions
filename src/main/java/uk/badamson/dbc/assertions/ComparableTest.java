@@ -13,6 +13,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.annotation.Nonnull;
 
+import org.opentest4j.AssertionFailedError;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -40,13 +42,14 @@ public class ComparableTest {
              * It is unlikely that a faulty compareTo would throw any other kind of
              * exception, but provide good diagnostics just in case.
              */
-            throw new AssertionError("compareToNull(null) throws only a NullPointerException");
+            throw new AssertionFailedError("compareToNull(null) throws only a NullPointerException",
+                    NullPointerException.class, e);
         }
         /*
          * An overly careful implementation might attempt to give a result for this
          * case, rather than throw a NPE.
          */
-        throw new AssertionError("compareTo(null) throws NullPointerException");
+        throw new AssertionFailedError("compareTo(null) throws NullPointerException", NullPointerException.class, null);
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
@@ -67,7 +70,8 @@ public class ComparableTest {
              * some attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw new AssertionError("compareTo must not throw exceptions for non null objects of the same class", e);
+            throw new AssertionFailedError("compareTo must not throw exceptions for non null objects of the same class",
+                    null, e);
         }
     }
 

@@ -15,6 +15,8 @@ import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.opentest4j.AssertionFailedError;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -80,7 +82,7 @@ public final class ObjectTest {
              * attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw new AssertionError("equals() must not throw exceptions", e);
+            throw new AssertionFailedError("equals() must not throw exceptions", null, e);
         }
     }
 
@@ -93,7 +95,7 @@ public final class ObjectTest {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw new AssertionError("equals() must not throw exceptions", e);
+            throw new AssertionFailedError("equals() must not throw exceptions", null, e);
         }
     }
 }

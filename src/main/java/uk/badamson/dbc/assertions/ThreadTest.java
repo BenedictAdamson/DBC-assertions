@@ -16,13 +16,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.opentest4j.AssertionFailedError;
+
 public class ThreadTest {
 
     public static void get(final Future<Void> future) {
         try {
             future.get();
         } catch (final InterruptedException e) {
-            throw new AssertionError(e);
+            throw new AssertionFailedError("Test threads should not be interrupted", null, e);
         } catch (final ExecutionException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof AssertionError) {
@@ -30,7 +32,7 @@ public class ThreadTest {
             } else if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
             } else {
-                throw new AssertionError(e);
+                throw new AssertionFailedError("Should not have thrown an expcetion", null, e);
             }
         }
     }
@@ -55,7 +57,7 @@ public class ThreadTest {
             } else if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             } else {
-                throw new AssertionError(e);
+                throw new AssertionFailedError("Should not have thrown an expcetion", null, e);
             }
         }
     }
