@@ -4,24 +4,9 @@ And in particular, to ensure that the *Liskov Substitution Principle* is honoure
 
 ## License
 
-© Copyright Benedict Adamson 2018,2021.
- 
-![GPLV3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
-
-MC-des is free software: you can redistribute it and/or modify
-it under the terms of the
-[GNU General Public License](https://www.gnu.org/licenses/gpl.html)
-as published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-MC-des is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with MC-des.  If not, see <https://www.gnu.org/licenses/>.
-
+This is licensed using the *Eclipse Public License - v 2.0*.
+That is deliberately the same [license as JUnit 5](https://github.com/junit-team/junit5/blob/main/LICENSE.md),
+so if you are happy to use *JUnit 5* for your unit tests, you should have no licensing objection to using this library.
 
 ## Technologies Used
 
