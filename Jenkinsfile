@@ -32,7 +32,7 @@ pipeline {
         stage('Build and verify') {
             when{
                 not{
-                    branch 'master'
+                    branch 'main'
                 }
             } 
             steps {
@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Build, verify and deploy') {
             when{
-                 branch 'master'
+                 branch 'main'
             } 
             steps {
                 configFileProvider([configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]){ 
