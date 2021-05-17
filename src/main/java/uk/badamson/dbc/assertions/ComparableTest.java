@@ -18,8 +18,7 @@ package uk.badamson.dbc.assertions;
  * along with MC-des.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.annotation.Nonnull;
 
@@ -37,14 +36,31 @@ public class ComparableTest {
             @Nonnull final T object2) {
         final var compareTo = compareTo(object1, object2);
         final var equals = ObjectTest.equals(object1, object2);
-        assertTrue(compareTo == 0 == equals, "Natural ordering is consistent with equals");
+        assertThat("Natural ordering is consistent with equals", compareTo == 0 == equals);
+    }
+
+    private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
+        try {
+            object.compareTo(null);
+        } catch (final NullPointerException e) {
+            return;// OK: the required behaviour
+        } catch (final Exception e) {
+            /*
+             * It is unlikely that a faulty compareTo would throw any other kind of
+             * exception, but provide good diagnostics just in case.
+             */
+            throw new AssertionError("compareToNull(null) throws only a NullPointerException");
+        }
+        /*
+         * An overly careful implementation might attempt to give a result for this
+         * case, rather than throw a NPE.
+         */
+        throw new AssertionError("compareTo(null) throws NullPointerException");
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
         assertInvariants(object, object);
-
-        assertThrows(NullPointerException.class, () -> object.compareTo(null),
-                "compareTo(null) throws NullPointerException");
+        assertCompareToNullThrowsNPE(object);
     }
 
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {

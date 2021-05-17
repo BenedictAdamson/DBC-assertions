@@ -18,9 +18,8 @@ package uk.badamson.dbc.assertions;
  * along with MC-des.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +39,7 @@ public final class ObjectTest {
          * A faulty equals method is unlikely to given !this.equals(this), but check for
          * completeness.
          */
-        assertTrue(equals(object, object), "An object is always equivalent to itself");
+        assertThat("An object is always equivalent to itself", equals(object, object));
     }
 
     public static void assertInvariants(@Nonnull final Object object) {
@@ -63,13 +62,13 @@ public final class ObjectTest {
                  * handle null attributes, which we have already checked), but check for
                  * completeness.
                  */
-                () -> assertTrue(equals12 == equals21, "Equality is symmetric"),
+                () -> assertThat("Equality is symmetric", equals12 == equals21),
                 /*
                  * The programmer might have implemented the equals method but forgot to also
                  * implement the hashCode() method, which will fail this assertion for the case
                  * that equals12 && (object1 == object2).
                  */
-                () -> assertFalse(equals12 && hashCode1 != hashCode2, "hashCode() is consistent with equals()"));
+                () -> assertThat("hashCode() is consistent with equals()", !(equals12 && hashCode1 != hashCode2)));
     }
 
     private static void assertNeverEqualsNull(@Nonnull final Object object) {
@@ -78,7 +77,7 @@ public final class ObjectTest {
          * implementation might throw a NullPointerException, because a null argument
          * must be handled as a special case.
          */
-        assertFalse(equals(object, null), "An object is never equivalent to null");
+        assertThat("An object is never equivalent to null", !equals(object, null));
     }
 
     static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
