@@ -50,6 +50,67 @@ Furthermore, several commonly implemented interfaces of standard Java,
 such as `Comparable`,
 specify further invariants and postconditions that the principle requires an implementing class to meet.
 
+## Using this Library
+
+In your unit tests of a class you might have test code similar to this:
+
+```
+@Test
+public void increment_1() {
+   final var amount = new Amount(1);
+
+   amount.increment();
+
+   assertEquals(2, amount.intValue());
+}
+
+@code @Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1);
+   final var a2 = new Amount(2);
+
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
+But you can do do better than that.
+The class you are testing does not only have the behaviour that you have specified for it.
+It must also conform to some invariants imposed by the `Object` base class,
+and also for any interfaces your class implements.
+You should also check that the objects conform to those invariants.
+There several of them. Checking them can be fiddly.
+Explicitly checking them all directly in your test method would be verbose, error prone,
+and in some cases provide low value
+(because in that particular test, it is unlikely that the invariant would be broken).
+
+The methods of this library provide a convenient and abstract way to check that
+objects conform to those inherited invariants.
+In your test, simply delegate to methods in this library, like this:
+
+```
+@code @Test
+public void increment_1() {
+   final var amount = new Amount(1);
+
+   amount.increment();
+
+   ObjectTest.assertInvariants(amount);
+   ComparableTest.assertInvariants(amount);
+   assertEquals(2, amount.intValue());
+}
+
+@code @Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1);
+   final var a2 = new Amount(2);
+
+   ObjectTest.assertInvariants(a1, a2);
+   ComparableTest.assertInvariants(a1, a2);
+   ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
 ## Technologies Used
 
 * Java 11
