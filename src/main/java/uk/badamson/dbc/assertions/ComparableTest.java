@@ -26,13 +26,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
 public class ComparableTest {
 
-    public static <T extends Comparable<T>> void assertCompareToConsistentWithEquals(@Nonnull final T object1,
-            @Nonnull final T object2) {
-        final var compareTo = compareTo(object1, object2);
-        final var equals = ObjectTest.equals(object1, object2);
-        assertThat("Natural ordering is consistent with equals", compareTo == 0 == equals);
-    }
-
     private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
         try {
             object.compareTo(null);
@@ -84,7 +77,14 @@ public class ComparableTest {
         final int c12 = compareTo(object1, object2);
         final int c23 = compareTo(object2, object3);
         final int c13 = compareTo(object1, object3);
-        assertThat("compareTo is transitive", !((c12 > 0 && c23 > 0) && !(c13 > 0)));
+        assertThat("compareTo is transitive", !(c12 > 0 && c23 > 0 && !(c13 > 0)));
+    }
+
+    public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
+            @Nonnull final T object2) {
+        final var compareTo = compareTo(object1, object2);
+        final var equals = ObjectTest.equals(object1, object2);
+        assertThat("Natural ordering is consistent with equals", compareTo == 0 == equals);
     }
 
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {

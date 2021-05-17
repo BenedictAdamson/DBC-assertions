@@ -34,31 +34,6 @@ import org.junit.jupiter.api.Test;
 public class ComparableTestTest {
 
     @Nested
-    public class AssertCompareToConsistentWithEquals {
-
-        @Test
-        public void bigger() {
-            ComparableTest.assertCompareToConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(1));
-        }
-
-        @Test
-        public void compareToNotConsistentWithEquals() {
-            assertThrows(AssertionError.class, () -> ComparableTest
-                    .assertCompareToConsistentWithEquals(new BigDecimal("1.0"), new BigDecimal("1.00")));
-        }
-
-        @Test
-        public void equivalent() {
-            ComparableTest.assertCompareToConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(0));
-        }
-
-        @Test
-        public void smaller() {
-            ComparableTest.assertCompareToConsistentWithEquals(Integer.valueOf(1), Integer.valueOf(0));
-        }
-    }// class
-
-    @Nested
     public class AssertInvariants {
 
         @Test
@@ -116,6 +91,31 @@ public class ComparableTestTest {
         @Test
         public void string() {
             ComparableTest.assertInvariants("c", "b", "a");
+        }
+    }// class
+
+    @Nested
+    public class AssertNaturalOrderingIsConsistentWithEquals {
+
+        @Test
+        public void bigger() {
+            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(1));
+        }
+
+        @Test
+        public void compareToNotConsistentWithEquals() {
+            assertThrows(AssertionError.class, () -> ComparableTest
+                    .assertNaturalOrderingIsConsistentWithEquals(new BigDecimal("1.0"), new BigDecimal("1.00")));
+        }
+
+        @Test
+        public void equivalent() {
+            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(0));
+        }
+
+        @Test
+        public void smaller() {
+            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(1), Integer.valueOf(0));
         }
     }// class
 
