@@ -137,12 +137,12 @@ public final class ObjectTest {
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
-     *    final var thing = new Monster();
+     *    final var parent = new Monster();
      *    
-     *    final var child = thing.spwan();
+     *    final var child = parent.spawn();
      *    
      *    assertNotNull(child);// guard
-     *    assertSame(thing, child.getParent());
+     *    assertSame(parent, child.getParent());
      * }
      * </pre>
      *
@@ -166,9 +166,9 @@ public final class ObjectTest {
      * <pre>
      * {@code @Test}
      * public void mutate_a() {
-     *    final var thing = new Monster();
+     *    final var parent = new Monster();
      *    
-     *    final var child = thing.spwan();
+     *    final var child = parent.spawn();
      *    
      *    assertNotNull(child);// guard
      *    assertInvariants(parent);
