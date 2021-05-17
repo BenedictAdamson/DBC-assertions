@@ -117,7 +117,8 @@ public final class ObjectTest {
      */
     public static void assertInvariants(@Nonnull final Object object) {
         assert object != null;
-        assertAll("Object invariants [" + object.toString() + "]",
+        assertAll("Object invariants [" + safeToString(object) + "]",
+                () -> assertThat("toString", toString(object), anything()), // check for exception
                 () -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
                 () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
@@ -223,7 +224,7 @@ public final class ObjectTest {
         final int hashCode1 = hashCode(object1);
         final int hashCode2 = hashCode(object2);
 
-        assertAll("equals [" + object1.toString() + ", " + object2.toString() + "]",
+        assertAll("equals [" + safeToString(object1) + ", " + safeToString(object2) + "]",
                 /*
                  * A faulty equals method is unlikely to be asymmetric (except for failing to
                  * handle null attributes, which we have already checked), but check for
@@ -261,7 +262,8 @@ public final class ObjectTest {
              * NullPointerException if the object has any null attributes.
              */
             throw createUnexpectedException(
-                    "equals() must not throw exceptions [" + object1.toString() + ", " + object2.toString() + "]", e);
+                    "equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]",
+                    e);
         }
     }
 
@@ -274,7 +276,36 @@ public final class ObjectTest {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("hashCode() must not throw exceptions [" + object.toString() + "]", e);
+            throw createUnexpectedException("hashCode() must not throw exceptions [" + safeToString(object) + "]", e);
+        }
+    }
+
+    @Nonnull
+    private static String identityString(@Nonnull final Object object) {
+        return object.getClass().toString() + "@" + System.identityHashCode(object);
+    }
+
+    static String safeToString(@Nonnull final Object object) {
+        try {
+            return object.toString();
+        } catch (final Exception e) {
+            return identityString(object);
+        }
+    }
+
+    private static String toString(@Nonnull final Object object) {
+        try {
+            return object.toString();
+        } catch (final Exception e) {
+            /*
+             * The (default) Object.toString() method delegates to hashCode(). A typical
+             * hashCode implementation will delegate to the hashCode methods of the
+             * attributes of the object. A naive implementation might throw a
+             * NullPointerException if the object has any null attributes. If the programmer
+             * does not also override the toString() method, toString() can then throw an
+             * exception.
+             */
+            throw createUnexpectedException("toString() must not throw exceptions", e);
         }
     }
 }

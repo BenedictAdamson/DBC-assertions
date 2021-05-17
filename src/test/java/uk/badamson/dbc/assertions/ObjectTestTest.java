@@ -129,6 +129,19 @@ public class ObjectTestTest {
         public void string() {
             ObjectTest.assertInvariants("string");
         }
+
+        @Test
+        public void toStringThrows() {
+            final var object = new Object() {
+
+                @Override
+                public String toString() {
+                    throw new RuntimeException("Fake");
+                }
+
+            };
+            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+        }
     }// class
 
     @Nested
