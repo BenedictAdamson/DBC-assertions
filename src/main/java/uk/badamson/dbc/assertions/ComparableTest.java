@@ -75,6 +75,18 @@ public class ComparableTest {
         assertThat("compareTo is symmetric", Integer.signum(c12) == -Integer.signum(c21));
     }
 
+    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
+            @Nonnull final T object3) {
+        assert object1 != null;
+        assert object2 != null;
+        assert object3 != null;
+
+        final int c12 = compareTo(object1, object2);
+        final int c23 = compareTo(object2, object3);
+        final int c13 = compareTo(object1, object3);
+        assertThat("compareTo is transitive", !((c12 > 0 && c23 > 0) && !(c13 > 0)));
+    }
+
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
         try {
             return object1.compareTo(object2);

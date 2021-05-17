@@ -101,7 +101,21 @@ public class ComparableTestTest {
 
         @Test
         public void string() {
-            ComparableTest.assertInvariants("a", "b2");
+            ComparableTest.assertInvariants("a", "b");
+        }
+    }// class
+
+    @Nested
+    public class AssertInvariants3 {
+
+        @Test
+        public void integer() {
+            ComparableTest.assertInvariants(Integer.valueOf(3), Integer.valueOf(2), Integer.valueOf(1));
+        }
+
+        @Test
+        public void string() {
+            ComparableTest.assertInvariants("c", "b", "a");
         }
     }// class
 
