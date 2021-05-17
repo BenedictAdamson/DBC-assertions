@@ -61,17 +61,17 @@ public final class ObjectTest {
      * <p>
      * But you can do do better than that. The class you are testing does not only
      * have the behaviour that you have specified for it. It must also conform to
-     * some invariants imposed by the {@link Object} class. For thorough testing,
-     * you should check that the mutated object (still) conforms to those
-     * invariants. There are several of them. Checking them can be fiddly.
-     * Explicitly checking them all directly in your test method would be verbose,
-     * error prone, and in some cases provide low value (because in that particular
-     * test, it is unlikely that the invariant would be broken).
+     * some invariants imposed by the {@link Object} class. You should also check
+     * that the mutated object (still) conforms to those invariants. There are
+     * several of them. Checking them can be fiddly. Explicitly checking them all
+     * directly in your test method would be verbose, error prone, and in some cases
+     * provide low value (because in that particular test, it is unlikely that the
+     * invariant would be broken).
      * <p>
      * </p>
      * This method provides a convenient and abstract way to check that the mutated
      * object still conforms to the invariants imposed by the {@link Object} class.
-     * Simply delegate to this method in your class:
+     * Simply delegate to this method in your test, like this:
      * </p>
      * 
      * <pre>
@@ -121,6 +121,98 @@ public final class ObjectTest {
                 () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
 
+    /**
+     * <p>
+     * Assert that a pair of objects conform to all the relationship (pairwise)
+     * invariants imposed by the {@link Object} base class, throwing an
+     * {@link AssertionError} they doe not.
+     * </p>
+     * 
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * In your unit tests, you will check factory methods and getters, using test
+     * code similar to this:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void mutate_a() {
+     *    final var thing = new Monster();
+     *    
+     *    final var child = thing.spwan();
+     *    
+     *    assertNotNull(child);// guard
+     *    assertSame(thing, child.getParent());
+     * }
+     * </pre>
+     *
+     * <p>
+     * But you can do do better than that. The class you are testing and the return
+     * type of the method do not only have the behaviour that you have specified for
+     * them. They must also conform to some invariants imposed by the {@link Object}
+     * class and that constrain relationships between those two objects. You should
+     * check that the objects conform to those invariants. There are several of
+     * them. Checking them can be fiddly. Explicitly checking them all directly in
+     * your test method would be verbose, error prone, and in some cases provide low
+     * value (because in that particular test, it is unlikely that the invariant
+     * would be broken).
+     * <p>
+     * </p>
+     * This method provides a convenient and abstract way to check that the objects
+     * conform to the relationship invariants imposed by the {@link Object} class.
+     * Simply delegate to this method in your test, like this:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void mutate_a() {
+     *    final var thing = new Monster();
+     *    
+     *    final var child = thing.spwan();
+     *    
+     *    assertNotNull(child);// guard
+     *    assertInvariants(parent);
+     *    assertInvariants(child);
+     *    assertInvariants(parent, child);
+     *    assertSame(thing, child.getParent());
+     * }
+     * </pre>
+     * 
+     * <h2>How to Use this Method for Thorough Testing</h2>
+     * <p>
+     * The relationship invariants imposed by {@link Object} pertain to the
+     * {@link Object#equals(Object)} and {@link Object#hashCode()} methods, so using
+     * this method is mostly useful only if you have overridden
+     * {@link Object#equals(Object)}. If you have done that, you should be testing
+     * that your {@code equals} method is correct, by constructing significant pairs
+     * of objects, then checking that their equality is as expected. You should also
+     * pass those pairs of objects to this method for checking. For example, like
+     * this:
+     * </p>
+     * 
+     * <pre>
+     * {@code @Test}
+     * public void equals_a_b() {
+     *    final var a = new Monster("a");
+     *    final var b = new Monster("b");
+     *    
+     *    ObjectTest.assertInvariants(a, b);
+     *    assertNotEquals(a, b);
+     * }
+     * </pre>
+     * 
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object1} break an invariant.
+     */
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
         assert object1 != null;
         assert object2 != null;
