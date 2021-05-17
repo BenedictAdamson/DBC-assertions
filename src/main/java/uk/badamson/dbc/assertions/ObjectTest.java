@@ -10,12 +10,11 @@ package uk.badamson.dbc.assertions;
  */
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anything;
 import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.opentest4j.AssertionFailedError;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -37,7 +36,8 @@ public final class ObjectTest {
 
     public static void assertInvariants(@Nonnull final Object object) {
         assert object != null;
-        assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object));
+        assertAll(() -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
+                () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
 
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
@@ -73,6 +73,10 @@ public final class ObjectTest {
         assertThat("An object is never equivalent to null", !equals(object, null));
     }
 
+    static AssertionError createUnexpectedException(@Nonnull final String message, final Throwable actual) {
+        return new AssertionError(message, actual);
+    }
+
     static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
         try {
             return object1.equals(object2);
@@ -82,7 +86,7 @@ public final class ObjectTest {
              * attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw new AssertionFailedError("equals() must not throw exceptions", null, e);
+            throw createUnexpectedException("equals() must not throw exceptions", e);
         }
     }
 
@@ -95,7 +99,7 @@ public final class ObjectTest {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw new AssertionFailedError("equals() must not throw exceptions", null, e);
+            throw createUnexpectedException("hashCode() must not throw exceptions", e);
         }
     }
 }
