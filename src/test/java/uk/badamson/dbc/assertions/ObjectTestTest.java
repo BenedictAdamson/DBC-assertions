@@ -20,8 +20,6 @@ package uk.badamson.dbc.assertions;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -172,52 +170,6 @@ public class ObjectTestTest {
         }
     }// class
 
-    @Nested
-    public class AssertLongValueSemantics {
-
-        @Test
-        public void entity() {
-            final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L);
-            final var entity2 = new Entity(id, "B", 2L);
-            assert entity1.equals(entity2);
-
-            assertThrows(AssertionError.class,
-                    () -> ObjectTest.assertLongValueSemantics(entity1, entity2, "version", (entity) -> entity.version));
-        }
-
-        @Test
-        public void uuid() {
-            final UUID object = UUID.randomUUID();
-            ObjectTest.assertLongValueSemantics(object, object, "leastSignificantBits",
-                    (uuid) -> uuid.getLeastSignificantBits());
-        }
-
-    }// class
-
-    @Nested
-    public class AssertValueSemantics {
-
-        @Test
-        public void entity() {
-            final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L);
-            final var entity2 = new Entity(id, "B", 2L);
-            assert entity1.equals(entity2);
-
-            assertThrows(AssertionError.class,
-                    () -> ObjectTest.assertValueSemantics(entity1, entity2, "name", (entity) -> entity.name));
-        }
-
-        @Test
-        public void uuid() {
-            final UUID object = UUID.randomUUID();
-            ObjectTest.assertValueSemantics(object, object, "leastSignificantBits",
-                    (uuid) -> Long.valueOf(uuid.getLeastSignificantBits()));
-        }
-
-    }// class
-
     private static final class AsymmetricEquals {
 
         private final int value;
@@ -241,36 +193,6 @@ public class ObjectTestTest {
         @Override
         public int hashCode() {
             return 0;
-        }
-
-    }// class
-
-    private static final class Entity {
-        private final UUID id;
-        final String name;
-        final long version;
-
-        Entity(final UUID id, final String name, final long version) {
-            this.id = id;
-            this.name = name;
-            this.version = version;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof Entity)) {
-                return false;
-            }
-            final Entity other = (Entity) obj;
-            return id.equals(other.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return id.hashCode();
         }
 
     }// class
