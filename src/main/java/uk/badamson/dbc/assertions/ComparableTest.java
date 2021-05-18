@@ -201,8 +201,12 @@ public class ComparableTest {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
+        /*
+         * Provide good diagnostics if compareTo throws an exception.
+         */
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
+
         assertThat("compareTo is symmetric [" + ObjectTest.safeToString(object1) + ", "
                 + ObjectTest.safeToString(object2) + "]", Integer.signum(c12) == -Integer.signum(c21));
     }
@@ -247,9 +251,13 @@ public class ComparableTest {
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(object3, "object3");
 
+        /*
+         * Provide good diagnostics if compareTo throws an exception.
+         */
         final int c12 = compareTo(object1, object2);
         final int c23 = compareTo(object2, object3);
         final int c13 = compareTo(object1, object3);
+
         assertThat("compareTo is transitive [" + ObjectTest.safeToString(object1) + ", "
                 + ObjectTest.safeToString(object2) + ", " + ObjectTest.safeToString(object3) + "]",
                 !(c12 > 0 && c23 > 0 && !(c13 > 0)));
@@ -290,8 +298,12 @@ public class ComparableTest {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
+        /*
+         * Provide good diagnostics if compareTo or equals throws an exception.
+         */
         final var compareTo = compareTo(object1, object2);
         final var equals = ObjectTest.equals(object1, object2);
+
         assertThat("Natural ordering is consistent with equals [" + ObjectTest.safeToString(object1) + ", "
                 + ObjectTest.safeToString(object2) + "]", compareTo == 0 == equals);
     }

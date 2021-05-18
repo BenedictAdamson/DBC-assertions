@@ -150,11 +150,18 @@ public final class EqualsSemanticsTest {
 
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
+        /*
+         * Provide good diagnostics if the getter throws an exception.
+         */
         final U id1 = access(object1, stringId1, "ID", valueOfId);
         final U id2 = access(object2, stringId2, "ID", valueOfId);
 
         assertThat("ID not null for [" + stringId1 + "]", id1, notNullValue());// guard
         assertThat("ID not null for [" + stringId2 + "]", id2, notNullValue());
+
+        /*
+         * Provide good diagnostics equals throws an exception.
+         */
         final boolean equals = ObjectTest.equals(object1, object2);
         final boolean equalIds = ObjectTest.equals(id1, id2);
 
@@ -232,8 +239,14 @@ public final class EqualsSemanticsTest {
 
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
+        /*
+         * Provide good diagnostics if the getter throws an exception.
+         */
         final int attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
         final int attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
+        /*
+         * Provide good diagnostics if equals throws an exception.
+         */
         final boolean equals = ObjectTest.equals(object1, object2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
@@ -311,8 +324,14 @@ public final class EqualsSemanticsTest {
 
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
+        /*
+         * Provide good diagnostics if the getter throws an exception.
+         */
         final long attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
         final long attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
+        /*
+         * Provide good diagnostics if equals throws an exception.
+         */
         final boolean equals = ObjectTest.equals(object1, object2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
@@ -394,8 +413,15 @@ public final class EqualsSemanticsTest {
 
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
+        /*
+         * Provide good diagnostics if the getter throws an exception.
+         */
         final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
         final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
+        /*
+         * Provide good diagnostics if equals throws an exception. Handle null
+         * attributes.
+         */
         final boolean equals = ObjectTest.equals(object1, object2);
         final boolean attributesEquals = attribute1 == null ? Objects.equals(attribute1, attribute2)
                 : ObjectTest.equals(attribute1, attribute2);
