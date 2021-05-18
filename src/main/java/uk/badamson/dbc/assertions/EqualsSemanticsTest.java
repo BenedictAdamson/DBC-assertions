@@ -55,10 +55,6 @@ public final class EqualsSemanticsTest {
 
     private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final Function<T, U> valueOfAttribute) {
-        Objects.requireNonNull(object, "object");
-        Objects.requireNonNull(attributeName, "attributeName");
-        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
-
         try {
             return valueOfAttribute.apply(object);
         } catch (final Exception e) {
@@ -68,10 +64,6 @@ public final class EqualsSemanticsTest {
 
     private static <T> int access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final ToIntFunction<T> valueOfAttribute) {
-        Objects.requireNonNull(object, "object");
-        Objects.requireNonNull(attributeName, "attributeName");
-        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
-
         try {
             return valueOfAttribute.applyAsInt(object);
         } catch (final Exception e) {
@@ -81,10 +73,6 @@ public final class EqualsSemanticsTest {
 
     private static <T> long access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final ToLongFunction<T> valueOfAttribute) {
-        Objects.requireNonNull(object, "object");
-        Objects.requireNonNull(attributeName, "attributeName");
-        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
-
         try {
             return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
@@ -156,6 +144,10 @@ public final class EqualsSemanticsTest {
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final Function<T, U> valueOfId) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(valueOfId, "valueOfId");
+
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
         final U id1 = access(object1, stringId1, "ID", valueOfId);
@@ -233,6 +225,11 @@ public final class EqualsSemanticsTest {
      */
     public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(attributeName, "attributeName");
+        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
         final int attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
@@ -307,6 +304,11 @@ public final class EqualsSemanticsTest {
      */
     public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(attributeName, "attributeName");
+        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
         final long attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
@@ -385,6 +387,11 @@ public final class EqualsSemanticsTest {
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(attributeName, "attributeName");
+        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+
         final var stringId1 = ObjectTest.safeToString(object1);
         final var stringId2 = ObjectTest.safeToString(object2);
         final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);

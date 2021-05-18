@@ -114,7 +114,7 @@ public class ComparableTest {
      *             If {@code object} breaks an invariant.
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
-        assert object != null;
+        Objects.requireNonNull(object, "object");
         assertAll("Comparable invariants [" + ObjectTest.safeToString(object) + "]",
                 /*
                  * For completeness, check that this.compareTo(this) does not throw an
@@ -198,6 +198,9 @@ public class ComparableTest {
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
         assertThat("compareTo is symmetric [" + ObjectTest.safeToString(object1) + ", "
@@ -240,6 +243,10 @@ public class ComparableTest {
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final T object3) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(object3, "object3");
+
         final int c12 = compareTo(object1, object2);
         final int c23 = compareTo(object2, object3);
         final int c13 = compareTo(object1, object3);
@@ -280,6 +287,9 @@ public class ComparableTest {
      */
     public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
             @Nonnull final T object2) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+
         final var compareTo = compareTo(object1, object2);
         final var equals = ObjectTest.equals(object1, object2);
         assertThat("Natural ordering is consistent with equals [" + ObjectTest.safeToString(object1) + ", "
@@ -287,8 +297,6 @@ public class ComparableTest {
     }
 
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
-        Objects.requireNonNull(object1);
-        Objects.requireNonNull(object2);
         try {
             return object1.compareTo(object2);
         } catch (final Exception e) {

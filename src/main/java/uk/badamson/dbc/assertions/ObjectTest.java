@@ -13,6 +13,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anything;
 import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -116,7 +118,7 @@ public final class ObjectTest {
      *             If {@code object} breaks an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object) {
-        assert object != null;
+        Objects.requireNonNull(object, "object");
         assertAll("Object invariants [" + safeToString(object) + "]",
                 () -> assertThat("toString", toString(object), anything()), // check for exception
                 () -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
@@ -216,8 +218,8 @@ public final class ObjectTest {
      *             If {@code object1} and {@code object1} break an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
-        assert object1 != null;
-        assert object2 != null;
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
 
         final boolean equals12 = equals(object1, object2);
         final boolean equals21 = equals(object2, object1);
