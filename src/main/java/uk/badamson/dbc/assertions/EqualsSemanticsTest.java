@@ -17,15 +17,38 @@ import java.util.function.ToLongFunction;
 
 import javax.annotation.Nonnull;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * <p>
- * Verification methods to assist in unit testing all classes (which are
- * directly or indirectly derived from the {@link Object} class).
+ * Verification methods to assist in unit testing classes that have domain
+ * semantics for their override of the {@link Object#equals(Object)} method.
+ * </p>
+ * <p>
+ * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
+ * design</a> we distinguish between classes that are for <i>entities</i> and
+ * classes that are for <i>values<i>. These semantic distinctions have
+ * implications for the required behaviour of the {@code equals(Object)} method
+ * of those classes.
+ * </p>
+ * <p>
+ * <dfn>Value semantics</dfn> requires that the {@code equals(Object)} method
+ * returns {@code true} if, and only if, the given object is an instance of the
+ * same class <em>and</em> the pairs of object <i>attributes</i> of the two
+ * objects are equivalent.
+ * </p>
+ * <p>
+ * <dfn>Entity semantics</dfn> requires that the {@code equals(Object)} method
+ * returns {@code true} if, and only if, the given object is an instance of the
+ * same class <em>and</em> the rqo objects have equivalent values for an
+ * <i>identifier attribute</i>.
+ * </p>
+ * <p>
+ * This class provides several methods to supplement the
+ * {@link ObjectTest#assertInvariants(Object, Object)} method. The methods are
+ * most useful for test cases where the two objects you have are expected to be
+ * equivalent, or they are expected to be <i>almost equivalent</i>: not
+ * equivalent, but having many attributes that are equivalent.
  * </p>
  */
-@SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
 public final class EqualsSemanticsTest {
 
     private static <T, U> U access(@Nonnull final T object, @Nonnull final String attributeName,
@@ -63,20 +86,13 @@ public final class EqualsSemanticsTest {
      * {@link AssertionError} if they do not.
      * </p>
      * <p>
-     * <dfn>Value semantics</dfn> is a constraint on the {@code equals(Object)}
-     * method of a class. It requires that the method returns {@code true} if, and
-     * only if, the given object is an instance of the same class <em>and</em> the
-     * pairs of {@code long} <i>attributes</i> of the two objects are equal.
-     * </p>
-     * <p>
-     * If follows that if you have two non-null instances of that class, and you
-     * access the values of one of the {@code long} attributes for both objects, an
-     * invariant is that if the {@code equals(Object)} method returns {@code true},
-     * the attributes must be equal. This method tests that invariant for one
-     * attribute. So the method can be general, you provide it with an accessor
-     * function for getting the value of the attribute from the two objects.
-     * </p>
-     *
+     * Value semantics implies that if you have two non-null instances of the value
+     * class, and you access the values of one of the {@code long} attributes for
+     * both objects, an invariant is that if the {@code equals(Object)} method
+     * returns {@code true}, the attributes must be equal. This method tests that
+     * invariant for one attribute. So the method can be general, you provide it
+     * with an accessor function for getting the value of the attribute from the two
+     * objects.
      * </p>
      *
      * <h2>How to Use this Method</h2>
@@ -86,8 +102,7 @@ public final class EqualsSemanticsTest {
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each {@code long} <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
-     * diagnostic messages. Especially for cases in which the two objects should be
-     * equal. Like this:
+     * diagnostic messages.
      * </p>
      *
      * <pre>
@@ -112,7 +127,10 @@ public final class EqualsSemanticsTest {
      *            The name of the attribute to examine.
      * @param valueOfAttribute
      *            A function for accessing the value of the attribute for the two
-     *            objects under test.
+     *            objects under test. This should delegate to the getter method of
+     *            the class. This test method assumes that the getter should never
+     *            throw exceptions; it will throw an {@link AssertionError} if the
+     *            the function does throw an exception.
      * @throws NullPointerException
      *             <ul>
      *             <li>If {@code object1} is null.</li>
@@ -140,17 +158,11 @@ public final class EqualsSemanticsTest {
      * {@link AssertionError} if they do not.
      * </p>
      * <p>
-     * <dfn>Value semantics</dfn> is a constraint on the {@code equals(Object)}
-     * method of a class. It requires that the method returns {@code true} if, and
-     * only if, the given object is an instance of the same class <em>and</em> the
-     * pairs of object <i>attributes</i> of the two objects are equivalent (have
-     * {@code equals(Object)} return {@code true}).
-     * </p>
-     * <p>
-     * If follows that if you have two non-null instances of that class, and you
-     * access the values of one of the attributes for both objects, an invariant is
-     * that if the {@code equals(Object)} method returns {@code true}, the
-     * attributes must be equivalent. This method tests that invariant for one
+     * Value semantics implies that if you have two non-null instances of the value
+     * class, and you access the values of one of the {@code Object} attributes for
+     * both objects, an invariant is that if the {@code equals(Object)} method
+     * returns {@code true}, the attributes must be
+     * {@linkplain Object#equals(Object)} This method tests that invariant for one
      * attribute. So the method can be general, you provide it with an accessor
      * function for getting the value of the attribute from the two objects.
      * </p>
@@ -164,8 +176,7 @@ public final class EqualsSemanticsTest {
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each object <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
-     * diagnostic messages. Especially for cases in which the two objects should be
-     * equal. Like this:
+     * diagnostic messages.
      * </p>
      *
      * <pre>
@@ -192,7 +203,10 @@ public final class EqualsSemanticsTest {
      *            The name of the attribute to examine.
      * @param valueOfAttribute
      *            A function for accessing the value of the attribute for the two
-     *            objects under test.
+     *            objects under test. This should delegate to the getter method of
+     *            the class. This test method assumes that the getter should never
+     *            throw exceptions; it will throw an {@link AssertionError} if the
+     *            the function does throw an exception.
      * @throws NullPointerException
      *             <ul>
      *             <li>If {@code object1} is null.</li>
