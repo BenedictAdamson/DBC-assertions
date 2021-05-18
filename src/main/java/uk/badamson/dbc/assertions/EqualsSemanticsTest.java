@@ -53,7 +53,7 @@ import javax.annotation.Nonnull;
  */
 public final class EqualsSemanticsTest {
 
-    private static <T, U> U access(@Nonnull final T object, @Nonnull final String attributeName,
+    private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final Function<T, U> valueOfAttribute) {
         Objects.requireNonNull(object, "object");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -62,11 +62,11 @@ public final class EqualsSemanticsTest {
         try {
             return valueOfAttribute.apply(object);
         } catch (final Exception e) {
-            throw createUnexpectedAccessException(object, attributeName, e);
+            throw createUnexpectedAccessException(stringId, attributeName, e);
         }
     }
 
-    private static <T> int access(@Nonnull final T object, @Nonnull final String attributeName,
+    private static <T> int access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final ToIntFunction<T> valueOfAttribute) {
         Objects.requireNonNull(object, "object");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -75,11 +75,11 @@ public final class EqualsSemanticsTest {
         try {
             return valueOfAttribute.applyAsInt(object);
         } catch (final Exception e) {
-            throw createUnexpectedAccessException(object, attributeName, e);
+            throw createUnexpectedAccessException(stringId, attributeName, e);
         }
     }
 
-    private static <T> long access(@Nonnull final T object, @Nonnull final String attributeName,
+    private static <T> long access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final ToLongFunction<T> valueOfAttribute) {
         Objects.requireNonNull(object, "object");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -88,7 +88,7 @@ public final class EqualsSemanticsTest {
         try {
             return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
-            throw createUnexpectedAccessException(object, attributeName, e);
+            throw createUnexpectedAccessException(stringId, attributeName, e);
         }
     }
 
@@ -156,17 +156,17 @@ public final class EqualsSemanticsTest {
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final Function<T, U> valueOfId) {
-        final var string1 = ObjectTest.safeToString(object1);
-        final var string2 = ObjectTest.safeToString(object2);
-        final U id1 = access(object1, "ID", valueOfId);
-        final U id2 = access(object2, "ID", valueOfId);
+        final var stringId1 = ObjectTest.safeToString(object1);
+        final var stringId2 = ObjectTest.safeToString(object2);
+        final U id1 = access(object1, stringId1, "ID", valueOfId);
+        final U id2 = access(object2, stringId2, "ID", valueOfId);
 
-        assertThat("ID not null for [" + string1 + "]", id1, notNullValue());// guard
-        assertThat("ID not null for [" + string2 + "]", id2, notNullValue());
+        assertThat("ID not null for [" + stringId1 + "]", id1, notNullValue());// guard
+        assertThat("ID not null for [" + stringId2 + "]", id2, notNullValue());
         final boolean equals = ObjectTest.equals(object1, object2);
         final boolean equalIds = ObjectTest.equals(id1, id2);
 
-        assertThat("Entity semantics for [" + string1 + ", " + string2 + "]", equals == equalIds);
+        assertThat("Entity semantics for [" + stringId1 + ", " + stringId2 + "]", equals == equalIds);
     }
 
     /**
@@ -233,12 +233,14 @@ public final class EqualsSemanticsTest {
      */
     public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
-        final int attribute1 = access(object1, attributeName, valueOfAttribute);
-        final int attribute2 = access(object2, attributeName, valueOfAttribute);
+        final var stringId1 = ObjectTest.safeToString(object1);
+        final var stringId2 = ObjectTest.safeToString(object2);
+        final int attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        final int attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
-                + ", " + ObjectTest.safeToString(object2) + "]", !(equals && attribute1 != attribute2));
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
+                !(equals && attribute1 != attribute2));
     }
 
     /**
@@ -305,12 +307,14 @@ public final class EqualsSemanticsTest {
      */
     public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
-        final long attribute1 = access(object1, attributeName, valueOfAttribute);
-        final long attribute2 = access(object2, attributeName, valueOfAttribute);
+        final var stringId1 = ObjectTest.safeToString(object1);
+        final var stringId2 = ObjectTest.safeToString(object2);
+        final long attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        final long attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
-                + ", " + ObjectTest.safeToString(object2) + "]", !(equals && attribute1 != attribute2));
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
+                !(equals && attribute1 != attribute2));
     }
 
     /**
@@ -381,17 +385,19 @@ public final class EqualsSemanticsTest {
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
-        final U attribute1 = access(object1, attributeName, valueOfAttribute);
-        final U attribute2 = access(object2, attributeName, valueOfAttribute);
+        final var stringId1 = ObjectTest.safeToString(object1);
+        final var stringId2 = ObjectTest.safeToString(object2);
+        final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
-                + ", " + ObjectTest.safeToString(object2) + "]", !(equals && !Objects.equals(attribute1, attribute2)));
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
+                !(equals && !Objects.equals(attribute1, attribute2)));
     }
 
-    private static <T> AssertionError createUnexpectedAccessException(final T object, final String attributeName,
+    private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
             final Exception e) {
-        return ObjectTest.createUnexpectedException("Acccessing attribute " + attributeName
-                + " should not throw exception for [" + ObjectTest.safeToString(object) + "]", e);
+        return ObjectTest.createUnexpectedException(
+                "Acccessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
 }
