@@ -57,21 +57,23 @@ In your unit tests of a class you might have test code similar to this:
 ```
 @Test
 public void increment_1() {
-   final var amount = new Amount(1);
+   final var amount = new Amount(1L);
 
    amount.increment();
 
-   assertEquals(2, amount.intValue());
+   assertEquals(2L, amount.longValue());
 }
 
 @code @Test
 public void compareTo_1_2() {
-   final var a1 = new Amount(1);
-   final var a2 = new Amount(2);
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
 
    assertTrue(a1.compareTo(a2) < 0);
 }
 ```
+
+### Add Calls to this Library
 
 But you can do do better than that.
 The class you are testing does not only have the behaviour that you have specified for it.
@@ -109,6 +111,45 @@ public void compareTo_1_2() {
    ComparableTest.assertInvariants(a1, a2);
    ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
    EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
+### Refactor
+
+You will probably find your tests perform many similar calls to the methods of this library.
+You might therefore consider refactoring your test code to extract methods that reduce duplication in your test code,
+and increase abstraction. Like this:
+
+```
+private static assertInvariants(Amount a) {
+   ObjectTest.assertInvariants(a);
+   ComparableTest.assertInvariants(a);
+}
+
+private static assertInvariants(Amount a1, Amount a2) {
+   ObjectTest.assertInvariants(a1, a2);
+   ComparableTest.assertInvariants(a1, a2);
+   ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+}
+
+@code @Test
+public void increment_1() {
+   final var amount = new Amount(1L);
+
+   amount.increment();
+
+   assertInvariants(amount);
+   assertEquals(2, amount.longValue());
+}
+
+@code @Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
+
+   assertInvariants(a1, a2);
    assertTrue(a1.compareTo(a2) < 0);
 }
 ```
