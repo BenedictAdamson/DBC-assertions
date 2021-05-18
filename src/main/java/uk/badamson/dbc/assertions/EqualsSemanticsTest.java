@@ -439,4 +439,8 @@ public final class EqualsSemanticsTest {
         return ObjectTest.createUnexpectedException(
                 "Acccessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
+
+    private EqualsSemanticsTest() {
+        assert false;// must not instance
+    }
 }

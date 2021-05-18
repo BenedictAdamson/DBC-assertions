@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 
 import org.opentest4j.AssertionFailedError;
 
-public class ThreadSafetyTest {
+public final class ThreadSafetyTest {
 
     public static void get(final Future<Void> future) {
         try {
@@ -76,5 +76,9 @@ public class ThreadSafetyTest {
         });
         thread.start();
         return future;
+    }
+
+    private ThreadSafetyTest() {
+        assert false;// must not instance
     }
 }
