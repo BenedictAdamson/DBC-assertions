@@ -44,16 +44,16 @@ import org.opentest4j.AssertionFailedError;
  * </p>
  *
  * <pre>
- * &#64;RepeatedTest(4)
+ * {@code @RepeatedTest(4)}
  * public void multipleThreads() {
  *     final int nThreads = 32;
- *     final List<Future<Void>> futures = new ArrayList<>(nThreads);
+ *     final {@code List<Future<Void>> futures = new ArrayList<>(nThreads);}
  *     final CountDownLatch ready = new CountDownLatch(1);
  *     final var random = new Random(0);
  *
  *     final var thing = new Thing();
- *     for (int t = 0; t < nThreads; ++t) {
- *         futures.add(ThreadSafetyTest.runInOtherThread(ready, () -> {
+ *     {@code for (int t = 0; t < nThreads; ++t) {}
+ *         {@code futures.add(ThreadSafetyTest.runInOtherThread(ready, () -> {}
  *             thing.mutate(random.nextInt());
  *
  *             ObjectTest.assertInvariants(thing);
