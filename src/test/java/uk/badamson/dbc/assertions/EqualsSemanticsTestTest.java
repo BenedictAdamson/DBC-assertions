@@ -33,13 +33,34 @@ import org.junit.jupiter.api.Test;
 public class EqualsSemanticsTestTest {
 
     @Nested
+    public class AssertIntValueSemantics {
+
+        @Test
+        public void entity() {
+            final UUID id = UUID.randomUUID();
+            final var entity1 = new Entity(id, "A", 1L, 100);
+            final var entity2 = new Entity(id, "B", 2L, 50);
+            assert entity1.equals(entity2);
+            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertIntValueSemantics(entity1, entity2,
+                    "balance", (entity) -> entity.balance));
+        }
+
+        @Test
+        public void string() {
+            final String object = "A";
+            EqualsSemanticsTest.assertIntValueSemantics(object, object, "length", (string) -> string.length());
+        }
+
+    }// class
+
+    @Nested
     public class AssertLongValueSemantics {
 
         @Test
         public void entity() {
             final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L);
-            final var entity2 = new Entity(id, "B", 2L);
+            final var entity1 = new Entity(id, "A", 1L, 100);
+            final var entity2 = new Entity(id, "B", 2L, 50);
             assert entity1.equals(entity2);
 
             assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertLongValueSemantics(entity1, entity2,
@@ -61,8 +82,8 @@ public class EqualsSemanticsTestTest {
         @Test
         public void entity() {
             final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L);
-            final var entity2 = new Entity(id, "B", 2L);
+            final var entity1 = new Entity(id, "A", 1L, 100);
+            final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
             assertThrows(AssertionError.class,
@@ -82,11 +103,13 @@ public class EqualsSemanticsTestTest {
         private final UUID id;
         final String name;
         final long version;
+        final int balance;
 
-        Entity(final UUID id, final String name, final long version) {
+        Entity(final UUID id, final String name, final long version, final int balance) {
             this.id = id;
             this.name = name;
             this.version = version;
+            this.balance = balance;
         }
 
         @Override
@@ -104,6 +127,11 @@ public class EqualsSemanticsTestTest {
         @Override
         public int hashCode() {
             return id.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "Entity [id=" + id + ", name=" + name + ", version=" + version + ", balance=" + balance + "]";
         }
 
     }// class

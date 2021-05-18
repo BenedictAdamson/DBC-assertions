@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import javax.annotation.Nonnull;
@@ -60,8 +61,20 @@ public final class EqualsSemanticsTest {
         try {
             return valueOfAttribute.apply(object);
         } catch (final Exception e) {
-            throw ObjectTest.createUnexpectedException("Acccessing attribute " + attributeName
-                    + " should not throw exception for [" + ObjectTest.safeToString(object) + "]", e);
+            throw createUnexpectedAccessException(object, attributeName, e);
+        }
+    }
+
+    private static <T> int access(@Nonnull final T object, @Nonnull final String attributeName,
+            @Nonnull final ToIntFunction<T> valueOfAttribute) {
+        Objects.requireNonNull(object, "object");
+        Objects.requireNonNull(attributeName, "attributeName");
+        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+
+        try {
+            return valueOfAttribute.applyAsInt(object);
+        } catch (final Exception e) {
+            throw createUnexpectedAccessException(object, attributeName, e);
         }
     }
 
@@ -74,9 +87,80 @@ public final class EqualsSemanticsTest {
         try {
             return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
-            throw ObjectTest.createUnexpectedException("Acccessing attribute " + attributeName
-                    + " should not throw exception for [" + ObjectTest.safeToString(object) + "]", e);
+            throw createUnexpectedAccessException(object, attributeName, e);
         }
+    }
+
+    /**
+     * <p>
+     * Assert that a pair of objects of a class satisfy a pairwise invariant
+     * necessary for the class to have <i>value semantics</i>, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * Value semantics implies that if you have two non-null instances of the value
+     * class, and you access the values of one of the {@code int} attributes for
+     * both objects, an invariant is that if the {@code equals(Object)} method
+     * returns {@code true}, the attributes must be equal. This method tests that
+     * invariant for one attribute. So the method can be general, you provide it
+     * with an accessor function for getting the value of the attribute from the two
+     * objects.
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * Use this as a supplement to the
+     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * class that you have defined to have <i>value semantics</i>. Call the method
+     * for each {@code int} <i>attribute</i> of the class, in addition to asserting
+     * equality or non equality of the objects, to provide better test failure
+     * diagnostic messages.
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void equals_equivalent() {
+     *    final var amount1 = new Amount(1L);
+     *    final var amount2 = new Amount(1L);
+     *
+     *    ObjectTest.assertInvariants(amount1, amount2);
+     *    ObjectTest.assertIntValueSemantics(amount1, amount2, "intValue", (amount) -> amount.intValue());
+     *    assertEquals(amount1, amount2);
+     * }
+     * </pre>
+     *
+     * @param <T>
+     *            The class of {@code object1} and {@code object2}
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @param attributeName
+     *            The name of the attribute to examine.
+     * @param valueOfAttribute
+     *            A function for accessing the value of the attribute for the two
+     *            objects under test. This should delegate to the getter method of
+     *            the class. This test method assumes that the getter should never
+     *            throw exceptions; it will throw an {@link AssertionError} if the
+     *            the function does throw an exception.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             <li>If {@code attributeName} is null.</li>
+     *             <li>If {@code valueOfAttribute} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object2} break the invariant.
+     */
+    public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
+            @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
+        final int attribute1 = access(object1, attributeName, valueOfAttribute);
+        final int attribute2 = access(object2, attributeName, valueOfAttribute);
+        final boolean equals = ObjectTest.equals(object1, object2);
+
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
+                + ", " + ObjectTest.safeToString(object2) + "]", !(equals && attribute1 != attribute2));
     }
 
     /**
@@ -112,7 +196,7 @@ public final class EqualsSemanticsTest {
      *    final var amount2 = new Amount(1L);
      *
      *    ObjectTest.assertInvariants(amount1, amount2);
-     *    ObjectTest.assertValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());
+     *    ObjectTest.assertLongValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());
      *    assertEquals(amount1, amount2);
      * }
      * </pre>
@@ -147,7 +231,7 @@ public final class EqualsSemanticsTest {
         final long attribute2 = access(object2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Value semantics with attribute " + attributeName + " for [" + ObjectTest.safeToString(object1)
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
                 + ", " + ObjectTest.safeToString(object2) + "]", !(equals && attribute1 != attribute2));
     }
 
@@ -223,7 +307,13 @@ public final class EqualsSemanticsTest {
         final U attribute2 = access(object2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Value semantics with attribute " + attributeName + " for [" + ObjectTest.safeToString(object1)
+        assertThat("Value semantics with attribute [" + attributeName + "] for [" + ObjectTest.safeToString(object1)
                 + ", " + ObjectTest.safeToString(object2) + "]", !(equals && !Objects.equals(attribute1, attribute2)));
+    }
+
+    private static <T> AssertionError createUnexpectedAccessException(final T object, final String attributeName,
+            final Exception e) {
+        return ObjectTest.createUnexpectedException("Acccessing attribute " + attributeName
+                + " should not throw exception for [" + ObjectTest.safeToString(object) + "]", e);
     }
 }
