@@ -334,4 +334,8 @@ public final class ObjectTest {
             throw createUnexpectedException("toString() must not throw exceptions", e);
         }
     }
+
+    ObjectTest() {
+        assert false;// must not instance
+    }
 }

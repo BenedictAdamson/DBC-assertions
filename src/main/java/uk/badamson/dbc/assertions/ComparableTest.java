@@ -26,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * {@link Comparable} interface.
  */
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
-public class ComparableTest {
+public final class ComparableTest {
 
     private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
         try {
@@ -323,6 +323,10 @@ public class ComparableTest {
                                     + ObjectTest.safeToString(object1) + ", " + ObjectTest.safeToString(object2) + "]",
                             e);
         }
+    }
+
+    private ComparableTest() {
+        assert false;// must not instance
     }
 
 }
