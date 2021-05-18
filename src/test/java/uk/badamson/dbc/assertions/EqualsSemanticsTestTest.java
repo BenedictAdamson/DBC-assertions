@@ -132,6 +132,14 @@ public class EqualsSemanticsTestTest {
         }
 
         @Test
+        public void equalsThrows() {
+            final var value1 = new ValueEqualsThrows(null);
+            final var value2 = new ValueEqualsThrows("B");
+            assertThrows(AssertionError.class,
+                    () -> EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name));
+        }
+
+        @Test
         public void nullValue1() {
             final var value1 = new Value(null);
             final var value2 = new Value("B");
@@ -229,6 +237,37 @@ public class EqualsSemanticsTestTest {
         @Override
         public String toString() {
             return "Value [name=" + name + "]";
+        }
+
+    }// class
+
+    static final class ValueEqualsThrows {
+
+        final String name;
+
+        ValueEqualsThrows(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof ValueEqualsThrows)) {
+                return false;
+            }
+            final ValueEqualsThrows other = (ValueEqualsThrows) obj;
+            // Throws NPE for this.name == null
+            return name.equals(other.name);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (name == null ? 0 : name.hashCode());
+            return result;
         }
 
     }// class
