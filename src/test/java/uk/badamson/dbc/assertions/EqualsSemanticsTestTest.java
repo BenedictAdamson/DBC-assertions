@@ -132,10 +132,25 @@ public class EqualsSemanticsTestTest {
         }
 
         @Test
-        public void uuid() {
-            final UUID object = UUID.randomUUID();
-            EqualsSemanticsTest.assertValueSemantics(object, object, "leastSignificantBits",
-                    (uuid) -> Long.valueOf(uuid.getLeastSignificantBits()));
+        public void nullValue1() {
+            final var value1 = new Value(null);
+            final var value2 = new Value("B");
+            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+        }
+
+        @Test
+        public void nullValue2() {
+            final var value1 = new Value("A");
+            final var value2 = new Value(null);
+            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+        }
+
+        @Test
+        public void value() {
+            final String name = "A";
+            final var value1 = new Value(name);
+            final var value2 = new Value(new String(name));
+            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
         }
 
     }// class
@@ -173,6 +188,47 @@ public class EqualsSemanticsTestTest {
         @Override
         public String toString() {
             return "Entity [id=" + id + ", name=" + name + ", version=" + version + ", balance=" + balance + "]";
+        }
+
+    }// class
+
+    private static final class Value {
+        final String name;
+
+        Value(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Value)) {
+                return false;
+            }
+            final Value other = (Value) obj;
+            if (name == null) {
+                if (other.name != null) {
+                    return false;
+                }
+            } else if (!name.equals(other.name)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (name == null ? 0 : name.hashCode());
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Value [name=" + name + "]";
         }
 
     }// class
