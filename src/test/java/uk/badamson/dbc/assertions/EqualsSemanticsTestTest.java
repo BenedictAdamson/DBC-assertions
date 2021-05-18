@@ -121,6 +121,14 @@ public class EqualsSemanticsTestTest {
     public class AssertValueSemantics {
 
         @Test
+        public void attributeEqualsThrows() {
+            final var value1 = new ValueAttributeEqualsThrows();
+            final var value2 = new ValueAttributeEqualsThrows();
+            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertValueSemantics(value1, value2,
+                    "attribute", (value) -> value.attribute));
+        }
+
+        @Test
         public void entity() {
             final UUID id = UUID.randomUUID();
             final var entity1 = new Entity(id, "A", 1L, 100);
@@ -241,7 +249,29 @@ public class EqualsSemanticsTestTest {
 
     }// class
 
-    static final class ValueEqualsThrows {
+    private static final class ValueAttributeEqualsThrows {
+
+        final ValueEqualsThrows attribute = new ValueEqualsThrows(null);
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof ValueAttributeEqualsThrows)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31;
+        }
+
+    }// class
+
+    private static final class ValueEqualsThrows {
 
         final String name;
 

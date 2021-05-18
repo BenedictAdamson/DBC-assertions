@@ -397,9 +397,11 @@ public final class EqualsSemanticsTest {
         final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
         final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         final boolean equals = ObjectTest.equals(object1, object2);
+        final boolean attributesEquals = attribute1 == null ? Objects.equals(attribute1, attribute2)
+                : ObjectTest.equals(attribute1, attribute2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
-                !(equals && !Objects.equals(attribute1, attribute2)));
+                !(equals && !attributesEquals));
     }
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
