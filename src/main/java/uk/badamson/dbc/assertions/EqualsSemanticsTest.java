@@ -116,7 +116,7 @@ public final class EqualsSemanticsTest {
      *    final var person2 = new Person(id, "Hilary");
      *
      *    ObjectTest.assertInvariants(person1, person2);
-     *    ObjectTest.assertEntitySemantics(person1, person2, (person) -> person.getId());
+     *    {@code ObjectTest.assertEntitySemantics(person1, person2, (person) -> person.getId());}
      *    assertEquals(person1, person2);
      * }
      * </pre>
@@ -203,7 +203,7 @@ public final class EqualsSemanticsTest {
      *    final var amount2 = new Amount(1L);
      *
      *    ObjectTest.assertInvariants(amount1, amount2);
-     *    ObjectTest.assertIntValueSemantics(amount1, amount2, "intValue", (amount) -> amount.intValue());
+     *    {@code ObjectTest.assertIntValueSemantics(amount1, amount2, "intValue", (amount) -> amount.intValue());}
      *    assertEquals(amount1, amount2);
      * }
      * </pre>
@@ -288,7 +288,7 @@ public final class EqualsSemanticsTest {
      *    final var amount2 = new Amount(1L);
      *
      *    ObjectTest.assertInvariants(amount1, amount2);
-     *    ObjectTest.assertLongValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());
+     *    {@code ObjectTest.assertLongValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());}
      *    assertEquals(amount1, amount2);
      * }
      * </pre>
@@ -372,10 +372,10 @@ public final class EqualsSemanticsTest {
      * {@code @Test}
      * public void equals_equivalent() {
      *    final var species1 = new Species("Homo sapiens");
-     *    final var species2 = new Monster("Homo sapiens");
+     *    final var species2 = new Species("Homo sapiens");
      *
      *    ObjectTest.assertInvariants(species1, species2);
-     *    ObjectTest.assertValueSemantics(species1, species2, "name", (species) -> species.getName());
+     *    {@code ObjectTest.assertValueSemantics(species1, species2, "name", (species) -> species.getName());}
      *    assertEquals(species1, species2);
      * }
      * </pre>
