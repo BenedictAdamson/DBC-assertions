@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 
 import org.opentest4j.AssertionFailedError;
 
-public class ThreadTest {
+public class ThreadSafetyTest {
 
     public static void get(final Future<Void> future) {
         try {
