@@ -33,6 +33,29 @@ import org.junit.jupiter.api.Test;
 public class EqualsSemanticsTestTest {
 
     @Nested
+    public class AssertEntitySemantics {
+
+        @Test
+        public void entity() {
+            final UUID id = UUID.randomUUID();
+            final var entity1 = new Entity(id, "A", 1L, 100);
+            final var entity2 = new Entity(id, "B", 1L, 100);
+            assert entity1.equals(entity2);
+
+            EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
+        }
+
+        @Test
+        public void value() {
+            final String object1 = "A";
+            final String object2 = new String(object1);
+            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertEntitySemantics(object1, object2,
+                    (object) -> Integer.valueOf(System.identityHashCode(object))));
+        }
+
+    }// class
+
+    @Nested
     public class AssertIntValueSemantics {
 
         @Test

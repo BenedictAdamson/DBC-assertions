@@ -93,6 +93,77 @@ public final class EqualsSemanticsTest {
 
     /**
      * <p>
+     * Assert that a pair of objects of a class satisfy the pairwise invariant
+     * necessary for the class to have <i>entity semantics</i>, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * Entity semantics implies that if you have two non-null instances of the
+     * entity class that has an {@link Object} <i>ID attribute</i>, an invariant is
+     * that the {@code equals(Object)} for the two instances returns {@code true}
+     * if, and only if, {@code equals(Object)} returns {@code true} for the <i>ID
+     * attribute</i>. This method tests that invariant for. So the method can be
+     * general, you provide it with an accessor function for getting the value of
+     * the <i>ID attribute</i> from the two objects.
+     * </p>
+     *
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * Use this as a supplement to the
+     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * class that you have defined to have <i>entity semantics</i>.
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void equals_equivalent() {
+     *    final var id = UUID.randomUUID();
+     *    final var person1 = new Person(id, "Bobby");
+     *    final var person2 = new Person(id, "Hilary");
+     *
+     *    ObjectTest.assertInvariants(person1, person2);
+     *    ObjectTest.assertEntitySemantics(person1, person2, (person) -> person.getId());
+     *    assertEquals(person1, person2);
+     * }
+     * </pre>
+     *
+     * @param <T>
+     *            The class of {@code object1} and {@code object2}
+     * @param <U>
+     *            The class of the ID attribute.
+     * @param object1
+     *            An object to test.
+     * @param object2
+     *            An object to test.
+     * @param valueOfId
+     *            A function for accessing the value of the ID attribute for the two
+     *            objects under test. This should delegate to the getter method of
+     *            the class. This test method assumes that the getter should never
+     *            throw exceptions; it will throw an {@link AssertionError} if the
+     *            the function does throw an exception.
+     * @throws NullPointerException
+     *             <ul>
+     *             <li>If {@code object1} is null.</li>
+     *             <li>If {@code object2} is null.</li>
+     *             <li>If {@code valueOfId} is null.</li>
+     *             </ul>
+     * @throws AssertionError
+     *             If {@code object1} and {@code object2} break the invariant.
+     */
+    public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
+            @Nonnull final Function<T, U> valueOfId) {
+        final U id1 = access(object1, "ID", valueOfId);
+        final U id2 = access(object2, "ID", valueOfId);
+        final boolean equals = ObjectTest.equals(object1, object2);
+
+        assertThat("Entity semantics for [" + ObjectTest.safeToString(object1) + ", " + ObjectTest.safeToString(object2)
+                + "]", equals == Objects.equals(id1, id2));
+    }
+
+    /**
+     * <p>
      * Assert that a pair of objects of a class satisfy a pairwise invariant
      * necessary for the class to have <i>value semantics</i>, throwing an
      * {@link AssertionError} if they do not.
