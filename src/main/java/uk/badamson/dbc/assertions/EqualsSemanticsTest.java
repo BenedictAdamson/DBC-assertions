@@ -18,6 +18,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * <p>
@@ -53,6 +54,7 @@ import javax.annotation.Nonnull;
  */
 public final class EqualsSemanticsTest {
 
+    @Nullable
     private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
             @Nonnull final Function<T, U> valueOfAttribute) {
         try {
@@ -416,14 +418,16 @@ public final class EqualsSemanticsTest {
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
+        @Nullable
         final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        @Nullable
         final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         /*
          * Provide good diagnostics if equals throws an exception. Handle null
          * attributes.
          */
         final boolean equals = ObjectTest.equals(object1, object2);
-        final boolean attributesEquals = attribute1 == null ? Objects.equals(attribute1, attribute2)
+        final boolean attributesEquals = attribute1 == null ? attribute2 == null
                 : ObjectTest.equals(attribute1, attribute2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
