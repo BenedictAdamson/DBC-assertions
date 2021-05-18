@@ -53,7 +53,7 @@ import org.opentest4j.AssertionFailedError;
  *
  *     final var thing = new Thing();
  *     for (int t = 0; t < nThreads; ++t) {
- *         futures.add(ThreadTest.runInOtherThread(ready, () -> {
+ *         futures.add(ThreadSafetyTest.runInOtherThread(ready, () -> {
  *             thing.mutate(random.nextInt());
  *
  *             ObjectTest.assertInvariants(thing);
@@ -62,7 +62,7 @@ import org.opentest4j.AssertionFailedError;
  *
  *     ready.countDown();
  *
- *     ThreadTest.get(futures);
+ *     ThreadSafetyTest.get(futures);
  * }
  * </pre>
  */
