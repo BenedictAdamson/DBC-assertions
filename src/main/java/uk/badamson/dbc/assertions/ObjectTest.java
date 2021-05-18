@@ -13,6 +13,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anything;
 import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -116,8 +118,10 @@ public final class ObjectTest {
      *             If {@code object} breaks an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object) {
-        assert object != null;
-        assertAll(() -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
+        Objects.requireNonNull(object, "object");
+        assertAll("Object invariants [" + safeToString(object) + "]",
+                () -> assertThat("toString", toString(object), anything()), // check for exception
+                () -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
                 () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
 
@@ -214,15 +218,15 @@ public final class ObjectTest {
      *             If {@code object1} and {@code object1} break an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
-        assert object1 != null;
-        assert object2 != null;
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
 
         final boolean equals12 = equals(object1, object2);
         final boolean equals21 = equals(object2, object1);
         final int hashCode1 = hashCode(object1);
         final int hashCode2 = hashCode(object2);
 
-        assertAll("equals",
+        assertAll("equals [" + safeToString(object1) + ", " + safeToString(object2) + "]",
                 /*
                  * A faulty equals method is unlikely to be asymmetric (except for failing to
                  * handle null attributes, which we have already checked), but check for
@@ -259,7 +263,9 @@ public final class ObjectTest {
              * attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("equals() must not throw exceptions", e);
+            throw createUnexpectedException(
+                    "equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]",
+                    e);
         }
     }
 
@@ -272,7 +278,60 @@ public final class ObjectTest {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("hashCode() must not throw exceptions", e);
+            throw createUnexpectedException("hashCode() must not throw exceptions [" + safeToString(object) + "]", e);
+        }
+    }
+
+    @Nonnull
+    private static String identityString(@Nullable final Object object) {
+        if (object == null) {
+            return "null";
+        } else {
+            return object.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(object));
+        }
+    }
+
+    /**
+     * <p>
+     * Provide a {@link String} representation of a given object, in a manner that
+     * is safe in cases where the {@link Object#toString()} method (or its override)
+     * throws an exception.
+     * </p>
+     * <p>
+     * This method is intended for use in test assertion failure messages, to
+     * identify the object that failed the assertion. However, because the
+     * {@link Object#toString()} method (and its overrides) can <em>themselves</em>
+     * be faulty and throw exceptions, and {@code object} could be null, directly
+     * calling a {@code object.toString()} method in test code is unwise. This
+     * method returns the text given by {@code object.toString()}, if possible, but
+     * if {@code object} is {@code null} it returns "null", and if
+     * {@code object.toString()} throws an exception, it instead returns a fall-back
+     * value. The fall-back value is the text that {@link Object#toString()} returns
+     * if {@link Object#hashCode()} is not overridden.
+     * </p>
+     */
+    @Nonnull
+    public static String safeToString(@Nullable final Object object) {
+        try {
+            return object.toString();
+        } catch (final Exception e) {
+            return identityString(object);
+        }
+    }
+
+    private static String toString(@Nonnull final Object object) {
+        try {
+            return object.toString();
+        } catch (final Exception e) {
+            /*
+             * The (default) Object.toString() method delegates to hashCode(). A typical
+             * hashCode implementation will delegate to the hashCode methods of the
+             * attributes of the object. A naive implementation might throw a
+             * NullPointerException if the object has any null attributes. If the programmer
+             * does not also override the toString() method, toString() can then throw an
+             * exception.
+             */
+            throw createUnexpectedException("toString() must not throw exceptions", e);
         }
     }
 }

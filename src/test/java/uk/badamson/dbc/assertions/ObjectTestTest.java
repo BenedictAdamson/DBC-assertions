@@ -86,7 +86,15 @@ public class ObjectTestTest {
 
                 @Override
                 public int hashCode() {
-                    throw new NullPointerException();
+                    throw new RuntimeException();
+                }
+
+                /*
+                 * Override because the default toString delegates to hashCode()
+                 */
+                @Override
+                public String toString() {
+                    return "Fake";
                 }
 
             };
@@ -120,6 +128,19 @@ public class ObjectTestTest {
         @Test
         public void string() {
             ObjectTest.assertInvariants("string");
+        }
+
+        @Test
+        public void toStringThrows() {
+            final var object = new Object() {
+
+                @Override
+                public String toString() {
+                    throw new RuntimeException("Fake");
+                }
+
+            };
+            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
         }
     }// class
 

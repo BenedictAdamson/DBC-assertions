@@ -57,26 +57,29 @@ In your unit tests of a class you might have test code similar to this:
 ```
 @Test
 public void increment_1() {
-   final var amount = new Amount(1);
+   final var amount = new Amount(1L);
 
    amount.increment();
 
-   assertEquals(2, amount.intValue());
+   assertEquals(2L, amount.longValue());
 }
 
 @code @Test
 public void compareTo_1_2() {
-   final var a1 = new Amount(1);
-   final var a2 = new Amount(2);
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
 
    assertTrue(a1.compareTo(a2) < 0);
 }
 ```
 
+### Add Calls to this Library
+
 But you can do do better than that.
 The class you are testing does not only have the behaviour that you have specified for it.
 It must also conform to some invariants imposed by the `Object` base class,
 and also for any interfaces your class implements.
+And you probably specify that the class has either *value semantics* or *entity semantics*.
 You should also check that the objects conform to those invariants.
 There are several of them. Checking them can be fiddly.
 Explicitly checking them all directly in your test method would be verbose, error prone,
@@ -84,29 +87,69 @@ and in some cases provide low value
 (because in that particular test, it is unlikely that the invariant would be broken).
 
 The methods of this library provide a convenient and abstract way to check that
-objects conform to those inherited invariants.
+objects conform to those invariants.
 In your test, simply delegate to methods in this library, like this:
 
 ```
 @code @Test
 public void increment_1() {
-   final var amount = new Amount(1);
+   final var amount = new Amount(1L);
 
    amount.increment();
 
    ObjectTest.assertInvariants(amount);
    ComparableTest.assertInvariants(amount);
-   assertEquals(2, amount.intValue());
+   assertEquals(2, amount.longValue());
 }
 
 @code @Test
 public void compareTo_1_2() {
-   final var a1 = new Amount(1);
-   final var a2 = new Amount(2);
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
 
    ObjectTest.assertInvariants(a1, a2);
    ComparableTest.assertInvariants(a1, a2);
    ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
+### Refactor
+
+You will probably find your tests perform many similar calls to the methods of this library.
+You might therefore consider refactoring your test code to extract methods that reduce duplication in your test code,
+and increase abstraction. Like this:
+
+```
+private static assertInvariants(Amount a) {
+   ObjectTest.assertInvariants(a);
+   ComparableTest.assertInvariants(a);
+}
+
+private static assertInvariants(Amount a1, Amount a2) {
+   ObjectTest.assertInvariants(a1, a2);
+   ComparableTest.assertInvariants(a1, a2);
+   ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+}
+
+@code @Test
+public void increment_1() {
+   final var amount = new Amount(1L);
+
+   amount.increment();
+
+   assertInvariants(amount);
+   assertEquals(2, amount.longValue());
+}
+
+@code @Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
+
+   assertInvariants(a1, a2);
    assertTrue(a1.compareTo(a2) < 0);
 }
 ```
