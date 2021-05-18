@@ -46,6 +46,24 @@ public class EqualsSemanticsTestTest {
         }
 
         @Test
+        public void nullId1() {
+            final var entity1 = new Entity(null, "A", 1L, 100);
+            final var entity2 = new Entity(UUID.randomUUID(), "B", 1L, 100);
+
+            assertThrows(AssertionError.class,
+                    () -> EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+        }
+
+        @Test
+        public void nullId2() {
+            final var entity1 = new Entity(UUID.randomUUID(), "A", 1L, 100);
+            final var entity2 = new Entity(null, "B", 1L, 100);
+
+            assertThrows(AssertionError.class,
+                    () -> EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+        }
+
+        @Test
         public void value() {
             final String object1 = "A";
             final String object2 = new String(object1);

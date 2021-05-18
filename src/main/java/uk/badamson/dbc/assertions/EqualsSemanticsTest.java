@@ -10,6 +10,7 @@ package uk.badamson.dbc.assertions;
  */
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -99,9 +100,10 @@ public final class EqualsSemanticsTest {
      * </p>
      * <p>
      * Entity semantics implies that if you have two non-null instances of the
-     * entity class that has an {@link Object} <i>ID attribute</i>, an invariant is
-     * that the {@code equals(Object)} for the two instances returns {@code true}
-     * if, and only if, {@code equals(Object)} returns {@code true} for the <i>ID
+     * entity class that has an {@link Object} <i>ID attribute</i>, two invariants
+     * are that <i>ID attribute</i> are never {@code null} and that the
+     * {@code equals(Object)} for the two instances returns {@code true} if, and
+     * only if, {@code equals(Object)} returns {@code true} for the <i>ID
      * attribute</i>. This method tests that invariant for. So the method can be
      * general, you provide it with an accessor function for getting the value of
      * the <i>ID attribute</i> from the two objects.
@@ -154,12 +156,17 @@ public final class EqualsSemanticsTest {
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
             @Nonnull final Function<T, U> valueOfId) {
+        final var string1 = ObjectTest.safeToString(object1);
+        final var string2 = ObjectTest.safeToString(object2);
         final U id1 = access(object1, "ID", valueOfId);
         final U id2 = access(object2, "ID", valueOfId);
-        final boolean equals = ObjectTest.equals(object1, object2);
 
-        assertThat("Entity semantics for [" + ObjectTest.safeToString(object1) + ", " + ObjectTest.safeToString(object2)
-                + "]", equals == Objects.equals(id1, id2));
+        assertThat("ID not null for [" + string1 + "]", id1, notNullValue());// guard
+        assertThat("ID not null for [" + string2 + "]", id2, notNullValue());
+        final boolean equals = ObjectTest.equals(object1, object2);
+        final boolean equalIds = ObjectTest.equals(id1, id2);
+
+        assertThat("Entity semantics for [" + string1 + ", " + string2 + "]", equals == equalIds);
     }
 
     /**
