@@ -35,7 +35,7 @@ public final class CollectionTest {
      */
     public static <T> void assertForAllElements(@Nonnull final Collection<T> collection,
             @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
-        // FIXME
+        assertForAllElements(null, collection, verifier);
     }
 
     /**

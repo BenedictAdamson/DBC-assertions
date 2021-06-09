@@ -91,4 +91,18 @@ public class CollectionTestTest {
 
     }// class
 
+    @Test
+    public void assertForAllElementsWithoutHeadingbad() {
+        final Collection<String> collection = List.of("x");
+        try {
+            CollectionTest.assertForAllElements(collection, x -> {
+                throw new AssertionError("Inevitable");
+            });
+        } catch (final MultipleFailuresError e) {
+            assertThat("one exception thrown", e.getFailures(), hasSize(1));
+            return;
+        }
+        fail("No exception thrown");
+    }
+
 }
