@@ -29,8 +29,8 @@ public class CollectionTestTest {
 
         @Test
         public void bad() {
-            final Collection<String> collection = List.of("x");
             final var heading = "heading";
+            final Collection<String> collection = List.of("x");
             try {
                 CollectionTest.assertForAllElements(heading, collection, x -> {
                     throw new AssertionError("Inevitable");
@@ -58,6 +58,20 @@ public class CollectionTestTest {
             CollectionTest.assertForAllElements("heading", collection, x -> {
                 // Do nothing
             });
+        }
+
+        @Test
+        public void runtimeException() {
+            final var heading = "heading";
+            final Collection<String> collection = List.of("x");
+            try {
+                CollectionTest.assertForAllElements(heading, collection, x -> {
+                    throw new RuntimeException("Inevitable");
+                });
+            } catch (final MultipleFailuresError e) {
+                assertAll(() -> assertThat("one exception thrown", e.getFailures(), hasSize(1)),
+                        () -> assertThat("exception message", e.getMessage(), stringContainsInOrder(heading)));
+            }
         }
 
     }// class

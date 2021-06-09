@@ -88,6 +88,7 @@ public final class CollectionTest {
             @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
         Objects.requireNonNull(collection, "collection");
         Objects.requireNonNull(verifier, "verifier");
+
         assertAll(heading, collection.stream().map(element -> new Executable() {
 
             @Override
