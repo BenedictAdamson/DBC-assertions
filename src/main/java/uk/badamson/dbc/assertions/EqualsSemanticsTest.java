@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
  * <p>
  * <dfn>Entity semantics</dfn> requires that the {@code equals(Object)} method
  * returns {@code true} if, and only if, the given object is an instance of the
- * same class <em>and</em> the rqo objects have equivalent values for an
+ * same class <em>and</em> the two objects have equivalent values for an
  * <i>identifier attribute</i>.
  * </p>
  * <p>
@@ -162,7 +162,7 @@ public final class EqualsSemanticsTest {
         assertThat("ID not null for [" + stringId2 + "]", id2, notNullValue());
 
         /*
-         * Provide good diagnostics equals throws an exception.
+         * Provide good diagnostics if equals throws an exception.
          */
         final boolean equals = ObjectTest.equals(object1, object2);
         final boolean equalIds = ObjectTest.equals(id1, id2);
@@ -354,8 +354,6 @@ public final class EqualsSemanticsTest {
      * {@linkplain Object#equals(Object)} This method tests that invariant for one
      * attribute. So the method can be general, you provide it with an accessor
      * function for getting the value of the attribute from the two objects.
-     * </p>
-     *
      * </p>
      *
      * <h2>How to Use this Method</h2>

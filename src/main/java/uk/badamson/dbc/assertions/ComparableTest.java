@@ -38,16 +38,13 @@ public final class ComparableTest {
              * It is unlikely that a faulty compareTo would throw any other kind of
              * exception, but provide good diagnostics just in case.
              */
-            final var exception = new AssertionFailedError("compareToNull(null) throws only a NullPointerException",
-                    NullPointerException.class, e);
-            exception.initCause(e);
-            throw exception;
+            throw ObjectTest.createUnexpectedException("compareToNull(null) throws only a NullPointerException", e);
         }
         /*
          * An overly careful implementation might attempt to give a result for this
          * case, rather than throw a NPE.
          */
-        throw new AssertionFailedError("compareTo(null) throws NullPointerException", NullPointerException.class, null);
+        throw new AssertionFailedError("compareTo(null) throws NullPointerException");
     }
 
     /**

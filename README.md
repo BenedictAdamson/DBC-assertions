@@ -23,7 +23,7 @@ in which program behaviour is specified in terms of precise
 [preconditions](https://en.wikipedia.org/wiki/Precondition),
 [postconditions](https://en.wikipedia.org/wiki/Postcondition) and
 [invariants](https://en.wikipedia.org/wiki/Invariant).
-Post conditions are *assertions* that about the visible (public) state of an item after an operation.
+Post conditions are *assertions* about the visible (public) state of an item after an operation.
 Invariants are *assertions* that are true before and after an operation.
 Some invariants apply to all operations, and to the state after creation (construction) of the item;
 sometimes the term *invariant* is applied to only those kinds of invariants;
@@ -64,7 +64,7 @@ public void increment_1() {
    assertEquals(2L, amount.longValue());
 }
 
-@code @Test
+@Test
 public void compareTo_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
@@ -88,10 +88,10 @@ and in some cases provide low value
 
 The methods of this library provide a convenient and abstract way to check that
 objects conform to those invariants.
-In your test, simply delegate to methods in this library, like this:
+In your tests, simply delegate to methods in this library, like this:
 
 ```
-@code @Test
+@Test
 public void increment_1() {
    final var amount = new Amount(1L);
 
@@ -102,7 +102,7 @@ public void increment_1() {
    assertEquals(2, amount.longValue());
 }
 
-@code @Test
+@Test
 public void compareTo_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
@@ -134,7 +134,7 @@ private static assertInvariants(Amount a1, Amount a2) {
    EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
 }
 
-@code @Test
+@Test
 public void increment_1() {
    final var amount = new Amount(1L);
 
@@ -144,7 +144,7 @@ public void increment_1() {
    assertEquals(2, amount.longValue());
 }
 
-@code @Test
+@Test
 public void compareTo_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);

@@ -49,7 +49,7 @@ import org.opentest4j.AssertionFailedError;
  *     final int nThreads = 32;
  *     final {@code List<Future<Void>> futures = new ArrayList<>(nThreads);}
  *     final CountDownLatch ready = new CountDownLatch(1);
- *     final var random = new Random(0);
+ *     final var random = new Random();
  *
  *     final var thing = new Thing();
  *     {@code for (int t = 0; t < nThreads; ++t) {}
