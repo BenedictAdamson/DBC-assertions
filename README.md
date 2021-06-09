@@ -64,7 +64,7 @@ public void increment_1() {
    assertEquals(2L, amount.longValue());
 }
 
-@code @Test
+@Test
 public void compareTo_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
