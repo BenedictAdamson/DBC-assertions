@@ -61,6 +61,19 @@ public class CollectionTestTest {
         }
 
         @Test
+        public void outOfMemoryError() {
+            final Collection<String> collection = List.of("x");
+            try {
+                CollectionTest.assertForAllElements("heading", collection, x -> {
+                    throw new OutOfMemoryError("Inevitable");
+                });
+            } catch (final OutOfMemoryError e) { // Expected
+                return;
+            }
+            fail("No exception thrown");
+        }
+
+        @Test
         public void runtimeException() {
             final var heading = "heading";
             final Collection<String> collection = List.of("x");
@@ -68,10 +81,12 @@ public class CollectionTestTest {
                 CollectionTest.assertForAllElements(heading, collection, x -> {
                     throw new RuntimeException("Inevitable");
                 });
-            } catch (final MultipleFailuresError e) {
+            } catch (final MultipleFailuresError e) {// Expected
                 assertAll(() -> assertThat("one exception thrown", e.getFailures(), hasSize(1)),
                         () -> assertThat("exception message", e.getMessage(), stringContainsInOrder(heading)));
+                return;
             }
+            fail("No exception thrown");
         }
 
     }// class
