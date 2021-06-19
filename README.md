@@ -160,9 +160,10 @@ public void compareTo_1_2() {
 * Annotations:
     * [SpotBugs annotations](https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations)
 * Development environment:
-    * [Eclipse IDE](https://www.eclipse.org/ide/)
-    * [Jenkins Editor](https://github.com/de-jcup/eclipse-jenkins-editor)
-    * [SpotBugs Eclipse plugin](https://marketplace.eclipse.org/content/spotbugs-eclipse-plugin)
+    * [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+    * previously [Eclipse IDE](https://www.eclipse.org/ide/)
+    * previously [Jenkins Editor](https://github.com/de-jcup/eclipse-jenkins-editor)
+    * previously [SpotBugs Eclipse plugin](https://marketplace.eclipse.org/content/spotbugs-eclipse-plugin)
 * Software configuration management:
      * [Git](https://git-scm.com/)
      * [GitHub](https://github.com)
