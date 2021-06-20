@@ -406,7 +406,6 @@ public final class EqualsSemanticsVerifier {
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
                                                                   final Exception e) {
-        return ObjectVerifier.createUnexpectedException(
-                "Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
+        return new AssertionError("Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
 }

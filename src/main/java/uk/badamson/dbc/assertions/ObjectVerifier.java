@@ -246,10 +246,6 @@ public final class ObjectVerifier {
         assertThat("An object is never equivalent to null", !equals(object, null));
     }
 
-    static AssertionError createUnexpectedException(@Nonnull final String message, final Throwable actual) {
-        return new AssertionError(message, actual);
-    }
-
     static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
         try {
             return object1.equals(object2);
@@ -259,9 +255,7 @@ public final class ObjectVerifier {
              * attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException(
-                    "equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]",
-                    e);
+            throw new AssertionError("equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]", e);
         }
     }
 
@@ -274,7 +268,7 @@ public final class ObjectVerifier {
              * the attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw createUnexpectedException("hashCode() must not throw exceptions [" + safeToString(object) + "]", e);
+            throw new AssertionError("hashCode() must not throw exceptions [" + safeToString(object) + "]", e);
         }
     }
 
@@ -327,7 +321,7 @@ public final class ObjectVerifier {
              * does not also override the toString() method, toString() can then throw an
              * exception.
              */
-            throw createUnexpectedException("toString() must not throw exceptions", e);
+            throw new AssertionError("toString() must not throw exceptions", e);
         }
     }
 }
