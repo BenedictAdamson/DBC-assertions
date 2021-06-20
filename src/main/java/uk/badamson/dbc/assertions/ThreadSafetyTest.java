@@ -55,7 +55,7 @@ import java.util.concurrent.Future;
  *         {@code futures.add(ThreadSafetyTest.runInOtherThread(ready, () -> {}
  *             thing.mutate(random.nextInt());
  *
- *             ObjectTest.assertInvariants(thing);
+ *             ObjectVerifier.assertInvariants(thing);
  *         }));
  *     }
  *

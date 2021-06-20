@@ -86,7 +86,7 @@ public final class ObjectVerifier {
      *
      *    thing.mutate("a");
      *
-     *    ObjectTest.assertInvariants(thing);
+     *    ObjectVerifier.assertInvariants(thing);
      *    assertEquals(thing.getSpecies(), "a");
      * }
      * </pre>
@@ -108,7 +108,7 @@ public final class ObjectVerifier {
      *
      *    thing.mutate(null);
      *
-     *    ObjectTest.assertInvariants(thing);
+     *    ObjectVerifier.assertInvariants(thing);
      *    assertEquals(thing.getSpecies(), null);
      * }
      * </pre>
@@ -175,9 +175,9 @@ public final class ObjectVerifier {
      *    final var child = parent.spawn();
      *
      *    assertNotNull(child);// guard
-     *    assertInvariants(parent);
-     *    assertInvariants(child);
-     *    assertInvariants(parent, child);
+     *    ObjectVerifier.assertInvariants(parent);
+     *    ObjectVerifier.assertInvariants(child);
+     *    ObjectVerifier.assertInvariants(parent, child);
      *    assertSame(thing, child.getParent());
      * }
      * </pre>
@@ -200,7 +200,7 @@ public final class ObjectVerifier {
      *    final var a = new Monster("a");
      *    final var b = new Monster("b");
      *
-     *    ObjectTest.assertInvariants(a, b);
+     *    ObjectVerifier.assertInvariants(a, b);
      *    assertNotEquals(a, b);
      * }
      * </pre>

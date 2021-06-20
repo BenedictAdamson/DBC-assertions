@@ -34,7 +34,7 @@ public final class ComparableVerifier {
     private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
         try {
             //noinspection ConstantConditions
-            object.compareTo(null);// ignore result
+            object.compareTo(null);
         } catch (final NullPointerException e) {
             return;// OK: the required behaviour
         } catch (final Exception e) {
@@ -100,7 +100,7 @@ public final class ComparableVerifier {
      *    amount.increment();
      *
      *    ObjectTest.assertInvariants(amount);
-     *    ComparableTest.assertInvariants(amount);
+     *    ComparableVerifier.assertInvariants(amount);
      *    assertEquals(2, amount.intValue());
      * }
      * </pre>
@@ -168,7 +168,7 @@ public final class ComparableVerifier {
      *    final var a2 = new Amount(2);
      *
      *    ObjectTest.assertInvariants(a1, a2);
-     *    ComparableTest.assertInvariants(a1, a2);
+     *    ComparableVerifier.assertInvariants(a1, a2);
      *    {@code assertTrue(a1.compareTo(a2) < 0);}
      * }
      * </pre>

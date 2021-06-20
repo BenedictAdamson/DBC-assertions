@@ -84,8 +84,8 @@ public void increment_1() {
 
    amount.increment();
 
-   ObjectTest.assertInvariants(amount);
-   ComparableTest.assertInvariants(amount);
+   ObjectVerifier.assertInvariants(amount);
+   ComparableVerifier.assertInvariants(amount);
    assertEquals(2, amount.longValue());
 }
 
@@ -94,10 +94,10 @@ public void compareTo_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
 
-   ObjectTest.assertInvariants(a1, a2);
-   ComparableTest.assertInvariants(a1, a2);
-   ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
-   EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+   ObjectVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
    assertTrue(a1.compareTo(a2) < 0);
 }
 ```
@@ -110,15 +110,15 @@ abstraction. Like this:
 
 ```
 private static assertInvariants(Amount a) {
-   ObjectTest.assertInvariants(a);
-   ComparableTest.assertInvariants(a);
+   ObjectVerifier.assertInvariants(a);
+   ComparableVerifier.assertInvariants(a);
 }
 
 private static assertInvariants(Amount a1, Amount a2) {
-   ObjectTest.assertInvariants(a1, a2);
-   ComparableTest.assertInvariants(a1, a2);
-   ComparableTest.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
-   EqualsSemanticsTest.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+   ObjectVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
 }
 
 @Test

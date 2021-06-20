@@ -118,8 +118,8 @@ public final class EqualsSemanticsVerifier {
      *    final var person1 = new Person(id, "Bobby");
      *    final var person2 = new Person(id, "Hilary");
      *
-     *    ObjectTest.assertInvariants(person1, person2);
-     *    {@code ObjectTest.assertEntitySemantics(person1, person2, (person) -> person.getId());}
+     *    ObjectVerifier.assertInvariants(person1, person2);
+     *    {@code EqualsSemanticsVerifier.assertEntitySemantics(person1, person2, (person) -> person.getId());}
      *    assertEquals(person1, person2);
      * }
      * </pre>
@@ -199,7 +199,7 @@ public final class EqualsSemanticsVerifier {
      *    final var amount2 = new Amount(1L);
      *
      *    ObjectTest.assertInvariants(amount1, amount2);
-     *    {@code ObjectTest.assertIntValueSemantics(amount1, amount2, "intValue", (amount) -> amount.intValue());}
+     *    {@code EqualsSemanticsVerifier.assertIntValueSemantics(amount1, amount2, "intValue", (amount) -> amount.intValue());}
      *    assertEquals(amount1, amount2);
      * }
      * </pre>
@@ -277,7 +277,7 @@ public final class EqualsSemanticsVerifier {
      *    final var amount2 = new Amount(1L);
      *
      *    ObjectTest.assertInvariants(amount1, amount2);
-     *    {@code ObjectTest.assertLongValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());}
+     *    {@code EqualsSemanticsVerifier.assertLongValueSemantics(amount1, amount2, "longValue", (amount) -> amount.longValue());}
      *    assertEquals(amount1, amount2);
      * }
      * </pre>
@@ -355,7 +355,7 @@ public final class EqualsSemanticsVerifier {
      *    final var species2 = new Species("Homo sapiens");
      *
      *    ObjectTest.assertInvariants(species1, species2);
-     *    {@code ObjectTest.assertValueSemantics(species1, species2, "name", (species) -> species.getName());}
+     *    {@code EqualsSemanticsVerifier.assertValueSemantics(species1, species2, "name", (species) -> species.getName());}
      *    assertEquals(species1, species2);
      * }
      * </pre>
@@ -407,6 +407,6 @@ public final class EqualsSemanticsVerifier {
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
                                                                   final Exception e) {
         return ObjectVerifier.createUnexpectedException(
-                "Acccessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
+                "Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
 }
