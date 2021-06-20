@@ -26,7 +26,7 @@ import org.opentest4j.MultipleFailuresError;
  * content of collections.
  * </p>
  */
-public final class CollectionTest {
+public final class CollectionVerifier {
 
     /**
      * @see #assertForAllElements(String, Collection, Verifier) this convenience
@@ -98,7 +98,7 @@ public final class CollectionTest {
         }));
     }
 
-    CollectionTest() {
+    CollectionVerifier() {
         assert false;// must not instance
     }
 

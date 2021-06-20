@@ -27,7 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * </p>
  */
 @SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
-public final class ObjectTest {
+public final class ObjectVerifier {
 
     private static void assertEqualsSelf(@Nonnull final Object object) {
         /*
@@ -335,7 +335,7 @@ public final class ObjectTest {
         }
     }
 
-    ObjectTest() {
+    ObjectVerifier() {
         assert false;// must not instance
     }
 }

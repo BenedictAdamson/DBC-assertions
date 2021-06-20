@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 
-public class CollectionTestTest {
+public class CollectionVerifierTest {
 
     @Nested
     public class AssertForAllElementsWithHeading {
@@ -32,7 +32,7 @@ public class CollectionTestTest {
             final var heading = "heading";
             final Collection<String> collection = List.of("x");
             try {
-                CollectionTest.assertForAllElements(heading, collection, x -> {
+                CollectionVerifier.assertForAllElements(heading, collection, x -> {
                     throw new AssertionError("Inevitable");
                 });
             } catch (final MultipleFailuresError e) {
@@ -46,7 +46,7 @@ public class CollectionTestTest {
         @Test
         public void empty() {
             final Collection<Object> collection = List.of();
-            CollectionTest.assertForAllElements("heading", collection, x -> {
+            CollectionVerifier.assertForAllElements("heading", collection, x -> {
                 // Tough test: should not call the verification method at all
                 throw new AssertionError("Never called");
             });
@@ -55,7 +55,7 @@ public class CollectionTestTest {
         @Test
         public void good() {
             final Collection<String> collection = List.of("x");
-            CollectionTest.assertForAllElements("heading", collection, x -> {
+            CollectionVerifier.assertForAllElements("heading", collection, x -> {
                 // Do nothing
             });
         }
@@ -64,7 +64,7 @@ public class CollectionTestTest {
         public void outOfMemoryError() {
             final Collection<String> collection = List.of("x");
             try {
-                CollectionTest.assertForAllElements("heading", collection, x -> {
+                CollectionVerifier.assertForAllElements("heading", collection, x -> {
                     throw new OutOfMemoryError("Inevitable");
                 });
             } catch (final OutOfMemoryError e) { // Expected
@@ -78,7 +78,7 @@ public class CollectionTestTest {
             final var heading = "heading";
             final Collection<String> collection = List.of("x");
             try {
-                CollectionTest.assertForAllElements(heading, collection, x -> {
+                CollectionVerifier.assertForAllElements(heading, collection, x -> {
                     throw new RuntimeException("Inevitable");
                 });
             } catch (final MultipleFailuresError e) {// Expected
@@ -95,7 +95,7 @@ public class CollectionTestTest {
     public void assertForAllElementsWithoutHeadingbad() {
         final Collection<String> collection = List.of("x");
         try {
-            CollectionTest.assertForAllElements(collection, x -> {
+            CollectionVerifier.assertForAllElements(collection, x -> {
                 throw new AssertionError("Inevitable");
             });
         } catch (final MultipleFailuresError e) {

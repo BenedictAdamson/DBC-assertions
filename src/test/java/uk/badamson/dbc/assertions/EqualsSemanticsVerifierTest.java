@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * Unit tests for code in the {@link EqualsSemanticsTest} class
+ * Unit tests for code in the {@link EqualsSemanticsVerifier} class
  * </p>
  */
-public class EqualsSemanticsTestTest {
+public class EqualsSemanticsVerifierTest {
 
     @Nested
     public class AssertEntitySemantics {
@@ -33,7 +33,7 @@ public class EqualsSemanticsTestTest {
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
-            EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
+            EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
         }
 
         @Test
@@ -42,7 +42,7 @@ public class EqualsSemanticsTestTest {
             final var entity2 = new Entity(UUID.randomUUID(), "B", 1L, 100);
 
             assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+                    () -> EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
         }
 
         @Test
@@ -51,14 +51,14 @@ public class EqualsSemanticsTestTest {
             final var entity2 = new Entity(null, "B", 1L, 100);
 
             assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsTest.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+                    () -> EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
         }
 
         @Test
         public void value() {
             final String object1 = "A";
             final String object2 = new String(object1);
-            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertEntitySemantics(object1, object2,
+            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertEntitySemantics(object1, object2,
                     (object) -> Integer.valueOf(System.identityHashCode(object))));
         }
 
@@ -73,14 +73,14 @@ public class EqualsSemanticsTestTest {
             final var entity1 = new Entity(id, "A", 1L, 100);
             final var entity2 = new Entity(id, "B", 2L, 50);
             assert entity1.equals(entity2);
-            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertIntValueSemantics(entity1, entity2,
+            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertIntValueSemantics(entity1, entity2,
                     "balance", (entity) -> entity.balance));
         }
 
         @Test
         public void string() {
             final String object = "A";
-            EqualsSemanticsTest.assertIntValueSemantics(object, object, "length", (string) -> string.length());
+            EqualsSemanticsVerifier.assertIntValueSemantics(object, object, "length", (string) -> string.length());
         }
 
     }// class
@@ -95,14 +95,14 @@ public class EqualsSemanticsTestTest {
             final var entity2 = new Entity(id, "B", 2L, 50);
             assert entity1.equals(entity2);
 
-            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertLongValueSemantics(entity1, entity2,
+            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertLongValueSemantics(entity1, entity2,
                     "version", (entity) -> entity.version));
         }
 
         @Test
         public void uuid() {
             final UUID object = UUID.randomUUID();
-            EqualsSemanticsTest.assertLongValueSemantics(object, object, "leastSignificantBits",
+            EqualsSemanticsVerifier.assertLongValueSemantics(object, object, "leastSignificantBits",
                     (uuid) -> uuid.getLeastSignificantBits());
         }
 
@@ -115,7 +115,7 @@ public class EqualsSemanticsTestTest {
         public void attributeEqualsThrows() {
             final var value1 = new ValueAttributeEqualsThrows();
             final var value2 = new ValueAttributeEqualsThrows();
-            assertThrows(AssertionError.class, () -> EqualsSemanticsTest.assertValueSemantics(value1, value2,
+            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertValueSemantics(value1, value2,
                     "attribute", (value) -> value.attribute));
         }
 
@@ -127,7 +127,7 @@ public class EqualsSemanticsTestTest {
             assert entity1.equals(entity2);
 
             assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsTest.assertValueSemantics(entity1, entity2, "name", (entity) -> entity.name));
+                    () -> EqualsSemanticsVerifier.assertValueSemantics(entity1, entity2, "name", (entity) -> entity.name));
         }
 
         @Test
@@ -135,21 +135,21 @@ public class EqualsSemanticsTestTest {
             final var value1 = new ValueEqualsThrows(null);
             final var value2 = new ValueEqualsThrows("B");
             assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name));
+                    () -> EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name));
         }
 
         @Test
         public void nullValue1() {
             final var value1 = new Value(null);
             final var value2 = new Value("B");
-            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
         }
 
         @Test
         public void nullValue2() {
             final var value1 = new Value("A");
             final var value2 = new Value(null);
-            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
         }
 
         @Test
@@ -157,7 +157,7 @@ public class EqualsSemanticsTestTest {
             final String name = "A";
             final var value1 = new Value(name);
             final var value2 = new Value(new String(name));
-            EqualsSemanticsTest.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
         }
 
     }// class

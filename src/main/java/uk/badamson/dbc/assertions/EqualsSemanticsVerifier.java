@@ -46,13 +46,13 @@ import javax.annotation.Nullable;
  * </p>
  * <p>
  * This class provides several methods to supplement the
- * {@link ObjectTest#assertInvariants(Object, Object)} method. The methods are
+ * {@link ObjectVerifier#assertInvariants(Object, Object)} method. The methods are
  * most useful for test cases where the two objects you have are expected to be
  * equivalent, or they are expected to be <i>almost equivalent</i>: not
  * equivalent, but having many attributes that are equivalent.
  * </p>
  */
-public final class EqualsSemanticsTest {
+public final class EqualsSemanticsVerifier {
 
     @Nullable
     private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
@@ -104,7 +104,7 @@ public final class EqualsSemanticsTest {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>entity semantics</i>.
      * </p>
      *
@@ -150,8 +150,8 @@ public final class EqualsSemanticsTest {
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(valueOfId, "valueOfId");
 
-        final var stringId1 = ObjectTest.safeToString(object1);
-        final var stringId2 = ObjectTest.safeToString(object2);
+        final var stringId1 = ObjectVerifier.safeToString(object1);
+        final var stringId2 = ObjectVerifier.safeToString(object2);
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
@@ -164,8 +164,8 @@ public final class EqualsSemanticsTest {
         /*
          * Provide good diagnostics if equals throws an exception.
          */
-        final boolean equals = ObjectTest.equals(object1, object2);
-        final boolean equalIds = ObjectTest.equals(id1, id2);
+        final boolean equals = ObjectVerifier.equals(object1, object2);
+        final boolean equalIds = ObjectVerifier.equals(id1, id2);
 
         assertThat("Entity semantics for [" + stringId1 + ", " + stringId2 + "]", equals == equalIds);
     }
@@ -189,7 +189,7 @@ public final class EqualsSemanticsTest {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each {@code int} <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
@@ -239,8 +239,8 @@ public final class EqualsSemanticsTest {
         Objects.requireNonNull(attributeName, "attributeName");
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
-        final var stringId1 = ObjectTest.safeToString(object1);
-        final var stringId2 = ObjectTest.safeToString(object2);
+        final var stringId1 = ObjectVerifier.safeToString(object1);
+        final var stringId2 = ObjectVerifier.safeToString(object2);
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
@@ -249,7 +249,7 @@ public final class EqualsSemanticsTest {
         /*
          * Provide good diagnostics if equals throws an exception.
          */
-        final boolean equals = ObjectTest.equals(object1, object2);
+        final boolean equals = ObjectVerifier.equals(object1, object2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
                 !(equals && attribute1 != attribute2));
@@ -274,7 +274,7 @@ public final class EqualsSemanticsTest {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each {@code long} <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
@@ -324,8 +324,8 @@ public final class EqualsSemanticsTest {
         Objects.requireNonNull(attributeName, "attributeName");
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
-        final var stringId1 = ObjectTest.safeToString(object1);
-        final var stringId2 = ObjectTest.safeToString(object2);
+        final var stringId1 = ObjectVerifier.safeToString(object1);
+        final var stringId2 = ObjectVerifier.safeToString(object2);
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
@@ -334,7 +334,7 @@ public final class EqualsSemanticsTest {
         /*
          * Provide good diagnostics if equals throws an exception.
          */
-        final boolean equals = ObjectTest.equals(object1, object2);
+        final boolean equals = ObjectVerifier.equals(object1, object2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
                 !(equals && attribute1 != attribute2));
@@ -359,7 +359,7 @@ public final class EqualsSemanticsTest {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectTest#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each object <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
@@ -411,8 +411,8 @@ public final class EqualsSemanticsTest {
         Objects.requireNonNull(attributeName, "attributeName");
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
-        final var stringId1 = ObjectTest.safeToString(object1);
-        final var stringId2 = ObjectTest.safeToString(object2);
+        final var stringId1 = ObjectVerifier.safeToString(object1);
+        final var stringId2 = ObjectVerifier.safeToString(object2);
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
@@ -424,9 +424,9 @@ public final class EqualsSemanticsTest {
          * Provide good diagnostics if equals throws an exception. Handle null
          * attributes.
          */
-        final boolean equals = ObjectTest.equals(object1, object2);
+        final boolean equals = ObjectVerifier.equals(object1, object2);
         final boolean attributesEquals = attribute1 == null ? attribute2 == null
-                : ObjectTest.equals(attribute1, attribute2);
+                : ObjectVerifier.equals(attribute1, attribute2);
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
                 !(equals && !attributesEquals));
@@ -434,11 +434,11 @@ public final class EqualsSemanticsTest {
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
             final Exception e) {
-        return ObjectTest.createUnexpectedException(
+        return ObjectVerifier.createUnexpectedException(
                 "Acccessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
 
-    private EqualsSemanticsTest() {
+    private EqualsSemanticsVerifier() {
         assert false;// must not instance
     }
 }

@@ -37,10 +37,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * Unit tests for the {@link ComparableTest} class.
+ * Unit tests for the {@link ComparableVerifier} class.
  * </p>
  */
-public class ComparableTestTest {
+public class ComparableVerifierTest {
 
     @Nested
     public class AssertInvariants {
@@ -48,23 +48,23 @@ public class ComparableTestTest {
         @Test
         public void compareToNullDoesNotThrowNPE() {
             final var object = new CompareToNullDoesNotThrowNPE(0);
-            assertThrows(AssertionError.class, () -> ComparableTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object));
         }
 
         @Test
         public void compareToSelfThrows() {
             final var object = new CompareToSelfThrows(0);
-            assertThrows(AssertionError.class, () -> ComparableTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object));
         }
 
         @Test
         public void integer() {
-            ComparableTest.assertInvariants(Integer.valueOf(0));
+            ComparableVerifier.assertInvariants(Integer.valueOf(0));
         }
 
         @Test
         public void string() {
-            ComparableTest.assertInvariants("a");
+            ComparableVerifier.assertInvariants("a");
         }
     }// class
 
@@ -75,17 +75,17 @@ public class ComparableTestTest {
         public void compareToThrows() {
             final var object1 = new CompareToThrows(0);
             final var object2 = new CompareToThrows(1);
-            assertThrows(AssertionError.class, () -> ComparableTest.assertInvariants(object1, object2));
+            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object1, object2));
         }
 
         @Test
         public void integer() {
-            ComparableTest.assertInvariants(Integer.valueOf(0), Integer.valueOf(1));
+            ComparableVerifier.assertInvariants(Integer.valueOf(0), Integer.valueOf(1));
         }
 
         @Test
         public void string() {
-            ComparableTest.assertInvariants("a", "b");
+            ComparableVerifier.assertInvariants("a", "b");
         }
     }// class
 
@@ -94,12 +94,12 @@ public class ComparableTestTest {
 
         @Test
         public void integer() {
-            ComparableTest.assertInvariants(Integer.valueOf(3), Integer.valueOf(2), Integer.valueOf(1));
+            ComparableVerifier.assertInvariants(Integer.valueOf(3), Integer.valueOf(2), Integer.valueOf(1));
         }
 
         @Test
         public void string() {
-            ComparableTest.assertInvariants("c", "b", "a");
+            ComparableVerifier.assertInvariants("c", "b", "a");
         }
     }// class
 
@@ -108,23 +108,23 @@ public class ComparableTestTest {
 
         @Test
         public void bigger() {
-            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(1));
+            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(1));
         }
 
         @Test
         public void compareToNotConsistentWithEquals() {
-            assertThrows(AssertionError.class, () -> ComparableTest
+            assertThrows(AssertionError.class, () -> ComparableVerifier
                     .assertNaturalOrderingIsConsistentWithEquals(new BigDecimal("1.0"), new BigDecimal("1.00")));
         }
 
         @Test
         public void equivalent() {
-            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(0));
+            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(0), Integer.valueOf(0));
         }
 
         @Test
         public void smaller() {
-            ComparableTest.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(1), Integer.valueOf(0));
+            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(Integer.valueOf(1), Integer.valueOf(0));
         }
     }// class
 

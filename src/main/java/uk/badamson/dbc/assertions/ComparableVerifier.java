@@ -26,11 +26,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * {@link Comparable} interface.
  */
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
-public final class ComparableTest {
+public final class ComparableVerifier {
 
     private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
         try {
-            object.compareTo(null);
+            object.compareTo(null);// ignore result
         } catch (final NullPointerException e) {
             return;// OK: the required behaviour
         } catch (final Exception e) {
@@ -38,7 +38,7 @@ public final class ComparableTest {
              * It is unlikely that a faulty compareTo would throw any other kind of
              * exception, but provide good diagnostics just in case.
              */
-            throw ObjectTest.createUnexpectedException("compareToNull(null) throws only a NullPointerException", e);
+            throw ObjectVerifier.createUnexpectedException("compareToNull(null) throws only a NullPointerException", e);
         }
         /*
          * An overly careful implementation might attempt to give a result for this
@@ -112,7 +112,7 @@ public final class ComparableTest {
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
         Objects.requireNonNull(object, "object");
-        assertAll("Comparable invariants [" + ObjectTest.safeToString(object) + "]",
+        assertAll("Comparable invariants [" + ObjectVerifier.safeToString(object) + "]",
                 /*
                  * For completeness, check that this.compareTo(this) does not throw an
                  * exception, although it is unlikely that a faulty implementation would throw
@@ -204,8 +204,8 @@ public final class ComparableTest {
         final int c12 = compareTo(object1, object2);
         final int c21 = compareTo(object2, object1);
 
-        assertThat("compareTo is symmetric [" + ObjectTest.safeToString(object1) + ", "
-                + ObjectTest.safeToString(object2) + "]", Integer.signum(c12) == -Integer.signum(c21));
+        assertThat("compareTo is symmetric [" + ObjectVerifier.safeToString(object1) + ", "
+                + ObjectVerifier.safeToString(object2) + "]", Integer.signum(c12) == -Integer.signum(c21));
     }
 
     /**
@@ -255,8 +255,8 @@ public final class ComparableTest {
         final int c23 = compareTo(object2, object3);
         final int c13 = compareTo(object1, object3);
 
-        assertThat("compareTo is transitive [" + ObjectTest.safeToString(object1) + ", "
-                + ObjectTest.safeToString(object2) + ", " + ObjectTest.safeToString(object3) + "]",
+        assertThat("compareTo is transitive [" + ObjectVerifier.safeToString(object1) + ", "
+                + ObjectVerifier.safeToString(object2) + ", " + ObjectVerifier.safeToString(object3) + "]",
                 !(c12 > 0 && c23 > 0 && !(c13 > 0)));
     }
 
@@ -299,10 +299,10 @@ public final class ComparableTest {
          * Provide good diagnostics if compareTo or equals throws an exception.
          */
         final var compareTo = compareTo(object1, object2);
-        final var equals = ObjectTest.equals(object1, object2);
+        final var equals = ObjectVerifier.equals(object1, object2);
 
-        assertThat("Natural ordering is consistent with equals [" + ObjectTest.safeToString(object1) + ", "
-                + ObjectTest.safeToString(object2) + "]", compareTo == 0 == equals);
+        assertThat("Natural ordering is consistent with equals [" + ObjectVerifier.safeToString(object1) + ", "
+                + ObjectVerifier.safeToString(object2) + "]", compareTo == 0 == equals);
     }
 
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
@@ -314,15 +314,15 @@ public final class ComparableTest {
              * some attributes of the object. A naive implementation might throw a
              * NullPointerException if the object has any null attributes.
              */
-            throw ObjectTest
+            throw ObjectVerifier
                     .createUnexpectedException(
                             "compareTo must not throw exceptions for non null objects of the same class ["
-                                    + ObjectTest.safeToString(object1) + ", " + ObjectTest.safeToString(object2) + "]",
+                                    + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]",
                             e);
         }
     }
 
-    private ComparableTest() {
+    private ComparableVerifier() {
         assert false;// must not instance
     }
 

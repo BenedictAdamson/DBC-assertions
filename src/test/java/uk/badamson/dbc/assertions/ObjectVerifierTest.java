@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * Unit tests for code in the {@link ObjectTest} class
+ * Unit tests for code in the {@link ObjectVerifier} class
  * </p>
  */
-public class ObjectTestTest {
+public class ObjectVerifierTest {
 
     @Nested
     public class AssertInvariants {
@@ -40,7 +40,7 @@ public class ObjectTestTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
         }
 
         @Test
@@ -62,7 +62,7 @@ public class ObjectTestTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
         }
 
         @Test
@@ -89,7 +89,7 @@ public class ObjectTestTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
         }
 
         @Test
@@ -108,17 +108,17 @@ public class ObjectTestTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
         }
 
         @Test
         public void object() {
-            ObjectTest.assertInvariants(new Object());
+            ObjectVerifier.assertInvariants(new Object());
         }
 
         @Test
         public void string() {
-            ObjectTest.assertInvariants("string");
+            ObjectVerifier.assertInvariants("string");
         }
 
         @Test
@@ -131,7 +131,7 @@ public class ObjectTestTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(object));
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
         }
     }// class
 
@@ -141,23 +141,23 @@ public class ObjectTestTest {
         @Test
         public void equalsAsymmetric() {
             assertThrows(AssertionError.class,
-                    () -> ObjectTest.assertInvariants(new AsymmetricEquals(1), new AsymmetricEquals(2)));
+                    () -> ObjectVerifier.assertInvariants(new AsymmetricEquals(1), new AsymmetricEquals(2)));
         }
 
         @Test
         public void equalsHashCodeInconsistentWithEquals() {
-            assertThrows(AssertionError.class, () -> ObjectTest.assertInvariants(new HashCodeInconsistentWithEquals(1),
+            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(new HashCodeInconsistentWithEquals(1),
                     new HashCodeInconsistentWithEquals(1)));
         }
 
         @Test
         public void object() {
-            ObjectTest.assertInvariants(new Object(), new Object());
+            ObjectVerifier.assertInvariants(new Object(), new Object());
         }
 
         @Test
         public void string() {
-            ObjectTest.assertInvariants("a", "b");
+            ObjectVerifier.assertInvariants("a", "b");
         }
     }// class
 
