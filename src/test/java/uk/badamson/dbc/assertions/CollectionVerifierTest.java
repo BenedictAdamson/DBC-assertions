@@ -9,20 +9,34 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.opentest4j.MultipleFailuresError;
+
+import java.util.Collection;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.opentest4j.MultipleFailuresError;
-
 public class CollectionVerifierTest {
+
+    @Test
+    public void assertForAllElementsWithoutHeadingbad() {
+        final Collection<String> collection = List.of("x");
+        try {
+            CollectionVerifier.assertForAllElements(collection, x -> {
+                throw new AssertionError("Inevitable");
+            });
+        } catch (final MultipleFailuresError e) {
+            assertThat("one exception thrown", e.getFailures(), hasSize(1));
+            return;
+        }
+        fail("No exception thrown");
+    }
 
     @Nested
     public class AssertForAllElementsWithHeading {
@@ -90,19 +104,5 @@ public class CollectionVerifierTest {
         }
 
     }// class
-
-    @Test
-    public void assertForAllElementsWithoutHeadingbad() {
-        final Collection<String> collection = List.of("x");
-        try {
-            CollectionVerifier.assertForAllElements(collection, x -> {
-                throw new AssertionError("Inevitable");
-            });
-        } catch (final MultipleFailuresError e) {
-            assertThat("one exception thrown", e.getFailures(), hasSize(1));
-            return;
-        }
-        fail("No exception thrown");
-    }
 
 }

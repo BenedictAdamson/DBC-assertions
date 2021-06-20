@@ -13,6 +13,8 @@ package uk.badamson.dbc.assertions;
  * The uk.badamson.dbc.assertions package has it so it does not have a dependency on JUnit 5.
  */
 
+import org.opentest4j.MultipleFailuresError;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -20,12 +22,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.opentest4j.MultipleFailuresError;
-
 final class AssertAll {
 
-    static void assertAll(final Collection<Executable> executables) {
-        assertAll(null, executables);
+    private AssertAll() {
+        /* no-op */
     }
 
     static void assertAll(final Executable... executables) {
@@ -65,10 +65,6 @@ final class AssertAll {
             failures.forEach(multipleFailuresError::addSuppressed);
             throw multipleFailuresError;
         }
-    }
-
-    private AssertAll() {
-        /* no-op */
     }
 
 }

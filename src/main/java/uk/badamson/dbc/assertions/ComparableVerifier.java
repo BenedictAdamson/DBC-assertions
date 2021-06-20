@@ -9,16 +9,14 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.badamson.dbc.assertions.AssertAll.assertAll;
-
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opentest4j.AssertionFailedError;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.Nonnull;
+import java.util.Objects;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 /**
  * <p>
@@ -28,8 +26,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
 public final class ComparableVerifier {
 
+    private ComparableVerifier() {
+        assert false;// must not instance
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
         try {
+            //noinspection ConstantConditions
             object.compareTo(null);// ignore result
         } catch (final NullPointerException e) {
             return;// OK: the required behaviour
@@ -101,14 +105,10 @@ public final class ComparableVerifier {
      * }
      * </pre>
      *
-     * @param <T>
-     *            The class of {@code object}
-     * @param object
-     *            The object to test.
-     * @throws NullPointerException
-     *             If {@code object} is null.
-     * @throws AssertionError
-     *             If {@code object} breaks an invariant.
+     * @param <T>    The class of {@code object}
+     * @param object The object to test.
+     * @throws NullPointerException If {@code object} is null.
+     * @throws AssertionError       If {@code object} breaks an invariant.
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
         Objects.requireNonNull(object, "object");
@@ -178,20 +178,14 @@ public final class ComparableVerifier {
      * method.
      * </p>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break an invariant.
-     *
+     * @param <T>     The class of {@code object1} and {@code object2}
+     * @param object1 An object to test.
+     * @param object2 An object to test.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break an invariant.
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
@@ -222,28 +216,21 @@ public final class ComparableVerifier {
      * {@link #assertInvariants(Comparable, Comparable)} invariants are all met.
      * </p>
      *
-     * @param <T>
-     *            The class of {@code object1}, {@code object2} and {@code object3}
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @param object3
-     *            An object to test.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             <li>If {@code object3} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1}, {@code object2} and {@code object3} break an
-     *             invariant.
-     *
+     * @param <T>     The class of {@code object1}, {@code object2} and {@code object3}
+     * @param object1 An object to test.
+     * @param object2 An object to test.
+     * @param object3 An object to test.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          <li>If {@code object3} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1}, {@code object2} and {@code object3} break an
+     *                              invariant.
      * @see #assertInvariants(Comparable, Comparable)
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
-            @Nonnull final T object3) {
+                                                                  @Nonnull final T object3) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(object3, "object3");
@@ -256,7 +243,7 @@ public final class ComparableVerifier {
         final int c13 = compareTo(object1, object3);
 
         assertThat("compareTo is transitive [" + ObjectVerifier.safeToString(object1) + ", "
-                + ObjectVerifier.safeToString(object2) + ", " + ObjectVerifier.safeToString(object3) + "]",
+                        + ObjectVerifier.safeToString(object2) + ", " + ObjectVerifier.safeToString(object3) + "]",
                 !(c12 > 0 && c23 > 0 && !(c13 > 0)));
     }
 
@@ -274,24 +261,18 @@ public final class ComparableVerifier {
      * with equals.
      * </p>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break the invariant.
-     *
+     * @param <T>     The class of {@code object1} and {@code object2}
+     * @param object1 An object to test.
+     * @param object2 An object to test.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      * @see #assertInvariants(Comparable, Comparable)
      */
     public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
-            @Nonnull final T object2) {
+                                                                                             @Nonnull final T object2) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
@@ -320,10 +301,6 @@ public final class ComparableVerifier {
                                     + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]",
                             e);
         }
-    }
-
-    private ComparableVerifier() {
-        assert false;// must not instance
     }
 
 }

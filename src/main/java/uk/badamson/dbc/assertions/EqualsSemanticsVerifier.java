@@ -9,16 +9,15 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * <p>
@@ -54,9 +53,13 @@ import javax.annotation.Nullable;
  */
 public final class EqualsSemanticsVerifier {
 
+    private EqualsSemanticsVerifier() {
+        assert false;// must not instance
+    }
+
     @Nullable
     private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-            @Nonnull final Function<T, U> valueOfAttribute) {
+                                   @Nonnull final Function<T, U> valueOfAttribute) {
         try {
             return valueOfAttribute.apply(object);
         } catch (final Exception e) {
@@ -65,7 +68,7 @@ public final class EqualsSemanticsVerifier {
     }
 
     private static <T> int access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-            @Nonnull final ToIntFunction<T> valueOfAttribute) {
+                                  @Nonnull final ToIntFunction<T> valueOfAttribute) {
         try {
             return valueOfAttribute.applyAsInt(object);
         } catch (final Exception e) {
@@ -74,7 +77,7 @@ public final class EqualsSemanticsVerifier {
     }
 
     private static <T> long access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-            @Nonnull final ToLongFunction<T> valueOfAttribute) {
+                                   @Nonnull final ToLongFunction<T> valueOfAttribute) {
         try {
             return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
@@ -121,31 +124,24 @@ public final class EqualsSemanticsVerifier {
      * }
      * </pre>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param <U>
-     *            The class of the ID attribute.
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @param valueOfId
-     *            A function for accessing the value of the ID attribute for the two
-     *            objects under test. This should delegate to the getter method of
-     *            the class. This test method assumes that the getter should never
-     *            throw exceptions; it will throw an {@link AssertionError} if the
-     *            the function does throw an exception.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             <li>If {@code valueOfId} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break the invariant.
+     * @param <T>       The class of {@code object1} and {@code object2}
+     * @param <U>       The class of the ID attribute.
+     * @param object1   An object to test.
+     * @param object2   An object to test.
+     * @param valueOfId A function for accessing the value of the ID attribute for the two
+     *                  objects under test. This should delegate to the getter method of
+     *                  the class. This test method assumes that the getter should never
+     *                  throw exceptions; it will throw an {@link AssertionError} if the
+     *                  the function does throw an exception.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          <li>If {@code valueOfId} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
-            @Nonnull final Function<T, U> valueOfId) {
+                                                    @Nonnull final Function<T, U> valueOfId) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(valueOfId, "valueOfId");
@@ -208,32 +204,25 @@ public final class EqualsSemanticsVerifier {
      * }
      * </pre>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @param attributeName
-     *            The name of the attribute to examine.
-     * @param valueOfAttribute
-     *            A function for accessing the value of the attribute for the two
-     *            objects under test. This should delegate to the getter method of
-     *            the class. This test method assumes that the getter should never
-     *            throw exceptions; it will throw an {@link AssertionError} if the
-     *            the function does throw an exception.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             <li>If {@code attributeName} is null.</li>
-     *             <li>If {@code valueOfAttribute} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break the invariant.
+     * @param <T>              The class of {@code object1} and {@code object2}
+     * @param object1          An object to test.
+     * @param object2          An object to test.
+     * @param attributeName    The name of the attribute to examine.
+     * @param valueOfAttribute A function for accessing the value of the attribute for the two
+     *                         objects under test. This should delegate to the getter method of
+     *                         the class. This test method assumes that the getter should never
+     *                         throw exceptions; it will throw an {@link AssertionError} if the
+     *                         the function does throw an exception.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          <li>If {@code attributeName} is null.</li>
+     *                                          <li>If {@code valueOfAttribute} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-            @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
+                                                   @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -293,32 +282,25 @@ public final class EqualsSemanticsVerifier {
      * }
      * </pre>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @param attributeName
-     *            The name of the attribute to examine.
-     * @param valueOfAttribute
-     *            A function for accessing the value of the attribute for the two
-     *            objects under test. This should delegate to the getter method of
-     *            the class. This test method assumes that the getter should never
-     *            throw exceptions; it will throw an {@link AssertionError} if the
-     *            the function does throw an exception.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             <li>If {@code attributeName} is null.</li>
-     *             <li>If {@code valueOfAttribute} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break the invariant.
+     * @param <T>              The class of {@code object1} and {@code object2}
+     * @param object1          An object to test.
+     * @param object2          An object to test.
+     * @param attributeName    The name of the attribute to examine.
+     * @param valueOfAttribute A function for accessing the value of the attribute for the two
+     *                         objects under test. This should delegate to the getter method of
+     *                         the class. This test method assumes that the getter should never
+     *                         throw exceptions; it will throw an {@link AssertionError} if the
+     *                         the function does throw an exception.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          <li>If {@code attributeName} is null.</li>
+     *                                          <li>If {@code valueOfAttribute} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-            @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
+                                                    @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -378,34 +360,26 @@ public final class EqualsSemanticsVerifier {
      * }
      * </pre>
      *
-     * @param <T>
-     *            The class of {@code object1} and {@code object2}
-     * @param <U>
-     *            The class of the attribute to examine.
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @param attributeName
-     *            The name of the attribute to examine.
-     * @param valueOfAttribute
-     *            A function for accessing the value of the attribute for the two
-     *            objects under test. This should delegate to the getter method of
-     *            the class. This test method assumes that the getter should never
-     *            throw exceptions; it will throw an {@link AssertionError} if the
-     *            the function does throw an exception.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             <li>If {@code attributeName} is null.</li>
-     *             <li>If {@code valueOfAttribute} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object2} break the invariant.
+     * @param <T>              The class of {@code object1} and {@code object2}
+     * @param <U>              The class of the attribute to examine.
+     * @param object1          An object to test.
+     * @param object2          An object to test.
+     * @param attributeName    The name of the attribute to examine.
+     * @param valueOfAttribute A function for accessing the value of the attribute for the two
+     *                         objects under test. This should delegate to the getter method of
+     *                         the class. This test method assumes that the getter should never
+     *                         throw exceptions; it will throw an {@link AssertionError} if the
+     *                         the function does throw an exception.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          <li>If {@code attributeName} is null.</li>
+     *                                          <li>If {@code valueOfAttribute} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-            @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
+                                                   @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(attributeName, "attributeName");
@@ -416,10 +390,8 @@ public final class EqualsSemanticsVerifier {
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
-        @Nullable
-        final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
-        @Nullable
-        final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
+        @Nullable final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        @Nullable final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         /*
          * Provide good diagnostics if equals throws an exception. Handle null
          * attributes.
@@ -433,12 +405,8 @@ public final class EqualsSemanticsVerifier {
     }
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
-            final Exception e) {
+                                                                  final Exception e) {
         return ObjectVerifier.createUnexpectedException(
                 "Acccessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
-    }
-
-    private EqualsSemanticsVerifier() {
-        assert false;// must not instance
     }
 }

@@ -9,6 +9,10 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import org.opentest4j.AssertionFailedError;
+
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
-
-import org.opentest4j.AssertionFailedError;
 
 /**
  * <p>
@@ -68,6 +67,10 @@ import org.opentest4j.AssertionFailedError;
  */
 public final class ThreadSafetyTest {
 
+    private ThreadSafetyTest() {
+        assert false;// must not instance
+    }
+
     /**
      * <p>
      * A convenience method for delegating to a {@link Future#get()} that provides
@@ -86,26 +89,22 @@ public final class ThreadSafetyTest {
      * for a similar method for accessing the results of multiple threads.
      * </p>
      *
-     * @param future
-     *            The result of the asynchronous computation to be examined.
-     * @throws NullPointerException
-     *             If {@code future} is null
-     * @throws Error
-     *             If the asynchronous computation completed by throwing an
-     *             {@link Error}. The exception thrown will be the same as the
-     *             exception that the asynchronous computation threw. In particular,
-     *             this case includes {@link AssertionError}, and thus any test
-     *             failures found by the asynchronous computation.
-     * @throws RuntimeException
-     *             <ul>
-     *             <li>If the asynchronous computation completed by throwing an
-     *             {@link RuntimeException}. The exception thrown will be the same
-     *             as the exception that the asynchronous computation threw.</li>
-     *             <li>If the asynchronous computation completed by throwing a
-     *             checked exception (An {@link Exception} that is not a
-     *             {@link RuntimeException}), in which case the checked exception
-     *             can be accessed through {@link RuntimeException#getCause()}.</li>
-     *             </ul>
+     * @param future The result of the asynchronous computation to be examined.
+     * @throws NullPointerException If {@code future} is null
+     * @throws Error                If the asynchronous computation completed by throwing an
+     *                              {@link Error}. The exception thrown will be the same as the
+     *                              exception that the asynchronous computation threw. In particular,
+     *                              this case includes {@link AssertionError}, and thus any test
+     *                              failures found by the asynchronous computation.
+     * @throws RuntimeException     <ul>
+     *                                          <li>If the asynchronous computation completed by throwing an
+     *                                          {@link RuntimeException}. The exception thrown will be the same
+     *                                          as the exception that the asynchronous computation threw.</li>
+     *                                          <li>If the asynchronous computation completed by throwing a
+     *                                          checked exception (An {@link Exception} that is not a
+     *                                          {@link RuntimeException}), in which case the checked exception
+     *                                          can be accessed through {@link RuntimeException#getCause()}.</li>
+     *                                          </ul>
      */
     public static void get(final Future<Void> future) {
         Objects.requireNonNull(future, "future");
@@ -141,28 +140,22 @@ public final class ThreadSafetyTest {
      * </p>
      * <p>
      * This method is intended to be used with the result of
-     * {@link #runInOtherThread(CountDownLatch, Runnable)}. See {@link #get(List)}
-     * for a similar method for accessing the results of multiple threads.
+     * {@link #runInOtherThread(CountDownLatch, Runnable)}.
      * </p>
      *
-     * @param futures
-     *            The results of the asynchronous computations to be examined.
-     *
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code futures} is null.</li>
-     *             <li>If {@code futures} has a null element.</li>
-     *             </ul>
-     * @throws Error
-     *             If an asynchronous computation completed by throwing an
-     *             {@link Error}.
-     * @throws RuntimeException
-     *             <ul>
-     *             <li>If an asynchronous computation completed by throwing an
-     *             {@link RuntimeException}.</li>
-     *             <li>If the asynchronous computation completed by throwing a
-     *             checked exception.</li>
-     *             </ul>
+     * @param futures The results of the asynchronous computations to be examined.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code futures} is null.</li>
+     *                                          <li>If {@code futures} has a null element.</li>
+     *                                          </ul>
+     * @throws Error                If an asynchronous computation completed by throwing an
+     *                              {@link Error}.
+     * @throws RuntimeException     <ul>
+     *                                          <li>If an asynchronous computation completed by throwing an
+     *                                          {@link RuntimeException}.</li>
+     *                                          <li>If the asynchronous computation completed by throwing a
+     *                                          checked exception.</li>
+     *                                          </ul>
      */
     public static void get(final List<Future<Void>> futures) {
         Objects.requireNonNull(futures, "futures");
@@ -207,26 +200,22 @@ public final class ThreadSafetyTest {
      * more convenient.
      * </p>
      *
-     * @param ready
-     *            The count-down latch for controlling the start of the
-     *            {@code operation}.
-     * @param operation
-     *            The operation to be done in the thread.
+     * @param ready     The count-down latch for controlling the start of the
+     *                  {@code operation}.
+     * @param operation The operation to be done in the thread.
      * @return A means of accessing the result of the operation.
-     *
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code ready} is null.</li>
-     *             <li>If {@code operation} is null.</li>
-     *             </ul>
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code ready} is null.</li>
+     *                                          <li>If {@code operation} is null.</li>
+     *                                          </ul>
      */
     @Nonnull
     public static Future<Void> runInOtherThread(@Nonnull final CountDownLatch ready,
-            @Nonnull final Runnable operation) {
+                                                @Nonnull final Runnable operation) {
         Objects.requireNonNull(ready, "ready");
         Objects.requireNonNull(operation, "operation");
 
-        final CompletableFuture<Void> future = new CompletableFuture<Void>();
+        final CompletableFuture<Void> future = new CompletableFuture<>();
         final Thread thread = new Thread(() -> {
             try {
                 ready.await();
@@ -239,9 +228,5 @@ public final class ThreadSafetyTest {
         });
         thread.start();
         return future;
-    }
-
-    private ThreadSafetyTest() {
-        assert false;// must not instance
     }
 }

@@ -9,10 +9,10 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * <p>
@@ -21,6 +21,60 @@ import org.junit.jupiter.api.Test;
  */
 public class ObjectVerifierTest {
 
+    private static final class AsymmetricEquals {
+
+        private final int value;
+
+        public AsymmetricEquals(final int value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof AsymmetricEquals)) {
+                return false;
+            }
+            final AsymmetricEquals other = (AsymmetricEquals) obj;
+            return value <= other.value;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+    }// class
+
+    private static final class HashCodeInconsistentWithEquals {
+
+        private final int value;
+
+        public HashCodeInconsistentWithEquals(final int value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof HashCodeInconsistentWithEquals)) {
+                return false;
+            }
+            final HashCodeInconsistentWithEquals other = (HashCodeInconsistentWithEquals) obj;
+            return value == other.value;
+        }
+
+        @Override
+        public int hashCode() {
+            return 13 * super.hashCode();
+        }
+
+    }// class
+
     @Nested
     public class AssertInvariants {
 
@@ -28,6 +82,7 @@ public class ObjectVerifierTest {
         public void equalsNull() {
             final var object = new Object() {
 
+                @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
                 @Override
                 public boolean equals(final Object obj) {
                     return true;
@@ -47,6 +102,7 @@ public class ObjectVerifierTest {
         public void equalsThrows() {
             final var object = new Object() {
 
+                @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
                 @Override
                 public boolean equals(final Object obj) {
                     if (obj == null) {
@@ -58,7 +114,7 @@ public class ObjectVerifierTest {
                 // Satisfy static checks
                 @Override
                 public int hashCode() {
-                    return super.hashCode();
+                    return 13 * super.hashCode();
                 }
 
             };
@@ -159,60 +215,6 @@ public class ObjectVerifierTest {
         public void string() {
             ObjectVerifier.assertInvariants("a", "b");
         }
-    }// class
-
-    private static final class AsymmetricEquals {
-
-        private final int value;
-
-        public AsymmetricEquals(final int value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof AsymmetricEquals)) {
-                return false;
-            }
-            final AsymmetricEquals other = (AsymmetricEquals) obj;
-            return value <= other.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-    }// class
-
-    private static final class HashCodeInconsistentWithEquals {
-
-        private final int value;
-
-        public HashCodeInconsistentWithEquals(final int value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof HashCodeInconsistentWithEquals)) {
-                return false;
-            }
-            final HashCodeInconsistentWithEquals other = (HashCodeInconsistentWithEquals) obj;
-            return value == other.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
     }// class
 
 }

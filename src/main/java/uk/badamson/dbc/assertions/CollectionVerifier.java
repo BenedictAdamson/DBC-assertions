@@ -9,15 +9,14 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import static uk.badamson.dbc.assertions.AssertAll.assertAll;
-
-import java.util.Collection;
-import java.util.Objects;
+import org.opentest4j.MultipleFailuresError;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Objects;
 
-import org.opentest4j.MultipleFailuresError;
+import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 /**
  * <p>
@@ -28,13 +27,17 @@ import org.opentest4j.MultipleFailuresError;
  */
 public final class CollectionVerifier {
 
+    CollectionVerifier() {
+        assert false;// must not instance
+    }
+
     /**
      * @see #assertForAllElements(String, Collection, Verifier) this convenience
-     *      method is equivalent to calling assertForAllElements(String, Collection,
-     *      Verifier) with a null heading argument
+     * method is equivalent to calling assertForAllElements(String, Collection,
+     * Verifier) with a null heading argument
      */
     public static <T> void assertForAllElements(@Nonnull final Collection<T> collection,
-            @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
+                                                @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
         assertForAllElements(null, collection, verifier);
     }
 
@@ -64,42 +67,26 @@ public final class CollectionVerifier {
      * interface, but is rather useful for testing classes that have or return
      * collections.
      * </p>
-     *
+     * <p>
      * The supplied heading will be included in the message string for the
      * MultipleFailuresError.
      *
-     * @param <T>
-     *            The type of the collection elements.
-     * @param heading
-     *            A message to include in the {@link MultipleFailuresError} thrown
-     *            on failure of any verification, or null if there is no such
-     *            message.
-     * @param collection
-     *            A collection to verify
-     * @param verifier
-     *            The function for verifying each element
-     * @throws NullPointerException
-     *             If any {@link Nonnull} argument is null.
-     * @throws MultipleFailuresError
-     *             If any of the elements of the {@code collection} fail
-     *             verification.
+     * @param <T>        The type of the collection elements.
+     * @param heading    A message to include in the {@link MultipleFailuresError} thrown
+     *                   on failure of any verification, or null if there is no such
+     *                   message.
+     * @param collection A collection to verify
+     * @param verifier   The function for verifying each element
+     * @throws NullPointerException  If any {@link Nonnull} argument is null.
+     * @throws MultipleFailuresError If any of the elements of the {@code collection} fail
+     *                               verification.
      */
     public static <T> void assertForAllElements(@Nullable final String heading, @Nonnull final Collection<T> collection,
-            @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
+                                                @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
         Objects.requireNonNull(collection, "collection");
         Objects.requireNonNull(verifier, "verifier");
 
-        assertAll(heading, collection.stream().map(element -> new Executable() {
-
-            @Override
-            public void execute() throws AssertionError {
-                verifier.verify(element);
-            }
-        }));
-    }
-
-    CollectionVerifier() {
-        assert false;// must not instance
+        assertAll(heading, collection.stream().map(element -> () -> verifier.verify(element)));
     }
 
 }

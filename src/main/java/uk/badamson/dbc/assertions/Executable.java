@@ -13,6 +13,7 @@ package uk.badamson.dbc.assertions;
  * The uk.badamson.dbc.assertions package has it so it does not have a dependency on JUnit 5.
  */
 
+@SuppressWarnings("RedundantThrows")
 @FunctionalInterface
 interface Executable {
 

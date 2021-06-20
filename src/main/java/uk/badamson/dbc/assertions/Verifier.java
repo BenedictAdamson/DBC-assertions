@@ -9,9 +9,8 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import java.util.function.Consumer;
-
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 /**
  * A {@linkplain FunctionalInterface functional interface} representing a method
@@ -37,10 +36,8 @@ public interface Verifier<T> {
      * exception.
      * </p>
      *
-     * @param t
-     *            The object reference to verify.
-     * @throws AssertionError
-     *             If, and only if, {@code t} fails the verification check.
+     * @param t The object reference to verify.
+     * @throws AssertionError If, and only if, {@code t} fails the verification check.
      */
     void verify(@Nullable T t) throws AssertionError;
 }

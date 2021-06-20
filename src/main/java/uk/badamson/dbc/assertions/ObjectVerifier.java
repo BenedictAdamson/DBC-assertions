@@ -9,16 +9,15 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anything;
-import static uk.badamson.dbc.assertions.AssertAll.assertAll;
-
-import java.util.Objects;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anything;
+import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 /**
  * <p>
@@ -28,6 +27,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 @SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
 public final class ObjectVerifier {
+
+    ObjectVerifier() {
+        assert false;// must not instance
+    }
 
     private static void assertEqualsSelf(@Nonnull final Object object) {
         /*
@@ -110,18 +113,15 @@ public final class ObjectVerifier {
      * }
      * </pre>
      *
-     * @param object
-     *            The object to test.
-     * @throws NullPointerException
-     *             If {@code object} is null.
-     * @throws AssertionError
-     *             If {@code object} breaks an invariant.
+     * @param object The object to test.
+     * @throws NullPointerException If {@code object} is null.
+     * @throws AssertionError       If {@code object} breaks an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object) {
         Objects.requireNonNull(object, "object");
         assertAll("Object invariants [" + safeToString(object) + "]",
                 () -> assertThat("toString", toString(object), anything()), // check for exception
-                () -> assertThat("hashCode", Integer.valueOf(hashCode(object)), anything()), // check for exception
+                () -> assertThat("hashCode", hashCode(object), anything()), // check for exception
                 () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
     }
 
@@ -205,17 +205,13 @@ public final class ObjectVerifier {
      * }
      * </pre>
      *
-     * @param object1
-     *            An object to test.
-     * @param object2
-     *            An object to test.
-     * @throws NullPointerException
-     *             <ul>
-     *             <li>If {@code object1} is null.</li>
-     *             <li>If {@code object2} is null.</li>
-     *             </ul>
-     * @throws AssertionError
-     *             If {@code object1} and {@code object1} break an invariant.
+     * @param object1 An object to test.
+     * @param object2 An object to test.
+     * @throws NullPointerException <ul>
+     *                                          <li>If {@code object1} is null.</li>
+     *                                          <li>If {@code object2} is null.</li>
+     *                                          </ul>
+     * @throws AssertionError       If {@code object1} and {@code object1} break an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
         Objects.requireNonNull(object1, "object1");
@@ -313,7 +309,7 @@ public final class ObjectVerifier {
     @Nonnull
     public static String safeToString(@Nullable final Object object) {
         try {
-            return object.toString();
+            return Objects.requireNonNull(object).toString();
         } catch (final Exception e) {
             return identityString(object);
         }
@@ -333,9 +329,5 @@ public final class ObjectVerifier {
              */
             throw createUnexpectedException("toString() must not throw exceptions", e);
         }
-    }
-
-    ObjectVerifier() {
-        assert false;// must not instance
     }
 }
