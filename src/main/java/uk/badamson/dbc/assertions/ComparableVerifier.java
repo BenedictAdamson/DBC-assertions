@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 
 /**
  * <p>
@@ -112,14 +113,14 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesInvariants() {
         return Matchers.describedAs("satisfies Comparable interface invariants",
-                Matchers.<T>allOf(
-                        new CompareToNullThrowsNPE<>(),
+                allOf(
+                        new CompareToNullThrowsNPE<T>(),
                         /*
                          * For completeness, check that this.compareTo(this) does not throw an
                          * exception, although it is unlikely that a faulty implementation would throw
                          * an exception.
                          */
-                        new CompareToSelfDoesNotThrowException<>()
+                        new CompareToSelfDoesNotThrowException<T>()
                 ));
     }
 
@@ -145,9 +146,10 @@ public final class ComparableVerifier {
 
     /**
      * <p>
-     * Assert that a pair of objects conform to all the relationship (pairwise)
-     * invariants imposed by the {@link Comparable} interface, throwing an
-     * {@link AssertionError} if they do not.
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the  relationship (pairwise)
+     * invariants imposed by the  {@link Comparable} interface.
      * </p>
      *
      * <h2>How to Use this Method</h2>
@@ -164,7 +166,7 @@ public final class ComparableVerifier {
      *    final var a1 = new Amount(1);
      *    final var a2 = new Amount(2);
      *
-     *    {@code assertTrue(a1.compareTo(a2) < 0);}
+     *    {@code assertThat(a1.compareTo(a2) < 0);}
      * }
      * </pre>
      *
@@ -189,9 +191,9 @@ public final class ComparableVerifier {
      *    final var a1 = new Amount(1);
      *    final var a2 = new Amount(2);
      *
-     *    ObjectTest.assertInvariants(a1, a2);
-     *    ComparableVerifier.assertInvariants(a1, a2);
-     *    {@code assertTrue(a1.compareTo(a2) < 0);}
+     *    assertThat(a1, ObjectVerifier.satisfiesInvariantsWith(a2));
+     *    assertThat(a1, ComparableVerifier.satisfiesInvariantsWith(a2));
+     *    {@code assertThat(a1.compareTo(a2) < 0);}
      * }
      * </pre>
      * <p>
@@ -200,28 +202,27 @@ public final class ComparableVerifier {
      * method.
      * </p>
      *
-     * @param <T>     The class of {@code object1} and {@code object2}
-     * @param object1 An object to test.
-     * @param object2 An object to test.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1} and {@code object2} break an invariant.
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
+    public static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T other) {
+        Objects.requireNonNull(other, "other");
+        return Matchers.describedAs("satisfies pairwise Comparable interface invariants with " + ObjectVerifier.safeToString(other), allOf(
+                new CompareToIsSymmetric<T>(other)
+        ));
+    }
+
+    /**
+     * <p>
+     * Assert that a pair of objects conform to all the relationship (pairwise)
+     * invariants imposed by the {@link Comparable} interface, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.satisfiesInvariantsWith(object2))}
+     * </p>
+     */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-
-        /*
-         * Provide good diagnostics if compareTo throws an exception.
-         */
-        final int c12 = compareTo(object1, object2);
-        final int c21 = compareTo(object2, object1);
-
-        assertThat("compareTo is symmetric [" + ObjectVerifier.safeToString(object1) + ", "
-                + ObjectVerifier.safeToString(object2) + "]", Integer.signum(c12) == -Integer.signum(c21));
+        assertThat(object1, satisfiesInvariantsWith(object2));
     }
 
     /**
@@ -321,6 +322,34 @@ public final class ComparableVerifier {
                     + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]", e);
         }
     }
+
+    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairwiseMatcher<T> {
+        CompareToIsSymmetric(@Nonnull T other) {
+            super(other);
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+            final int c12;
+            final int c21;
+            try {
+                c12 = item1.compareTo(item2);
+                c21 = item2.compareTo(item1);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but compareTo() threw exception ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
+            final boolean ok = Integer.signum(c12) == -Integer.signum(c21);
+            return ok;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("compareTo is symmetric");
+            description.appendValue(description);
+        }
+    }// class
 
     private static final class CompareToNullThrowsNPE<T extends Comparable<T>> extends TypeSafeDiagnosingMatcher<T> {
         @Override
