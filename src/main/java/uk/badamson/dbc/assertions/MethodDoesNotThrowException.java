@@ -15,9 +15,10 @@ public abstract class MethodDoesNotThrowException<T> extends TypeSafeDiagnosingM
 
     /**
      * <p>
-     * Call the method that should not throw an expcetion for the object being matched.
+     * Call the method that should not throw an exception for the object being matched.
      * </p>
      */
+    @SuppressWarnings("RedundantThrows")
     protected abstract void callMethod(@Nonnull T item) throws Throwable;
 
     @Override

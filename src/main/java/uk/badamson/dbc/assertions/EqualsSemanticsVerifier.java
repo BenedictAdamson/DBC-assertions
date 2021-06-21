@@ -134,10 +134,10 @@ public final class EqualsSemanticsVerifier {
      *                  throw exceptions; it will throw an {@link AssertionError} if the
      *                  the function does throw an exception.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          <li>If {@code valueOfId} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              <li>If {@code valueOfId} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
@@ -214,11 +214,11 @@ public final class EqualsSemanticsVerifier {
      *                         throw exceptions; it will throw an {@link AssertionError} if the
      *                         the function does throw an exception.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          <li>If {@code attributeName} is null.</li>
-     *                                          <li>If {@code valueOfAttribute} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              <li>If {@code attributeName} is null.</li>
+     *                              <li>If {@code valueOfAttribute} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
@@ -292,11 +292,11 @@ public final class EqualsSemanticsVerifier {
      *                         throw exceptions; it will throw an {@link AssertionError} if the
      *                         the function does throw an exception.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          <li>If {@code attributeName} is null.</li>
-     *                                          <li>If {@code valueOfAttribute} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              <li>If {@code attributeName} is null.</li>
+     *                              <li>If {@code valueOfAttribute} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
@@ -371,11 +371,11 @@ public final class EqualsSemanticsVerifier {
      *                         throw exceptions; it will throw an {@link AssertionError} if the
      *                         the function does throw an exception.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          <li>If {@code attributeName} is null.</li>
-     *                                          <li>If {@code valueOfAttribute} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              <li>If {@code attributeName} is null.</li>
+     *                              <li>If {@code valueOfAttribute} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,

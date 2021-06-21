@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.allOf;
 @SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
 public final class ObjectVerifier {
 
-    ObjectVerifier() {
+    private ObjectVerifier() {
         assert false;// must not instance
     }
 
@@ -306,6 +306,7 @@ public final class ObjectVerifier {
     }
 
     private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
+        @SuppressWarnings({"ConstantConditions", "EqualsWithItself"})
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
             final boolean ok;
@@ -354,6 +355,7 @@ public final class ObjectVerifier {
 
     private static final class ToStringDoesNotThrowException extends MethodDoesNotThrowException<Object> {
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         protected void callMethod(@Nonnull Object item) throws RuntimeException {
             item.toString();
@@ -367,6 +369,7 @@ public final class ObjectVerifier {
 
     private static final class HashCodeDoesNotThrowException extends MethodDoesNotThrowException<Object> {
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         protected void callMethod(@Nonnull Object item) throws RuntimeException {
             item.hashCode();

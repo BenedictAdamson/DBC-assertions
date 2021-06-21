@@ -14,7 +14,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.opentest4j.AssertionFailedError;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -32,27 +31,6 @@ public final class ComparableVerifier {
 
     private ComparableVerifier() {
         assert false;// must not instance
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
-        try {
-            //noinspection ConstantConditions
-            object.compareTo(null);
-        } catch (final NullPointerException e) {
-            return;// OK: the required behaviour
-        } catch (final Exception e) {
-            /*
-             * It is unlikely that a faulty compareTo would throw any other kind of
-             * exception, but provide good diagnostics just in case.
-             */
-            throw new AssertionError("compareToNull(null) throws only a NullPointerException", e);
-        }
-        /*
-         * An overly careful implementation might attempt to give a result for this
-         * case, rather than throw a NPE.
-         */
-        throw new AssertionFailedError("compareTo(null) throws NullPointerException");
     }
 
     /**
@@ -207,7 +185,7 @@ public final class ComparableVerifier {
     public static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T other) {
         Objects.requireNonNull(other, "other");
         return Matchers.describedAs("satisfies pairwise Comparable interface invariants with " + ObjectVerifier.safeToString(other), allOf(
-                new CompareToIsSymmetric<T>(other)
+                new CompareToIsSymmetric<>(other)
         ));
     }
 
@@ -234,14 +212,14 @@ public final class ComparableVerifier {
      * </p>
      *
      * <p>
-     * This is a supplement to the {@link #satisfiesInvariantsWith(Comparable, Comparable)}
+     * This is a supplement to the {@link #satisfiesInvariantsWith(Comparable)}
      * method, provided out of completeness, for use in very thorough unit tests. In
      * practice, its invariants are unlikely to be broken if the
-     * {@link #satisfiesInvariantsWith(Comparable, Comparable)} invariants are all met.
+     * {@link #satisfiesInvariantsWith(Comparable)} invariants are all met.
      * </p>
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
-        return new CompareToIsTransitive<T>(item2, item3);
+        return new CompareToIsTransitive<>(item2, item3);
     }
 
     /**
@@ -315,20 +293,6 @@ public final class ComparableVerifier {
     public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
                                                                                              @Nonnull final T object2) {
         assertThat(object1, naturalOrderingIsConsistentWithEqualsWith(object2));
-    }
-
-    private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
-        try {
-            return object1.compareTo(object2);
-        } catch (final Exception e) {
-            /*
-             * A typical compareTo implementation will delegate to the compareTo methods of
-             * some attributes of the object. A naive implementation might throw a
-             * NullPointerException if the object has any null attributes.
-             */
-            throw new AssertionError("compareTo must not throw exceptions for non null objects of the same class ["
-                    + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]", e);
-        }
     }
 
     private static final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairMatcher<T> {
@@ -432,10 +396,10 @@ public final class ComparableVerifier {
     }// class
 
     private static final class CompareToNullThrowsNPE<T extends Comparable<T>> extends TypeSafeDiagnosingMatcher<T> {
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         @Override
         protected boolean matchesSafely(T item, Description mismatchDescription) {
             try {
-                //noinspection ConstantConditions
                 item.compareTo(null);
             } catch (final NullPointerException e) {
                 return true;// the required behaviour
@@ -459,8 +423,9 @@ public final class ComparableVerifier {
     }// class
 
     private static final class CompareToSelfDoesNotThrowException<T extends Comparable<T>> extends MethodDoesNotThrowException<T> {
+        @SuppressWarnings({"EqualsWithItself", "ResultOfMethodCallIgnored"})
         @Override
-        protected void callMethod(@Nonnull T item) throws Throwable {
+        protected void callMethod(@Nonnull T item) {
             item.compareTo(item);
         }
 

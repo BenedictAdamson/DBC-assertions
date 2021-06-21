@@ -97,14 +97,14 @@ public final class ThreadSafetyTest {
      *                              this case includes {@link AssertionError}, and thus any test
      *                              failures found by the asynchronous computation.
      * @throws RuntimeException     <ul>
-     *                                          <li>If the asynchronous computation completed by throwing an
-     *                                          {@link RuntimeException}. The exception thrown will be the same
-     *                                          as the exception that the asynchronous computation threw.</li>
-     *                                          <li>If the asynchronous computation completed by throwing a
-     *                                          checked exception (An {@link Exception} that is not a
-     *                                          {@link RuntimeException}), in which case the checked exception
-     *                                          can be accessed through {@link RuntimeException#getCause()}.</li>
-     *                                          </ul>
+     *                              <li>If the asynchronous computation completed by throwing an
+     *                              {@link RuntimeException}. The exception thrown will be the same
+     *                              as the exception that the asynchronous computation threw.</li>
+     *                              <li>If the asynchronous computation completed by throwing a
+     *                              checked exception (An {@link Exception} that is not a
+     *                              {@link RuntimeException}), in which case the checked exception
+     *                              can be accessed through {@link RuntimeException#getCause()}.</li>
+     *                              </ul>
      */
     public static void get(final Future<Void> future) {
         Objects.requireNonNull(future, "future");
@@ -145,17 +145,17 @@ public final class ThreadSafetyTest {
      *
      * @param futures The results of the asynchronous computations to be examined.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code futures} is null.</li>
-     *                                          <li>If {@code futures} has a null element.</li>
-     *                                          </ul>
+     *                              <li>If {@code futures} is null.</li>
+     *                              <li>If {@code futures} has a null element.</li>
+     *                              </ul>
      * @throws Error                If an asynchronous computation completed by throwing an
      *                              {@link Error}.
      * @throws RuntimeException     <ul>
-     *                                          <li>If an asynchronous computation completed by throwing an
-     *                                          {@link RuntimeException}.</li>
-     *                                          <li>If the asynchronous computation completed by throwing a
-     *                                          checked exception.</li>
-     *                                          </ul>
+     *                              <li>If an asynchronous computation completed by throwing an
+     *                              {@link RuntimeException}.</li>
+     *                              <li>If the asynchronous computation completed by throwing a
+     *                              checked exception.</li>
+     *                              </ul>
      */
     public static void get(final List<Future<Void>> futures) {
         Objects.requireNonNull(futures, "futures");
@@ -205,9 +205,9 @@ public final class ThreadSafetyTest {
      * @param operation The operation to be done in the thread.
      * @return A means of accessing the result of the operation.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code ready} is null.</li>
-     *                                          <li>If {@code operation} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code ready} is null.</li>
+     *                              <li>If {@code operation} is null.</li>
+     *                              </ul>
      */
     @Nonnull
     public static Future<Void> runInOtherThread(@Nonnull final CountDownLatch ready,
