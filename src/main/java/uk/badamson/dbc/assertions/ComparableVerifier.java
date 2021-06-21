@@ -269,20 +269,7 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
                                                                   @Nonnull final T object3) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(object3, "object3");
-
-        /*
-         * Provide good diagnostics if compareTo throws an exception.
-         */
-        final int c12 = compareTo(object1, object2);
-        final int c23 = compareTo(object2, object3);
-        final int c13 = compareTo(object1, object3);
-
-        assertThat("compareTo is transitive [" + ObjectVerifier.safeToString(object1) + ", "
-                        + ObjectVerifier.safeToString(object2) + ", " + ObjectVerifier.safeToString(object3) + "]",
-                !(c12 > 0 && c23 > 0 && !(c13 > 0)));
+        assertThat(object1, satisfiesInvariantsWith(object2, object3));
     }
 
     /**
