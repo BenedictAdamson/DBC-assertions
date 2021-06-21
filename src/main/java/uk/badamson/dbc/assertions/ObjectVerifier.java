@@ -10,7 +10,10 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,14 +33,6 @@ public final class ObjectVerifier {
 
     ObjectVerifier() {
         assert false;// must not instance
-    }
-
-    private static void assertEqualsSelf(@Nonnull final Object object) {
-        /*
-         * A faulty equals method is unlikely to give !this.equals(this), but check for
-         * completeness.
-         */
-        assertThat("An object is always equivalent to itself", equals(object, object));
     }
 
     /**
@@ -260,15 +255,6 @@ public final class ObjectVerifier {
         assertThat(object1, satisfiesInvariantsWith(object2));
     }
 
-    private static void assertNeverEqualsNull(@Nonnull final Object object) {
-        /*
-         * A faulty equals method is unlikely to give this.equals(null). But a naive
-         * implementation might throw a NullPointerException, because a null argument
-         * must be handled as a special case.
-         */
-        assertThat("An object is never equivalent to null", !equals(object, null));
-    }
-
     static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
         try {
             return object1.equals(object2);
@@ -279,19 +265,6 @@ public final class ObjectVerifier {
              * NullPointerException if the object has any null attributes.
              */
             throw new AssertionError("equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]", e);
-        }
-    }
-
-    private static int hashCode(@Nonnull final Object object) {
-        try {
-            return object.hashCode();
-        } catch (final Exception e) {
-            /*
-             * A typical hashCode implementation will delegate to the hashCode methods of
-             * the attributes of the object. A naive implementation might throw a
-             * NullPointerException if the object has any null attributes.
-             */
-            throw new AssertionError("hashCode() must not throw exceptions [" + safeToString(object) + "]", e);
         }
     }
 
@@ -332,33 +305,6 @@ public final class ObjectVerifier {
         }
     }
 
-    private static String toString(@Nonnull final Object object) {
-        try {
-            return object.toString();
-        } catch (final Exception e) {
-            /*
-             * The (default) Object.toString() method delegates to hashCode(). A typical
-             * hashCode implementation will delegate to the hashCode methods of the
-             * attributes of the object. A naive implementation might throw a
-             * NullPointerException if the object has any null attributes. If the programmer
-             * does not also override the toString() method, toString() can then throw an
-             * exception.
-             */
-            throw new AssertionError("toString() must not throw exceptions", e);
-        }
-    }
-
-    private static final class HasHashCode extends FeatureMatcher<Object, Integer> {
-        public HasHashCode(Matcher<? super Integer> subMatcher, String featureDescription) {
-            super(subMatcher, featureDescription, "hashCode");
-        }
-
-        @Override
-        protected Integer featureValueOf(Object actual) {
-            return actual.hashCode();
-        }
-    }// class
-
     private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
@@ -388,7 +334,7 @@ public final class ObjectVerifier {
         }
     }// class
 
-    private static abstract class MethodDoesNotThrowException extends TypeSafeDiagnosingMatcher {
+    private static abstract class MethodDoesNotThrowException extends TypeSafeDiagnosingMatcher<Object> {
 
         protected abstract void callMethod(@Nonnull Object item) throws Throwable;
 
@@ -441,11 +387,6 @@ public final class ObjectVerifier {
         @Override
         protected final boolean matchesSafely(Object item, Description mismatchDescription) {
             return matchesSafely(item, other, mismatchDescription);
-        }
-
-        @Nonnull
-        protected final String otherToString() {
-            return safeToString(other);
         }
 
         protected abstract boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription);
