@@ -1,96 +1,166 @@
-# MC-des
-Multi-threaded Parallel Discrete Event Simulation (PDES) engine
+# DBC-assertions
 
-* This provides a framework for performing simulations of systems on
-a shared-memory computer using multiple threads. It is therefore suitable
-only for systems that can record a complete snapshot of their state in the
-RAM of a practical computer.
-* It is for simulating _asynchronous_ systems, for which the times
-of events are widely scattered, so advancement of the simulated state using a
-global clock is inefficient.
-* In common with most PDES algorithms, this framework partly enables
-parallel computation by eliminating an explicit global (shared) _event
-list_.
-* This framework further enables parallel computation by not attempting to
-compute and record a single set of _state variables_ at one point in
-time. It instead computes and records the full time history of all the state
-variables.
-* Unlike other PDES algorithms, the framework does not mandate a
-_process-oriented_ methodology, although it can be used in that manner.
-Instead, the system is modelled as composed as a set of objects, each of
-which has a time-varying state.
-* Unlike other PDES algorithms, explicit message passing between
-continually running _logical processes_ is not used to perform the
-computation. Instead, the computation is broken down into a large set of
-_transactions_. Each transaction computes the effect (the state
-change) of one event.
-* The algorithm of the framework prevents causality violations by recording
-dependency relationships (reads of time-stamped states) between the transactions.
-The known dependency information is used as scheduling hints.
-* Unlike PDES algorithms using _logical processes_, the simulation
-events (transactions) of this framework may access (read) the states of any
-number of objects.
-* The framework enforces causality and partly avoids deadlock by requiring
-that the time-stamps of states read by a transaction are strictly before the
-time-stamp of the state (or states) written by the transaction.
-* The framework is _non blocking_: if a thread creates a
-transaction that can not be immediately committed (or aborted), the
-transaction is recorded and deferred until more work has been done, rather
-than have the thread block awaiting completion of the transaction. The
-transactions are therefore suitable for computation by a fixed size thread
-pool.
-* Only the (state read) dependencies between transactions constrain the
-order of their computation. Therefore computation of the state histories for
-different objects can proceed at different rates, if those objects are
-uncoupled (or only loosely coupled) by dependencies.
-* The framework reduces the memory required to record all the state
-histories by recording only the changes in the object states. It assumes that
-the object states will be recorded as collections of immutable objects, so
-successive states can reuse (share) references to immutable objects for the
-parts of the state that have not changed, to further reduce the memory
-required.
-</ul>
+Java unit-testing assertions to assist a *Design By Contract* style of programming. And in particular, to ensure that
+the *Liskov substitution principle* is honoured.
+
+This library should be test framework agnostic; it should work with any test framework that recognizes
+an `AssertionError` exception as indicating a test failure. It delegates to [Hamcrest](http://hamcrest.org/) for
+checking assertions, and directly throws [opentest4j](https://github.com/ota4j-team/opentest4j) assertions, rather than
+using a test framework. It should not pull in a dependency on a test framework.
 
 ## License
 
-© Copyright Benedict Adamson 2018,2021.
- 
-![GPLV3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
+This is licensed using the *Eclipse Public License - v 2.0*. That is deliberately the
+same [license as JUnit 5](https://github.com/junit-team/junit5/blob/main/LICENSE.md), so if you are happy to use *JUnit
+5* for your unit tests, you should have no licensing objection to using this library.
 
-MC-des is free software: you can redistribute it and/or modify
-it under the terms of the
-[GNU General Public License](https://www.gnu.org/licenses/gpl.html)
-as published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+## Design by Contract
 
-MC-des is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+[Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract)
+is a software design and programming technique in which program behaviour is specified in terms of precise
+[preconditions](https://en.wikipedia.org/wiki/Precondition),
+[postconditions](https://en.wikipedia.org/wiki/Postcondition) and
+[invariants](https://en.wikipedia.org/wiki/Invariant). Post conditions are *assertions* about the visible (public) state
+of an item after an operation. Invariants are *assertions* that are true before and after an operation. Some invariants
+apply to all operations, and to the state after creation (construction) of the item; sometimes the term *invariant* is
+applied to only those kinds of invariants; when it is not, these are sometimes called *class invariants*.
 
-You should have received a copy of the GNU General Public License
-along with MC-des.  If not, see <https://www.gnu.org/licenses/>.
+Design by Contract is a helpful approach when writing automated unit tests, because postconditions and invariants can be
+directly and easily recast into assertions in the unit test code.
 
+The [Liskov substitution principle](https://en.wikipedia.org/wiki/Liskov_substitution_principle)
+is an important principle for object oriented programming, and thus for all Java programming. It requires that objects
+of a derived class can be correctly used in any place where an object of the base class can be used. That in turn
+requires that a derived class maintains all the invariants of its base class
+(but may have further constraints), and that the operations (mutators) meet all the postconditions specified for that
+operation of the base class.
+
+The *Liskov substitution principle* is important for unit testing of Java classes because all Java class are derived
+from the `Object` class **and**
+the `Object` class specifies some invariants. Furthermore, several commonly implemented interfaces of standard Java,
+such as `Comparable`, specify further invariants and postconditions that the principle requires an implementing class to
+meet.
+
+## Using this Library
+
+In your unit tests of a class you might have test code similar to this:
+
+```
+@Test
+public void increment_1() {
+   final var amount = new Amount(1L);
+
+   amount.increment();
+
+   assertEquals(2L, amount.longValue());
+}
+
+@Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
+
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
+### Add Calls to this Library
+
+But you can do do better than that. The class you are testing does not only have the behaviour that you have specified
+for it. It must also conform to some invariants imposed by the `Object` base class, and also for any interfaces your
+class implements. And you probably specify that the class has either *value semantics* or *entity semantics*. You should
+also check that the objects conform to those invariants. There are several of them. Checking them can be fiddly.
+Explicitly checking them all directly in your test method would be verbose, error prone, and in some cases provide low
+value
+(because in that particular test, it is unlikely that the invariant would be broken).
+
+The methods of this library provide a convenient and abstract way to check that objects conform to those invariants. In
+your tests, simply delegate to methods in this library, like this:
+
+```
+@Test
+public void increment_1() {
+   final var amount = new Amount(1L);
+
+   amount.increment();
+
+   ObjectVerifier.assertInvariants(amount);
+   ComparableVerifier.assertInvariants(amount);
+   assertEquals(2, amount.longValue());
+}
+
+@Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
+
+   ObjectVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
+
+### Refactor
+
+You will probably find your tests perform many similar calls to the methods of this library. You might therefore
+consider refactoring your test code to extract methods that reduce duplication in your test code, and increase
+abstraction. Like this:
+
+```
+private static assertInvariants(Amount a) {
+   ObjectVerifier.assertInvariants(a);
+   ComparableVerifier.assertInvariants(a);
+}
+
+private static assertInvariants(Amount a1, Amount a2) {
+   ObjectVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertInvariants(a1, a2);
+   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
+   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+}
+
+@Test
+public void increment_1() {
+   final var amount = new Amount(1L);
+
+   amount.increment();
+
+   assertInvariants(amount);
+   assertEquals(2, amount.longValue());
+}
+
+@Test
+public void compareTo_1_2() {
+   final var a1 = new Amount(1L);
+   final var a2 = new Amount(2L);
+
+   assertInvariants(a1, a2);
+   assertTrue(a1.compareTo(a2) < 0);
+}
+```
 
 ## Technologies Used
 
-* [Java 10](https://docs.oracle.com/javase/10/)
+* Java 11
 * Annotations:
     * [SpotBugs annotations](https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations)
 * Development environment:
-    * [Eclipse IDE](https://www.eclipse.org/ide/)
-    * [Jenkins Editor](https://github.com/de-jcup/eclipse-jenkins-editor)
-    * [SpotBugs Eclipse plugin](https://marketplace.eclipse.org/content/spotbugs-eclipse-plugin)
+    * [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+    * previously [Eclipse IDE](https://www.eclipse.org/ide/)
+    * previously [Jenkins Editor](https://github.com/de-jcup/eclipse-jenkins-editor)
+    * previously [SpotBugs Eclipse plugin](https://marketplace.eclipse.org/content/spotbugs-eclipse-plugin)
 * Software configuration management:
-     * [Git](https://git-scm.com/)
-     * [GitHub](https://github.com)
+    * [Git](https://git-scm.com/)
+    * [GitHub](https://github.com)
 * Building:
     * [Maven](https://maven.apache.org/)
     * [SpotBugs Maven plugin](https://spotbugs.github.io/spotbugs-maven-plugin/index.html)
     * [Jenkins](https://jenkins.io/)
     * [Ubuntu](http://ubuntu.com)
-* Static analysis and testing:
+* Static analysis and testing of the library itself:
     * [JUnit 5](https://junit.org/junit5/)
     * [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)
-    * [Open Test Alliance for the JVM](https://github.com/ota4j-team/opentest4j)
+    * [Open Test Alliance for the JVM opentest4j](https://github.com/ota4j-team/opentest4j)
     * [SpotBugs](https://spotbugs.github.io/)
