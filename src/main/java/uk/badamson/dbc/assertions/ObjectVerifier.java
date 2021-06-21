@@ -10,14 +10,14 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hamcrest.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anything;
-import static uk.badamson.dbc.assertions.AssertAll.assertAll;
+import static org.hamcrest.Matchers.allOf;
 
 /**
  * <p>
@@ -42,8 +42,10 @@ public final class ObjectVerifier {
 
     /**
      * <p>
-     * Assert that a given object conforms to all the invariants imposed by the
-     * {@link Object} base class, throwing an {@link AssertionError} if it does not.
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the invariants imposed by the
+     * {@link Object} base class.
      * </p>
      *
      * <h2>How to Use this Method</h2>
@@ -59,7 +61,7 @@ public final class ObjectVerifier {
      *
      *    thing.mutate("a");
      *
-     *    assertEquals(thing.getSpecies(), "a");
+     *    assertThat(thing.getSpecies(), is("a"));
      * }
      * </pre>
      *
@@ -86,8 +88,8 @@ public final class ObjectVerifier {
      *
      *    thing.mutate("a");
      *
-     *    ObjectVerifier.assertInvariants(thing);
-     *    assertEquals(thing.getSpecies(), "a");
+     *    assertThat(thing, ObjectVerifier.satisfiesInvariants());
+     *    assertThat(thing.getSpecies(), is("a"));
      * }
      * </pre>
      *
@@ -108,10 +110,29 @@ public final class ObjectVerifier {
      *
      *    thing.mutate(null);
      *
-     *    ObjectVerifier.assertInvariants(thing);
-     *    assertEquals(thing.getSpecies(), null);
+     *    assertThat(thing, ObjectVerifier.satisfiesInvariants());
+     *    assertThat(thing.getSpecies(), nullValue());
      * }
-     * </pre>
+     */
+    @Nonnull
+    public static Matcher<Object> satisfiesInvariants() {
+        return Matchers.describedAs("satisfies Object class invariants",
+                Matchers.allOf(
+                        new ToStringDoesNotThrowException(),
+                        new HashCodeDoesNotThrowException(),
+                        new EqualsSelf(),
+                        new NeverEqualsNull()
+                ));
+    }
+
+    /**
+     * <p>
+     * Assert that a given object conforms to all the invariants imposed by the
+     * {@link Object} base class, throwing an {@link AssertionError} if it does not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object, ObjectVerifier.satisfiesInvariants())}
+     * </p>
      *
      * @param object The object to test.
      * @throws NullPointerException If {@code object} is null.
@@ -119,17 +140,15 @@ public final class ObjectVerifier {
      */
     public static void assertInvariants(@Nonnull final Object object) {
         Objects.requireNonNull(object, "object");
-        assertAll("Object invariants [" + safeToString(object) + "]",
-                () -> assertThat("toString", toString(object), anything()), // check for exception
-                () -> assertThat("hashCode", hashCode(object), anything()), // check for exception
-                () -> assertAll("equals", () -> assertEqualsSelf(object), () -> assertNeverEqualsNull(object)));
+        assertThat(object, satisfiesInvariants());
     }
 
     /**
      * <p>
-     * Assert that a pair of objects conform to all the relationship (pairwise)
-     * invariants imposed by the {@link Object} base class, throwing an
-     * {@link AssertionError} if they do not.
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the  relationship (pairwise)
+     * invariants imposed by the {@link Object} base class.
      * </p>
      *
      * <h2>How to Use this Method</h2>
@@ -140,13 +159,13 @@ public final class ObjectVerifier {
      *
      * <pre>
      * {@code @Test}
-     * public void mutate_a() {
+     * public void spawn_a() {
      *    final var parent = new Monster();
      *
      *    final var child = parent.spawn();
      *
-     *    assertNotNull(child);// guard
-     *    assertSame(parent, child.getParent());
+     *    assertThat(child, notNullValue());// guard
+     *    assertThat(child.getParent(), sameInstance(parent));
      * }
      * </pre>
      *
@@ -169,16 +188,16 @@ public final class ObjectVerifier {
      *
      * <pre>
      * {@code @Test}
-     * public void mutate_a() {
+     * public void spawn_a() {
      *    final var parent = new Monster();
      *
      *    final var child = parent.spawn();
      *
-     *    assertNotNull(child);// guard
-     *    ObjectVerifier.assertInvariants(parent);
-     *    ObjectVerifier.assertInvariants(child);
-     *    ObjectVerifier.assertInvariants(parent, child);
-     *    assertSame(thing, child.getParent());
+     *    assertThat(child, notNullValue());// guard
+     *    assertThat(parent, ObjectVerifier.satisfiesInvariants());
+     *    assertThat(child, ObjectVerifier.satisfiesInvariants());
+     *    assertThat(child, ObjectVerifier.satisfiesInvariantsWith(parent));
+     *    assertThat(child.getParent(), sameInstance(parent));
      * }
      * </pre>
      *
@@ -200,41 +219,45 @@ public final class ObjectVerifier {
      *    final var a = new Monster("a");
      *    final var b = new Monster("b");
      *
-     *    ObjectVerifier.assertInvariants(a, b);
-     *    assertNotEquals(a, b);
+     *    assertThat(a, ObjectVerifier.satisfiesInvariantsWith(b));
+     *    assertThat(a, not(is(b)));
      * }
      * </pre>
+     *
+     * @param other An object to verify with respect to
+     * @throws NullPointerException If {@code other} is null.
+     */
+    public static Matcher<Object> satisfiesInvariantsWith(@Nonnull Object other) {
+        Objects.requireNonNull(other, "object");
+        return Matchers.describedAs("satisfies pairwise Object class invariants with " + safeToString(other), allOf(
+                new EqualityIsSymmetric(other),
+                new HashCodeIsConsistentWithEquals(other)
+        ));
+    }
+
+    /**
+     * <p>
+     * Assert that a pair of objects conform to all the relationship (pairwise)
+     * invariants imposed by the {@link Object} base class, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object1, ObjectVerifier.satisfiesInvariantsWith(object2))}
+     * </p>
      *
      * @param object1 An object to test.
      * @param object2 An object to test.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object1} break an invariant.
      */
     public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
-        final boolean equals12 = equals(object1, object2);
-        final boolean equals21 = equals(object2, object1);
-        final int hashCode1 = hashCode(object1);
-        final int hashCode2 = hashCode(object2);
-
-        assertAll("equals [" + safeToString(object1) + ", " + safeToString(object2) + "]",
-                /*
-                 * A faulty equals method is unlikely to be asymmetric (except for failing to
-                 * handle null attributes, which we have already checked), but check for
-                 * completeness.
-                 */
-                () -> assertThat("Equality is symmetric", equals12 == equals21),
-                /*
-                 * The programmer might have implemented the equals method but forgot to also
-                 * implement the hashCode() method, which will fail this assertion for the case
-                 * that equals12 && (object1 != object2).
-                 */
-                () -> assertThat("hashCode() is consistent with equals()", !(equals12 && hashCode1 != hashCode2)));
+        assertThat(object1, satisfiesInvariantsWith(object2));
     }
 
     private static void assertNeverEqualsNull(@Nonnull final Object object) {
@@ -324,4 +347,145 @@ public final class ObjectVerifier {
             throw new AssertionError("toString() must not throw exceptions", e);
         }
     }
+
+    private static final class HasHashCode extends FeatureMatcher<Object, Integer> {
+        public HasHashCode(Matcher<? super Integer> subMatcher, String featureDescription) {
+            super(subMatcher, featureDescription, "hashCode");
+        }
+
+        @Override
+        protected Integer featureValueOf(Object actual) {
+            return actual.hashCode();
+        }
+    }// class
+
+    private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
+        @Override
+        protected boolean matchesSafely(Object item, Description mismatchDescription) {
+            try {
+                return item.equals(item);
+            } catch (Exception e) {
+                mismatchDescription.appendText("throw exception " + safeToString(e));
+                return false;
+            }
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("is always equivalent to itself");
+        }
+    }// class
+
+    private static final class NeverEqualsNull extends TypeSafeDiagnosingMatcher<Object> {
+        @Override
+        protected boolean matchesSafely(Object item, Description mismatchDescription) {
+            return !item.equals(null);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("is not equivalent to null");
+        }
+    }// class
+
+    private static abstract class MethodDoesNotThrowException extends TypeSafeDiagnosingMatcher {
+
+        protected abstract void callMethod(@Nonnull Object item) throws Throwable;
+
+        @Override
+        protected boolean matchesSafely(Object item, Description mismatchDescription) {
+            try {
+                callMethod(item);
+            } catch (Throwable e) {
+                mismatchDescription.appendText("threw exception " + safeToString(e));
+                return false;
+            }
+            return true;
+        }
+    }// class
+
+    private static final class ToStringDoesNotThrowException extends MethodDoesNotThrowException {
+
+        @Override
+        protected void callMethod(@Nonnull Object item) throws RuntimeException {
+            item.toString();
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("toString() does not throw exceptions");
+        }
+    }// class
+
+    private static final class HashCodeDoesNotThrowException extends MethodDoesNotThrowException {
+
+        @Override
+        protected void callMethod(@Nonnull Object item) throws RuntimeException {
+            item.hashCode();
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("hashCode() does not throw exceptions");
+        }
+    }// class
+
+    private static abstract class PairwiseMatcher extends TypeSafeDiagnosingMatcher<Object> {
+        @Nonnull
+        private final Object other;
+
+        protected PairwiseMatcher(@Nonnull final Object other) {
+            this.other = Objects.requireNonNull(other, "other");
+        }
+
+        @Override
+        protected final boolean matchesSafely(Object item, Description mismatchDescription) {
+            return matchesSafely(item, other, mismatchDescription);
+        }
+
+        @Nonnull
+        protected final String otherToString() {
+            return safeToString(other);
+        }
+
+        protected abstract boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription);
+    }// class
+
+    private static final class EqualityIsSymmetric extends PairwiseMatcher {
+
+
+        EqualityIsSymmetric(@Nonnull Object other) {
+            super(other);
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription) {
+            return item1.equals(item2) == item2.equals(item1);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("equality is symmetric");
+        }
+
+    }// class
+
+    private static final class HashCodeIsConsistentWithEquals extends PairwiseMatcher {
+
+
+        HashCodeIsConsistentWithEquals(@Nonnull Object other) {
+            super(other);
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription) {
+            return !(item1.equals(item2) && item1.hashCode() != item2.hashCode());
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("hashCode() is consistent with equals()");
+        }
+
+    }// class
 }
