@@ -227,16 +227,31 @@ public final class ComparableVerifier {
 
     /**
      * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the  three-way relationship
+     * invariants imposed by the  {@link Comparable} interface.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link #satisfiesInvariantsWith(Comparable, Comparable)}
+     * method, provided out of completeness, for use in very thorough unit tests. In
+     * practice, its invariants are unlikely to be broken if the
+     * {@link #satisfiesInvariantsWith(Comparable, Comparable)} invariants are all met.
+     * </p>
+     */
+    public static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
+        return new CompareToIsTransitive<T>(item2, item3);
+    }
+
+    /**
+     * <p>
      * Assert that a triplet of objects conform to the relationship invariant
      * imposed by the {@link Comparable} interface, throwing an
      * {@link AssertionError} if they do not.
      * </p>
-     *
      * <p>
-     * This is a supplement to the {@link #assertInvariants(Comparable, Comparable)}
-     * method, provided out of completeness, for use in very thorough unit tests. In
-     * practice, its invariants are unlikely to be broken if the
-     * {@link #assertInvariants(Comparable, Comparable)} invariants are all met.
+     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.satisfiesInvariantsWith(object2, object3))}
      * </p>
      *
      * @param <T>     The class of {@code object1}, {@code object2} and {@code object3}
@@ -323,6 +338,38 @@ public final class ComparableVerifier {
         }
     }
 
+    private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleMatcher<T> {
+        CompareToIsTransitive(@Nonnull T item2, @Nonnull T item3) {
+            super(item2, item3);
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription) {
+            final int c12;
+            final int c23;
+            final int c13;
+            try {
+                c12 = item1.compareTo(item2);
+                c23 = item2.compareTo(item3);
+                c13 = item1.compareTo(item3);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but compareTo() threw exception ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
+            final boolean ok = !(c12 > 0 && c23 > 0 && !(c13 > 0));
+            if (!ok) {
+                mismatchDescription.appendText("not satisfied");
+            }
+            return ok;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("compareTo is transitive");
+        }
+    }// class
+
     private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairMatcher<T> {
         CompareToIsSymmetric(@Nonnull T other) {
             super(other);
@@ -341,6 +388,9 @@ public final class ComparableVerifier {
                 return false;
             }
             final boolean ok = Integer.signum(c12) == -Integer.signum(c21);
+            if (!ok) {
+                mismatchDescription.appendText("not satisfied");
+            }
             return ok;
         }
 
