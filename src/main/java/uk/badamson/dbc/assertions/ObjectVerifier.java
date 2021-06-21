@@ -378,7 +378,7 @@ public final class ObjectVerifier {
         }
     }// class
 
-    private static final class EqualityIsSymmetric extends PairwiseMatcher<Object> {
+    private static final class EqualityIsSymmetric extends PairMatcher<Object> {
 
 
         EqualityIsSymmetric(@Nonnull Object other) {
@@ -411,7 +411,7 @@ public final class ObjectVerifier {
 
     }// class
 
-    private static final class HashCodeIsConsistentWithEquals extends PairwiseMatcher<Object> {
+    private static final class HashCodeIsConsistentWithEquals extends PairMatcher<Object> {
 
 
         HashCodeIsConsistentWithEquals(@Nonnull Object other) {

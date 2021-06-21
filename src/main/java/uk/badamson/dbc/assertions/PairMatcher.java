@@ -19,11 +19,11 @@ import java.util.Objects;
  * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being  matched has a particular relationship with another given object of the same class.</p>
  * <p>To use, implement {@link #matchesSafely(Object, Object, Description)}.</p>
  */
-public abstract class PairwiseMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
+public abstract class PairMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
     @Nonnull
     private final T other;
 
-    protected PairwiseMatcher(@Nonnull final T other) {
+    protected PairMatcher(@Nonnull final T other) {
         this.other = Objects.requireNonNull(other, "other");
     }
 

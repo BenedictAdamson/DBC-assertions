@@ -323,7 +323,7 @@ public final class ComparableVerifier {
         }
     }
 
-    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairwiseMatcher<T> {
+    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairMatcher<T> {
         CompareToIsSymmetric(@Nonnull T other) {
             super(other);
         }
