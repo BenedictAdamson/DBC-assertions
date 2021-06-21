@@ -14,7 +14,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hamcrest.core.AllOf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -309,17 +308,18 @@ public final class ObjectVerifier {
     private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
+            final boolean ok;
             try {
-                final boolean ok = item.equals(item);
-                if (!ok) {
-                    mismatchDescription.appendText("not satisfied");
-                }
-                return ok;
+                ok = item.equals(item);
             } catch (Exception e) {
-                mismatchDescription.appendText("threw exception ");
+                mismatchDescription.appendText("but equals() threw exception ");
                 mismatchDescription.appendValue(e);
                 return false;
             }
+            if (!ok) {
+                mismatchDescription.appendText("not satisfied");
+            }
+            return ok;
         }
 
         @Override
@@ -329,9 +329,17 @@ public final class ObjectVerifier {
     }// class
 
     private static final class NeverEqualsNull extends TypeSafeDiagnosingMatcher<Object> {
+        @SuppressWarnings("ConstantConditions")
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            final boolean ok = !item.equals(null);
+            final boolean ok;
+            try {
+                ok = !item.equals(null);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
             if (!ok) {
                 mismatchDescription.appendText("not satisfied");
             }
@@ -353,7 +361,8 @@ public final class ObjectVerifier {
             try {
                 callMethod(item);
             } catch (Throwable e) {
-                mismatchDescription.appendText("threw exception " + safeToString(e));
+                mismatchDescription.appendText("but threw exception ");
+                mismatchDescription.appendValue(e);
                 return false;
             }
             return true;
@@ -369,7 +378,7 @@ public final class ObjectVerifier {
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("toString()");
+            description.appendText("toString() does not throw exceptions");
         }
     }// class
 
@@ -382,27 +391,11 @@ public final class ObjectVerifier {
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("hashCode()");
+            description.appendText("hashCode() does not throw exceptions");
         }
     }// class
 
-    private static abstract class PairwiseMatcher extends TypeSafeDiagnosingMatcher<Object> {
-        @Nonnull
-        private final Object other;
-
-        protected PairwiseMatcher(@Nonnull final Object other) {
-            this.other = Objects.requireNonNull(other, "other");
-        }
-
-        @Override
-        protected final boolean matchesSafely(Object item, Description mismatchDescription) {
-            return matchesSafely(item, other, mismatchDescription);
-        }
-
-        protected abstract boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription);
-    }// class
-
-    private static final class EqualityIsSymmetric extends PairwiseMatcher {
+    private static final class EqualityIsSymmetric extends PairwiseMatcher<Object> {
 
 
         EqualityIsSymmetric(@Nonnull Object other) {
@@ -411,7 +404,17 @@ public final class ObjectVerifier {
 
         @Override
         protected boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription) {
-            final boolean ok = item1.equals(item2) == item2.equals(item1);
+            final boolean equals12;
+            final boolean equals21;
+            try {
+                equals12 = item1.equals(item2);
+                equals21 = item2.equals(item1);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
+            final boolean ok = equals12 == equals21;
             if (!ok) {
                 mismatchDescription.appendText("not satisfied");
             }
@@ -425,7 +428,7 @@ public final class ObjectVerifier {
 
     }// class
 
-    private static final class HashCodeIsConsistentWithEquals extends PairwiseMatcher {
+    private static final class HashCodeIsConsistentWithEquals extends PairwiseMatcher<Object> {
 
 
         HashCodeIsConsistentWithEquals(@Nonnull Object other) {
@@ -434,9 +437,28 @@ public final class ObjectVerifier {
 
         @Override
         protected boolean matchesSafely(@Nonnull Object item1, @Nonnull Object item2, @Nonnull Description mismatchDescription) {
-            final boolean ok = !(item1.equals(item2) && item1.hashCode() != item2.hashCode());
-            if (!ok) {
+            boolean ok = true;
+            boolean equals = false;
+            try {
+                equals = item1.equals(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            int hasCode1 = 0;
+            int hashCode2 = 0;
+            try {
+                hasCode1 = item1.hashCode();
+                hashCode2 = item2.hashCode();
+            } catch (Exception e) {
+                mismatchDescription.appendText("but hashCode() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            if (ok && equals && hasCode1 != hashCode2) {
                 mismatchDescription.appendText("not satisfied");
+                ok = false;
             }
             return ok;
         }
