@@ -274,16 +274,32 @@ public final class ComparableVerifier {
 
     /**
      * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies  the relationship (pairwise)
+     * invariant required for the {@link Comparable#compareTo(Object)} method to
+     * be consistent with {@linkplain Object#equals(Object)}.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link #satisfiesInvariantsWith(Comparable)}
+     * method, for use in the typical case that the natural ordering is consistent
+     * with equals.
+     * </p>
+     */
+    public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
+        return new NaturalOrderingIsConsistentWithEquals<>(other);
+    }
+
+    /**
+     * <p>
      * Assert that a pair of objects conform to the relationship (pairwise)
      * invariant required for their {@link Comparable#compareTo(Object)} method to
      * be consistent with {@linkplain Object#equals(Object)}, throwing an
      * {@link AssertionError} if they do not.
      * </p>
-     *
      * <p>
-     * This is a supplement to the {@link #assertInvariants(Comparable, Comparable)}
-     * method, for use in the typical case that the natural ordering is consistent
-     * with equals.
+     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(object2))}
      * </p>
      *
      * @param <T>     The class of {@code object1} and {@code object2}
@@ -298,17 +314,7 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
                                                                                              @Nonnull final T object2) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-
-        /*
-         * Provide good diagnostics if compareTo or equals throws an exception.
-         */
-        final var compareTo = compareTo(object1, object2);
-        final var equals = ObjectVerifier.equals(object1, object2);
-
-        assertThat("Natural ordering is consistent with equals [" + ObjectVerifier.safeToString(object1) + ", "
-                + ObjectVerifier.safeToString(object2) + "]", compareTo == 0 == equals);
+        assertThat(object1, naturalOrderingIsConsistentWithEqualsWith(object2));
     }
 
     private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
@@ -324,6 +330,43 @@ public final class ComparableVerifier {
                     + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]", e);
         }
     }
+
+    private static final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairMatcher<T> {
+        NaturalOrderingIsConsistentWithEquals(@Nonnull T other) {
+            super(other);
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+            boolean ok = true;
+            int compareTo = 0;
+            try {
+                compareTo = item1.compareTo(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but compareTo() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            boolean equals = true;
+            try {
+                equals = item1.equals(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            if (ok && !(compareTo == 0 == equals)) {
+                mismatchDescription.appendText("not satisfied");
+                ok = false;
+            }
+            return ok;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("natural ordering is consistent with equals");
+        }
+    }// class
 
     private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleMatcher<T> {
         CompareToIsTransitive(@Nonnull T item2, @Nonnull T item3) {
