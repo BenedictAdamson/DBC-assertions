@@ -352,24 +352,7 @@ public final class ObjectVerifier {
         }
     }// class
 
-    private static abstract class MethodDoesNotThrowException extends TypeSafeDiagnosingMatcher<Object> {
-
-        protected abstract void callMethod(@Nonnull Object item) throws Throwable;
-
-        @Override
-        protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            try {
-                callMethod(item);
-            } catch (Throwable e) {
-                mismatchDescription.appendText("but threw exception ");
-                mismatchDescription.appendValue(e);
-                return false;
-            }
-            return true;
-        }
-    }// class
-
-    private static final class ToStringDoesNotThrowException extends MethodDoesNotThrowException {
+    private static final class ToStringDoesNotThrowException extends MethodDoesNotThrowException<Object> {
 
         @Override
         protected void callMethod(@Nonnull Object item) throws RuntimeException {
@@ -382,7 +365,7 @@ public final class ObjectVerifier {
         }
     }// class
 
-    private static final class HashCodeDoesNotThrowException extends MethodDoesNotThrowException {
+    private static final class HashCodeDoesNotThrowException extends MethodDoesNotThrowException<Object> {
 
         @Override
         protected void callMethod(@Nonnull Object item) throws RuntimeException {

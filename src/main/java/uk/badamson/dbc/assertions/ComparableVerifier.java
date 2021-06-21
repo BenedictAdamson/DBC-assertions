@@ -10,13 +10,16 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.opentest4j.AssertionFailedError;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.badamson.dbc.assertions.AssertAll.assertAll;
 
 /**
  * <p>
@@ -53,8 +56,10 @@ public final class ComparableVerifier {
 
     /**
      * <p>
-     * Assert that a given object conforms to all the invariants imposed by the
-     * {@link Comparable} interface, throwing an {@link AssertionError} if it does
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the invariants imposed by the
+     * {@link Comparable} interface.
      * not.
      * </p>
      *
@@ -72,7 +77,7 @@ public final class ComparableVerifier {
      *
      *    amount.increment();
      *
-     *    assertEquals(2, amount.intValue());
+     *    assertThat(amount.intValue(), is(2));
      * }
      * </pre>
      *
@@ -99,11 +104,34 @@ public final class ComparableVerifier {
      *
      *    amount.increment();
      *
-     *    ObjectTest.assertInvariants(amount);
-     *    ComparableVerifier.assertInvariants(amount);
-     *    assertEquals(2, amount.intValue());
+     *    assertThat(amount, ObjectVerifier.satisfiesInvariants());
+     *    assertThat(amount, ComparableVerifier.satisfiesInvariants());
+     *    assertThat(amount.intValue(), is(2));
      * }
      * </pre>
+     */
+    public static <T extends Comparable<T>> Matcher<T> satisfiesInvariants() {
+        return Matchers.describedAs("satisfies Comparable interface invariants",
+                Matchers.<T>allOf(
+                        new CompareToNullThrowsNPE<>(),
+                        /*
+                         * For completeness, check that this.compareTo(this) does not throw an
+                         * exception, although it is unlikely that a faulty implementation would throw
+                         * an exception.
+                         */
+                        new CompareToSelfDoesNotThrowException<>()
+                ));
+    }
+
+    /**
+     * <p>
+     * Assert that a given object conforms to all the invariants imposed by the
+     * {@link Comparable} interface, throwing an {@link AssertionError} if it does
+     * not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object, ComparableVerifier.satisfiesInvariants())}
+     * </p>
      *
      * @param <T>    The class of {@code object}
      * @param object The object to test.
@@ -112,13 +140,7 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
         Objects.requireNonNull(object, "object");
-        assertAll("Comparable invariants [" + ObjectVerifier.safeToString(object) + "]",
-                /*
-                 * For completeness, check that this.compareTo(this) does not throw an
-                 * exception, although it is unlikely that a faulty implementation would throw
-                 * an exception.
-                 */
-                () -> compareTo(object, object), () -> assertCompareToNullThrowsNPE(object));
+        assertThat(object, satisfiesInvariants());
     }
 
     /**
@@ -182,9 +204,9 @@ public final class ComparableVerifier {
      * @param object1 An object to test.
      * @param object2 An object to test.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break an invariant.
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
@@ -221,10 +243,10 @@ public final class ComparableVerifier {
      * @param object2 An object to test.
      * @param object3 An object to test.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          <li>If {@code object3} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              <li>If {@code object3} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1}, {@code object2} and {@code object3} break an
      *                              invariant.
      * @see #assertInvariants(Comparable, Comparable)
@@ -265,9 +287,9 @@ public final class ComparableVerifier {
      * @param object1 An object to test.
      * @param object2 An object to test.
      * @throws NullPointerException <ul>
-     *                                          <li>If {@code object1} is null.</li>
-     *                                          <li>If {@code object2} is null.</li>
-     *                                          </ul>
+     *                              <li>If {@code object1} is null.</li>
+     *                              <li>If {@code object2} is null.</li>
+     *                              </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      * @see #assertInvariants(Comparable, Comparable)
      */
@@ -299,5 +321,44 @@ public final class ComparableVerifier {
                     + ObjectVerifier.safeToString(object1) + ", " + ObjectVerifier.safeToString(object2) + "]", e);
         }
     }
+
+    private static final class CompareToNullThrowsNPE<T extends Comparable<T>> extends TypeSafeDiagnosingMatcher<T> {
+        @Override
+        protected boolean matchesSafely(T item, Description mismatchDescription) {
+            try {
+                //noinspection ConstantConditions
+                item.compareTo(null);
+            } catch (final NullPointerException e) {
+                return true;// the required behaviour
+            } catch (final Exception e) {
+                /*
+                 * It is unlikely that a faulty compareTo would throw any other kind of
+                 * exception, but provide good diagnostics just in case.
+                 */
+                mismatchDescription.appendText("but threw a ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
+            mismatchDescription.appendText("but did not throw an exception");
+            return false;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("compareToNull(null) throws a NullPointerException");
+        }
+    }// class
+
+    private static final class CompareToSelfDoesNotThrowException<T extends Comparable<T>> extends MethodDoesNotThrowException<T> {
+        @Override
+        protected void callMethod(@Nonnull T item) throws Throwable {
+            item.compareTo(item);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("this.compareTo(this) does not throw an exception");
+        }
+    }// class
 
 }
