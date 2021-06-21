@@ -46,6 +46,11 @@ public class ObjectVerifierTest {
             return 0;
         }
 
+        @Override
+        public String toString() {
+            return "AsymmetricEquals{" + value +
+                    '}';
+        }
     }// class
 
     private static final class HashCodeInconsistentWithEquals {
