@@ -255,19 +255,6 @@ public final class ObjectVerifier {
         assertThat(object1, satisfiesInvariantsWith(object2));
     }
 
-    static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
-        try {
-            return object1.equals(object2);
-        } catch (final Exception e) {
-            /*
-             * A typical equals implementation will delegate to the equals methods of the
-             * attributes of the object. A naive implementation might throw a
-             * NullPointerException if the object has any null attributes.
-             */
-            throw new AssertionError("equals() must not throw exceptions [" + safeToString(object1) + ", " + safeToString(object2) + "]", e);
-        }
-    }
-
     @Nonnull
     private static String identityString(@Nullable final Object object) {
         if (object == null) {
@@ -305,22 +292,33 @@ public final class ObjectVerifier {
         }
     }
 
-    private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
-        @SuppressWarnings({"ConstantConditions", "EqualsWithItself"})
-        @Override
-        protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            final boolean ok;
+    @Nullable
+    static Boolean equals(@Nullable Object item1, @Nullable Object item2, @Nonnull Description mismatchDescription) {
+        // Objects.equals does not give the wanted value for item1 == item2
+        if (item1 == null && item2 == null) {
+            return true;
+        } else if (item1 == null) {
+            // avoid NPE
+            return false;
+        } else {
             try {
-                ok = item.equals(item);
+                return item1.equals(item2);
             } catch (Exception e) {
                 mismatchDescription.appendText("but equals() threw exception ");
                 mismatchDescription.appendValue(e);
-                return false;
+                return null;
             }
-            if (!ok) {
+        }
+    }
+
+    private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
+        @Override
+        protected boolean matchesSafely(Object item, Description mismatchDescription) {
+            final Boolean equals = ObjectVerifier.equals(item, item, mismatchDescription);
+            if (equals == Boolean.FALSE) {
                 mismatchDescription.appendText("not satisfied");
             }
-            return ok;
+            return equals == Boolean.TRUE;
         }
 
         @Override
@@ -330,21 +328,13 @@ public final class ObjectVerifier {
     }// class
 
     private static final class NeverEqualsNull extends TypeSafeDiagnosingMatcher<Object> {
-        @SuppressWarnings("ConstantConditions")
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            final boolean ok;
-            try {
-                ok = !item.equals(null);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
-                return false;
-            }
-            if (!ok) {
+            final Boolean equals = ObjectVerifier.equals(item, null, mismatchDescription);
+            if (equals == Boolean.TRUE) {
                 mismatchDescription.appendText("not satisfied");
             }
-            return ok;
+            return equals == Boolean.FALSE;
         }
 
         @Override
@@ -453,6 +443,7 @@ public final class ObjectVerifier {
         public void describeTo(Description description) {
             description.appendText("hashCode() is consistent with equals()");
         }
+
 
     }// class
 }

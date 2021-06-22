@@ -238,20 +238,11 @@ public final class EqualsSemanticsVerifier {
                 mismatchDescription.appendValue(e);
                 ok = false;
             }
-            boolean equals = false;
-            try {
-                equals = item1.equals(item2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
-                ok = false;
-            }
-            boolean equalAttributes = false;
-            try {
-                equalAttributes = Objects.equals(attribute1, attribute2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() for the attributes threw exception ");
-                mismatchDescription.appendValue(e);
+            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            ok = ok && equals != null;
+            final Boolean equalAttributes = ObjectVerifier.equals(attribute1, attribute2, mismatchDescription);
+            if (equalAttributes == null) {
+                mismatchDescription.appendText(" for the attributes");
                 ok = false;
             }
             if (ok && equals && !equalAttributes) {
@@ -298,20 +289,11 @@ public final class EqualsSemanticsVerifier {
             final U id1 = getId(item1, mismatchDescription);
             final U id2 = getId(item2, mismatchDescription);
             boolean ok = id1 != null && id2 != null;
-            boolean equals = false;
-            try {
-                equals = item1.equals(item2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
-                ok = false;
-            }
-            boolean equalIds = false;
-            try {
-                equalIds = Objects.equals(id1, id2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
+            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            ok = ok && equals != null;
+            final Boolean equalIds = ObjectVerifier.equals(id1, id2, mismatchDescription);
+            if (equalIds == null) {
+                mismatchDescription.appendText(" for IDs");
                 ok = false;
             }
             if (ok && (equals != equalIds)) {

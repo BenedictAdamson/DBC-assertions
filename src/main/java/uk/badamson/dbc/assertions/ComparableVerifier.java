@@ -311,14 +311,8 @@ public final class ComparableVerifier {
                 mismatchDescription.appendValue(e);
                 ok = false;
             }
-            boolean equals = true;
-            try {
-                equals = item1.equals(item2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
-                ok = false;
-            }
+            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            ok = ok && (equals != null);
             if (ok && !(compareTo == 0 == equals)) {
                 mismatchDescription.appendText("not satisfied");
                 ok = false;
