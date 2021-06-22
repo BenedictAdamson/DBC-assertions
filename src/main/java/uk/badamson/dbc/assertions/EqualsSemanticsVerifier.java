@@ -147,7 +147,7 @@ public final class EqualsSemanticsVerifier {
      * {@link AssertionError} if they do not.
      * </p>
      * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, EntitySemanticsVerifier.hasEntitySemanticsWith(object2, valueOfId))}
+     * This is a convenience method, equivalent to {@code assertThat(object1, EqualsSemanticsVerifier.hasEntitySemanticsWith(object2, valueOfId))}
      * </p>
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
@@ -314,16 +314,17 @@ public final class EqualsSemanticsVerifier {
 
     /**
      * <p>
-     * Assert that a pair of objects of a class satisfy a pairwise invariant
-     * necessary for the class to have <i>value semantics</i>, throwing an
-     * {@link AssertionError} if they do not.
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies a   pairwise invariant, with respect to a given object,
+     * necessary for the class to have <i>value semantics</i>,.
      * </p>
      * <p>
      * Value semantics implies that if you have two non-null instances of the value
      * class, and you access the values of one of the {@code Object} attributes for
      * both objects, an invariant is that if the {@code equals(Object)} method
-     * returns {@code true}, the attributes must be
-     * {@linkplain Object#equals(Object)} This method tests that invariant for one
+     * returns {@code true}, the attributes also must be
+     * {@linkplain Object#equals(Object)} The matcher tests that invariant for one
      * attribute. So the method can be general, you provide it with an accessor
      * function for getting the value of the attribute from the two objects.
      * </p>
@@ -331,7 +332,7 @@ public final class EqualsSemanticsVerifier {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#satisfiesInvariantsWith(Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each object <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
@@ -344,11 +345,35 @@ public final class EqualsSemanticsVerifier {
      *    final var species1 = new Species("Homo sapiens");
      *    final var species2 = new Species("Homo sapiens");
      *
-     *    ObjectTest.assertInvariants(species1, species2);
-     *    {@code EqualsSemanticsVerifier.assertValueSemantics(species1, species2, "name", (species) -> species.getName());}
-     *    assertEquals(species1, species2);
+     *    assertThat(species1, ObjectVerifier.satisfiesInvariantsWith(species2));
+     *    {@code assertThat(species1, EqualsSemanticsVerifier.hasValueSemanticsWith(species2, "name", (species) -> species.getName()));}
+     *    assertThat(species1, is(species2));
      * }
      * </pre>
+     *
+     * @param <T>              The class of object to match
+     * @param <U>              The class of the attribute to examine.
+     * @param other            The other object to test the invariant with respect to.
+     * @param attributeName    The name of the attribute to examine.
+     * @param valueOfAttribute A function for accessing the value of the attribute for the two
+     *                         objects under test. This should delegate to the getter method of
+     *                         the class. This matcher assumes that the getter should never
+     *                         throw exceptions.
+     * @throws NullPointerException \If any argument is null.
+     */
+    public static <T, U> Matcher<T> hasValueSemanticsWith(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
+        return new HasValueSemantics<>(other, attributeName, valueOfAttribute);
+    }
+
+    /**
+     * <p>
+     * Assert that a pair of objects of a class satisfy a pairwise invariant
+     * necessary for the class to have <i>value semantics</i>, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object1, EqualsSemanticsVerifier.hasValueSemanticsWith(object2, attributeName, valueOfAttribute))}
+     * </p>
      *
      * @param <T>              The class of {@code object1} and {@code object2}
      * @param <U>              The class of the attribute to examine.
@@ -370,34 +395,69 @@ public final class EqualsSemanticsVerifier {
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
                                                    @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(attributeName, "attributeName");
-        Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
-
-        final var stringId1 = ObjectVerifier.safeToString(object1);
-        final var stringId2 = ObjectVerifier.safeToString(object2);
-        /*
-         * Provide good diagnostics if the getter throws an exception.
-         */
-        @Nullable final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
-        @Nullable final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
-        /*
-         * Provide good diagnostics if equals throws an exception. Handle null
-         * attributes.
-         */
-        final boolean equals = ObjectVerifier.equals(object1, object2);
-        final boolean attributesEquals = attribute1 == null ? attribute2 == null
-                : ObjectVerifier.equals(attribute1, attribute2);
-
-        assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
-                !(equals && !attributesEquals));
+        assertThat(object1, hasValueSemanticsWith(object2, attributeName, valueOfAttribute));
     }
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
                                                                   final Exception e) {
         return new AssertionError("Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
+
+    private static final class HasValueSemantics<T, U> extends PairMatcher<T> {
+
+        @Nonnull
+        private final String attributeName;
+        @Nonnull
+        private final Function<T, U> valueOfAttribute;
+
+        HasValueSemantics(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
+            super(other);
+            this.attributeName = Objects.requireNonNull(attributeName, "attributeName");
+            this.valueOfAttribute = Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+            boolean ok = true;
+            U attribute1 = null;
+            U attribute2 = null;
+            try {
+                attribute1 = valueOfAttribute.apply(item1);
+                attribute2 = valueOfAttribute.apply(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but getting the attribute threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            boolean equals = false;
+            try {
+                equals = item1.equals(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            boolean equalAttributes = false;
+            try {
+                equalAttributes = Objects.equals(attribute1, attribute2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() for the attributes threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            if (ok && equals && !equalAttributes) {
+                mismatchDescription.appendText("not satisifed");
+                ok = false;
+            }
+            return ok;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("has value semantics with attribute ");
+            description.appendText(attributeName);
+        }
+    }// class
 
     private static final class HasEntitySemantics<T, U> extends PairMatcher<T> {
 
