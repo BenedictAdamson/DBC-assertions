@@ -149,11 +149,20 @@ public class EqualsSemanticsVerifierTest {
     public class AssertEntitySemantics {
 
         @Test
-        public void entity() {
+        public void equivalent() {
             final UUID id = UUID.randomUUID();
             final var entity1 = new Entity(id, "A", 1L, 100);
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
+
+            EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
+        }
+
+        @Test
+        public void different() {
+            final var entity1 = new Entity(UUID.randomUUID(), "A", 1L, 100);
+            final var entity2 = new Entity(UUID.randomUUID(), "B", 2L, 200);
+            assert !entity1.equals(entity2);
 
             EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
         }

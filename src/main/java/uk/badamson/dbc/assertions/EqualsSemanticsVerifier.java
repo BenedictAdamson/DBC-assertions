@@ -212,11 +212,6 @@ public final class EqualsSemanticsVerifier {
         assertThat(object1, hasValueSemanticsWith(object2, attributeName, valueOfAttribute));
     }
 
-    private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
-                                                                  final Exception e) {
-        return new AssertionError("Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
-    }
-
     private static final class HasValueSemantics<T, U> extends PairMatcher<T> {
 
         @Nonnull
