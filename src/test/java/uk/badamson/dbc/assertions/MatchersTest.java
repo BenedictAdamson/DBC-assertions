@@ -305,17 +305,17 @@ public class MatchersTest {
         public void compareToThrows() {
             final var object1 = new CompareToThrows(0);
             final var object2 = new CompareToThrows(1);
-            assertThat(object1, not(ComparableVerifier.satisfiesInvariantsWith(object2)));
+            assertThat(object1, not(Matchers.satisfiesComparableInvariantsWith(object2)));
         }
 
         @Test
         public void integer() {
-            assertThat(0, ComparableVerifier.satisfiesInvariantsWith(1));
+            assertThat(0, Matchers.satisfiesComparableInvariantsWith(1));
         }
 
         @Test
         public void string() {
-            assertThat("a", ComparableVerifier.satisfiesInvariantsWith("b"));
+            assertThat("a", Matchers.satisfiesComparableInvariantsWith("b"));
         }
     }// class
 
@@ -324,12 +324,12 @@ public class MatchersTest {
 
         @Test
         public void integer() {
-            assertThat(3, ComparableVerifier.satisfiesInvariantsWith(2, 1));
+            assertThat(3, Matchers.satisfiesComparableInvariantsWith(2, 1));
         }
 
         @Test
         public void string() {
-            assertThat("a", ComparableVerifier.satisfiesInvariantsWith("b", "c"));
+            assertThat("a", Matchers.satisfiesComparableInvariantsWith("b", "c"));
         }
     }// class
 

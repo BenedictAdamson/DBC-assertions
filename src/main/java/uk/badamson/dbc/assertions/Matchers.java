@@ -365,4 +365,23 @@ public class Matchers {
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T other) {
         return ComparableVerifier.satisfiesInvariantsWith(other);
     }
+
+    /**
+     * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the  three-way relationship
+     * invariants imposed by the  {@link Comparable} interface.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link #satisfiesComparableInvariantsWith(Comparable)}
+     * method, provided out of completeness, for use in very thorough unit tests. In
+     * practice, its invariants are unlikely to be broken if the
+     * {@link #satisfiesComparableInvariantsWith(Comparable)} invariants are all met.
+     * </p>
+     */
+    public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
+        return ComparableVerifier.satisfiesInvariantsWith(item2, item3);
+    }
 }
