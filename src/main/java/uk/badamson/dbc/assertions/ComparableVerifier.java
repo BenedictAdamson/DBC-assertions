@@ -188,25 +188,6 @@ public final class ComparableVerifier {
         return new CompareToIsTransitive<>(item2, item3);
     }
 
-    /**
-     * <p>
-     * Provide a {@linkplain Matcher matcher}
-     * that matches if, and only if, the object being matched
-     * satisfies  the relationship (pairwise)
-     * invariant required for the {@link Comparable#compareTo(Object)} method to
-     * be consistent with {@linkplain Object#equals(Object)}.
-     * </p>
-     *
-     * <p>
-     * This is a supplement to the {@link #satisfiesInvariantsWith(Comparable)}
-     * method, for use in the typical case that the natural ordering is consistent
-     * with equals.
-     * </p>
-     */
-    public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
-        return new NaturalOrderingIsConsistentWithEquals<>(other);
-    }
-
     private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleMatcher<T> {
         CompareToIsTransitive(@Nonnull T item2, @Nonnull T item3) {
             super(item2, item3);

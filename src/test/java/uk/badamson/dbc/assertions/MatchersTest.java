@@ -339,22 +339,22 @@ public class MatchersTest {
 
         @Test
         public void bigger() {
-            assertThat(0, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(1));
+            assertThat(0, Matchers.naturalOrderingIsConsistentWithEqualsWith(1));
         }
 
         @Test
         public void compareToNotConsistentWithEquals() {
-            assertThat(new BigDecimal("1.0"), not(ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(new BigDecimal("1.00"))));
+            assertThat(new BigDecimal("1.0"), not(Matchers.naturalOrderingIsConsistentWithEqualsWith(new BigDecimal("1.00"))));
         }
 
         @Test
         public void equivalent() {
-            assertThat(0, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(0));
+            assertThat(0, Matchers.naturalOrderingIsConsistentWithEqualsWith(0));
         }
 
         @Test
         public void smaller() {
-            assertThat(1, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(0));
+            assertThat(1, Matchers.naturalOrderingIsConsistentWithEqualsWith(0));
         }
     }// class
 }

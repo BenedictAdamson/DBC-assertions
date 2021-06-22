@@ -208,4 +208,22 @@ public class Matchers {
         return SatisfiesObjectInvariantsWith.create(other);
     }
 
+    /**
+     * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies  the relationship (pairwise)
+     * invariant required for the {@link Comparable#compareTo(Object)} method to
+     * be consistent with {@linkplain Object#equals(Object)}.
+     * </p>
+     *
+     * <p>
+     * This is a supplement to the {@link ComparableVerifier#satisfiesInvariantsWith(Comparable)}
+     * method, for use in the typical case that the natural ordering is consistent
+     * with equals.
+     * </p>
+     */
+    public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
+        return new NaturalOrderingIsConsistentWithEquals<>(other);
+    }
 }
