@@ -79,4 +79,27 @@ public final class Safe {
             }
         }
     }
+
+    /**
+     * <p>
+     * Provide the {@link Comparable#compareTo(Object)} value for use in a
+     * {@link org.hamcrest.Matcher},
+     * in a manner that is safe against nulls or an implementation that throws exceptions.
+     * </p>
+     *
+     * @return The {@linkplain Integer#valueOf(int) boxed}
+     * value of {@code item1.compareTo(item2)},
+     * or null if computing that value throw an exception.
+     * If the method returns null, it appends a failure description to {@code mismatchDescription}.
+     */
+    @Nullable
+    public static <T extends Comparable<T>> Integer compareTo(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+        try {
+            return item1.compareTo(item2);
+        } catch (Exception e) {
+            mismatchDescription.appendText("failed because compareTo() threw exception ");
+            mismatchDescription.appendValue(e);
+            return null;
+        }
+    }
 }

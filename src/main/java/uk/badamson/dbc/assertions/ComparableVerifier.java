@@ -16,7 +16,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -296,17 +295,6 @@ public final class ComparableVerifier {
         assertThat(object1, naturalOrderingIsConsistentWithEqualsWith(object2));
     }
 
-    @Nullable
-    private static <T extends Comparable<T>> Integer compareTo(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
-        try {
-            return item1.compareTo(item2);
-        } catch (Exception e) {
-            mismatchDescription.appendText("failed because compareTo() threw exception ");
-            mismatchDescription.appendValue(e);
-            return null;
-        }
-    }
-
     private static final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairMatcher<T> {
         NaturalOrderingIsConsistentWithEquals(@Nonnull T other) {
             super(other);
@@ -315,7 +303,7 @@ public final class ComparableVerifier {
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
             boolean ok = true;
-            final Integer compareTo = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
+            final Integer compareTo = Safe.compareTo(item1, item2, mismatchDescription);
             ok = ok && (compareTo != null);
             final Boolean equals = Safe.equals(item1, item2, mismatchDescription);
             ok = ok && (equals != null);
@@ -340,9 +328,9 @@ public final class ComparableVerifier {
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription) {
             boolean ok = true;
-            final Integer c12 = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
-            final Integer c23 = ComparableVerifier.compareTo(item2, item3, mismatchDescription);
-            final Integer c13 = ComparableVerifier.compareTo(item1, item3, mismatchDescription);
+            final Integer c12 = Safe.compareTo(item1, item2, mismatchDescription);
+            final Integer c23 = Safe.compareTo(item2, item3, mismatchDescription);
+            final Integer c13 = Safe.compareTo(item1, item3, mismatchDescription);
             ok = ok && c12 != null && c23 != null && c13 != null;
             if (ok && c12 > 0 && c23 > 0 && !(c13 > 0)) {
                 mismatchDescription.appendText("not satisfied");
@@ -365,8 +353,8 @@ public final class ComparableVerifier {
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
             boolean ok = true;
-            final Integer c12 = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
-            final Integer c21 = ComparableVerifier.compareTo(item2, item1, mismatchDescription);
+            final Integer c12 = Safe.compareTo(item1, item2, mismatchDescription);
+            final Integer c21 = Safe.compareTo(item2, item1, mismatchDescription);
             ok = ok && c12 != null && c21 != null;
             if (ok && Integer.signum(c12) != -Integer.signum(c21)) {
                 mismatchDescription.appendText("not satisfied");
