@@ -238,9 +238,9 @@ public final class EqualsSemanticsVerifier {
                 mismatchDescription.appendValue(e);
                 ok = false;
             }
-            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            final Boolean equals = Safe.equals(item1, item2, mismatchDescription);
             ok = ok && equals != null;
-            final Boolean equalAttributes = ObjectVerifier.equals(attribute1, attribute2, mismatchDescription);
+            final Boolean equalAttributes = Safe.equals(attribute1, attribute2, mismatchDescription);
             if (equalAttributes == null) {
                 mismatchDescription.appendText(" for the attributes");
                 ok = false;
@@ -289,9 +289,9 @@ public final class EqualsSemanticsVerifier {
             final U id1 = getId(item1, mismatchDescription);
             final U id2 = getId(item2, mismatchDescription);
             boolean ok = id1 != null && id2 != null;
-            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            final Boolean equals = Safe.equals(item1, item2, mismatchDescription);
             ok = ok && equals != null;
-            final Boolean equalIds = ObjectVerifier.equals(id1, id2, mismatchDescription);
+            final Boolean equalIds = Safe.equals(id1, id2, mismatchDescription);
             if (equalIds == null) {
                 mismatchDescription.appendText(" for IDs");
                 ok = false;

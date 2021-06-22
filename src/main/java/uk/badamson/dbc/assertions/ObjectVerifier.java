@@ -16,7 +16,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.allOf;
@@ -205,72 +204,16 @@ public final class ObjectVerifier {
      */
     public static Matcher<Object> satisfiesInvariantsWith(@Nonnull Object other) {
         Objects.requireNonNull(other, "other");
-        return Matchers.describedAs("satisfies pairwise Object class invariants with " + safeToString(other), allOf(
+        return Matchers.describedAs("satisfies pairwise Object class invariants with " + Safe.toString(other), allOf(
                 new EqualityIsSymmetric(other),
                 new HashCodeIsConsistentWithEquals(other)
         ));
     }
 
-    @Nonnull
-    private static String identityString(@Nullable final Object object) {
-        if (object == null) {
-            return "null";
-        } else {
-            return object.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(object));
-        }
-    }
-
-    /**
-     * <p>
-     * Provide a {@link String} representation of a given object, in a manner that
-     * is safe in cases where the {@link Object#toString()} method (or its override)
-     * throws an exception.
-     * </p>
-     * <p>
-     * This method is intended for use in test assertion failure messages, to
-     * identify the object that failed the assertion. However, because the
-     * {@link Object#toString()} method (and its overrides) can <em>themselves</em>
-     * be faulty and throw exceptions, and {@code object} could be null, directly
-     * calling a {@code object.toString()} method in test code is unwise. This
-     * method returns the text given by {@code object.toString()}, if possible, but
-     * if {@code object} is {@code null} it returns "null", and if
-     * {@code object.toString()} throws an exception, it instead returns a fall-back
-     * value. The fall-back value is the text that {@link Object#toString()} returns
-     * if {@link Object#hashCode()} is not overridden.
-     * </p>
-     */
-    @Nonnull
-    public static String safeToString(@Nullable final Object object) {
-        try {
-            return Objects.requireNonNull(object).toString();
-        } catch (final Exception e) {
-            return identityString(object);
-        }
-    }
-
-    @Nullable
-    static Boolean equals(@Nullable Object item1, @Nullable Object item2, @Nonnull Description mismatchDescription) {
-        // Objects.equals does not give the wanted value for item1 == item2
-        if (item1 == null && item2 == null) {
-            return true;
-        } else if (item1 == null) {
-            // avoid NPE
-            return false;
-        } else {
-            try {
-                return item1.equals(item2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
-                mismatchDescription.appendValue(e);
-                return null;
-            }
-        }
-    }
-
     private static final class EqualsSelf extends TypeSafeDiagnosingMatcher<Object> {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            final Boolean equals = ObjectVerifier.equals(item, item, mismatchDescription);
+            final Boolean equals = Safe.equals(item, item, mismatchDescription);
             if (equals == Boolean.FALSE) {
                 mismatchDescription.appendText("not satisfied");
             }
@@ -286,7 +229,7 @@ public final class ObjectVerifier {
     private static final class NeverEqualsNull extends TypeSafeDiagnosingMatcher<Object> {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
-            final Boolean equals = ObjectVerifier.equals(item, null, mismatchDescription);
+            final Boolean equals = Safe.equals(item, null, mismatchDescription);
             if (equals == Boolean.TRUE) {
                 mismatchDescription.appendText("not satisfied");
             }

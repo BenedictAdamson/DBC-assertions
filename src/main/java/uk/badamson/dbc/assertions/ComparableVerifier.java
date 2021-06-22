@@ -185,7 +185,7 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T other) {
         Objects.requireNonNull(other, "other");
-        return Matchers.describedAs("satisfies pairwise Comparable interface invariants with " + ObjectVerifier.safeToString(other), allOf(
+        return Matchers.describedAs("satisfies pairwise Comparable interface invariants with " + Safe.toString(other), allOf(
                 new CompareToIsSymmetric<>(other)
         ));
     }
@@ -317,7 +317,7 @@ public final class ComparableVerifier {
             boolean ok = true;
             final Integer compareTo = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
             ok = ok && (compareTo != null);
-            final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
+            final Boolean equals = Safe.equals(item1, item2, mismatchDescription);
             ok = ok && (equals != null);
             if (ok && !(compareTo == 0 == equals)) {
                 mismatchDescription.appendText("not satisfied");
