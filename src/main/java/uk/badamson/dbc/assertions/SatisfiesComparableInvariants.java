@@ -36,7 +36,7 @@ final class SatisfiesComparableInvariants {
                          * exception, although it is unlikely that a faulty implementation would throw
                          * an exception.
                          */
-                        new CompareToSelfDoesNotThrowException<T>()
+                        new CompareToSelfDoesNotThrow<T>()
                 ));
     }
 
@@ -67,7 +67,7 @@ final class SatisfiesComparableInvariants {
         }
     }// class
 
-    private static final class CompareToSelfDoesNotThrowException<T extends Comparable<T>> extends MethodDoesNotThrowException<T> {
+    private static final class CompareToSelfDoesNotThrow<T extends Comparable<T>> extends MethodDoesNotThrow<T> {
         @SuppressWarnings({"EqualsWithItself", "ResultOfMethodCallIgnored"})
         @Override
         protected void callMethod(@Nonnull T item) {

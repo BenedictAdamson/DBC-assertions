@@ -53,7 +53,7 @@ final class HasEntitySemantics<T, U> extends PairMatcher<T> {
             mismatchDescription.appendText(" for IDs");
             ok = false;
         }
-        if (ok && (equals != equalIds)) {
+        if (ok && (equals.booleanValue() != equalIds.booleanValue())) {
             mismatchDescription.appendText("not satisfied");
             ok = false;
         }

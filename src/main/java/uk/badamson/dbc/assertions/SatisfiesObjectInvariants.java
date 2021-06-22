@@ -28,8 +28,8 @@ final class SatisfiesObjectInvariants {
     static Matcher<Object> create() {
         return Matchers.describedAs("satisfies Object class invariants",
                 Matchers.allOf(
-                        new ToStringDoesNotThrowException(),
-                        new HashCodeDoesNotThrowException(),
+                        new ToStringDoesNotThrow(),
+                        new HashCodeDoesNotThrow(),
                         new EqualsSelf(),
                         new NeverEqualsNull()
                 ));
@@ -39,10 +39,14 @@ final class SatisfiesObjectInvariants {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
             final Boolean equals = Safe.equals(item, item, mismatchDescription);
-            if (equals == Boolean.FALSE) {
+            if (equals == null) {
+                return false;
+            } else if (!equals) {
                 mismatchDescription.appendText("not satisfied");
+                return false;
+            } else {
+                return true;
             }
-            return equals == Boolean.TRUE;
         }
 
         @Override
@@ -55,10 +59,14 @@ final class SatisfiesObjectInvariants {
         @Override
         protected boolean matchesSafely(Object item, Description mismatchDescription) {
             final Boolean equals = Safe.equals(item, null, mismatchDescription);
-            if (equals == Boolean.TRUE) {
+            if (equals == null) {
+                return false;
+            } else if (equals) {
                 mismatchDescription.appendText("not satisfied");
+                return false;
+            } else {
+                return true;
             }
-            return equals == Boolean.FALSE;
         }
 
         @Override
@@ -67,8 +75,9 @@ final class SatisfiesObjectInvariants {
         }
     }// class
 
-    private static final class ToStringDoesNotThrowException extends MethodDoesNotThrowException<Object> {
+    private static final class ToStringDoesNotThrow extends MethodDoesNotThrow<Object> {
 
+        @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
         @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         protected void callMethod(@Nonnull Object item) throws RuntimeException {
@@ -81,7 +90,7 @@ final class SatisfiesObjectInvariants {
         }
     }// class
 
-    private static final class HashCodeDoesNotThrowException extends MethodDoesNotThrowException<Object> {
+    private static final class HashCodeDoesNotThrow extends MethodDoesNotThrow<Object> {
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override

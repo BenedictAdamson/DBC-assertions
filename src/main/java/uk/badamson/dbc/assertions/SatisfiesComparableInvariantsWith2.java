@@ -24,6 +24,7 @@ final class SatisfiesComparableInvariantsWith2 {
             super(item2, item3);
         }
 
+        @SuppressWarnings("ConstantConditions")
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription) {
             boolean ok = true;

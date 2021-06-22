@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
  * a method of that object does not throw an exception.
  * </p>
  */
-public abstract class MethodDoesNotThrowException<T> extends TypeSafeDiagnosingMatcher<T> {
+public abstract class MethodDoesNotThrow<T> extends TypeSafeDiagnosingMatcher<T> {
 
     /**
      * <p>

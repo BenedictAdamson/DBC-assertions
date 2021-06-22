@@ -32,6 +32,7 @@ final class SatisfiesComparableInvariantsWith {
             super(other);
         }
 
+        @SuppressWarnings("ConstantConditions")
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
             boolean ok = true;
