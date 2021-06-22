@@ -12,7 +12,8 @@ package uk.badamson.dbc.assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 /**
  * <p>
@@ -100,7 +101,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
+            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
         }
 
         @Test
@@ -123,7 +124,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
+            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
         }
 
         @Test
@@ -150,7 +151,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
+            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
         }
 
         @Test
@@ -169,17 +170,17 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
+            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
         }
 
         @Test
         public void object() {
-            ObjectVerifier.assertInvariants(new Object());
+            assertThat(new Object(), ObjectVerifier.satisfiesInvariants());
         }
 
         @Test
         public void string() {
-            ObjectVerifier.assertInvariants("string");
+            assertThat("string", ObjectVerifier.satisfiesInvariants());
         }
 
         @Test
@@ -192,7 +193,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(object));
+            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
         }
     }// class
 
@@ -201,24 +202,22 @@ public class ObjectVerifierTest {
 
         @Test
         public void equalsAsymmetric() {
-            assertThrows(AssertionError.class,
-                    () -> ObjectVerifier.assertInvariants(new AsymmetricEquals(1), new AsymmetricEquals(2)));
+            assertThat(new AsymmetricEquals(1), not(ObjectVerifier.satisfiesInvariantsWith(new AsymmetricEquals(2))));
         }
 
         @Test
         public void equalsHashCodeInconsistentWithEquals() {
-            assertThrows(AssertionError.class, () -> ObjectVerifier.assertInvariants(new HashCodeInconsistentWithEquals(1),
-                    new HashCodeInconsistentWithEquals(1)));
+            assertThat(new HashCodeInconsistentWithEquals(1), not(ObjectVerifier.satisfiesInvariantsWith(new HashCodeInconsistentWithEquals(1))));
         }
 
         @Test
         public void object() {
-            ObjectVerifier.assertInvariants(new Object(), new Object());
+            assertThat(new Object(), ObjectVerifier.satisfiesInvariantsWith(new Object()));
         }
 
         @Test
         public void string() {
-            ObjectVerifier.assertInvariants("a", "b");
+            assertThat("a", ObjectVerifier.satisfiesInvariantsWith("b"));
         }
     }// class
 

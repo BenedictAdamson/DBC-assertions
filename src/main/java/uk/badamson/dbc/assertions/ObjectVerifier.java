@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 
 /**
@@ -122,24 +121,6 @@ public final class ObjectVerifier {
 
     /**
      * <p>
-     * Assert that a given object conforms to all the invariants imposed by the
-     * {@link Object} base class, throwing an {@link AssertionError} if it does not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object, ObjectVerifier.satisfiesInvariants())}
-     * </p>
-     *
-     * @param object The object to test.
-     * @throws NullPointerException If {@code object} is null.
-     * @throws AssertionError       If {@code object} breaks an invariant.
-     */
-    public static void assertInvariants(@Nonnull final Object object) {
-        Objects.requireNonNull(object, "object");
-        assertThat(object, satisfiesInvariants());
-    }
-
-    /**
-     * <p>
      * Provide a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the  relationship (pairwise)
@@ -228,31 +209,6 @@ public final class ObjectVerifier {
                 new EqualityIsSymmetric(other),
                 new HashCodeIsConsistentWithEquals(other)
         ));
-    }
-
-    /**
-     * <p>
-     * Assert that a pair of objects conform to all the relationship (pairwise)
-     * invariants imposed by the {@link Object} base class, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, ObjectVerifier.satisfiesInvariantsWith(object2))}
-     * </p>
-     *
-     * @param object1 An object to test.
-     * @param object2 An object to test.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1} and {@code object1} break an invariant.
-     */
-    public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-
-        assertThat(object1, satisfiesInvariantsWith(object2));
     }
 
     @Nonnull
