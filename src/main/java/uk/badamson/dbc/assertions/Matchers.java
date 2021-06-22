@@ -12,6 +12,7 @@ package uk.badamson.dbc.assertions;
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 /**
  * @see org.hamcrest.Matchers
@@ -383,5 +384,135 @@ public class Matchers {
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
         return SatisfiesComparableInvariantsWith2.create(item2, item3);
+    }
+
+
+    /**
+     * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies the   pairwise invariant, with respect to a given object,
+     * necessary for the class to have <i>entity semantics</i>.     *
+     * </p>
+     * <p>
+     * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
+     * design</a> we distinguish between classes that are for <i>entities</i> and
+     * classes that are for <i>values<i>. These semantic distinctions have
+     * implications for the required behaviour of the {@code equals(Object)} method
+     * of those classes.
+     * <dfn>Entity semantics</dfn> requires that the {@code equals(Object)} method
+     * returns {@code true} if, and only if, the given object is an instance of the
+     * same class <em>and</em> the two objects have equivalent values for an
+     * <i>identifier attribute</i>.
+     * </p>
+     * <p>
+     * Entity semantics implies that if you have two non-null instances of the
+     * entity class that has an {@link Object} <i>ID attribute</i>, two invariants
+     * are that <i>ID attribute</i> are never {@code null} and that the
+     * {@code equals(Object)} for the two instances returns {@code true} if, and
+     * only if, {@code equals(Object)} returns {@code true} for the <i>ID
+     * attribute</i>. This method tests that invariant. So the method can be
+     * general, you provide it with an accessor function for getting the value of
+     * the <i>ID attribute</i> from the two objects.
+     * </p>
+     *
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * Use this as a supplement to the
+     * {@link SatisfiesObjectInvariantsWith#create(Object)}  method, when testing a
+     * class that you have defined to have <i>entity semantics</i>.
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void equals_equivalent() {
+     *    final var id = UUID.randomUUID();
+     *    final var person1 = new Person(id, "Bobby");
+     *    final var person2 = new Person(id, "Hilary");
+     *
+     *    assertThat(person1, satisfiesInvariants(person2));
+     *    assertThat(person1, EqualsSemanticsVerifier.hasEntitySemanticsWith(person2));
+     *    assertThat(person1, is(person2));
+     * }
+     * </pre>
+     *
+     * @param <T>       The class of object to match.
+     * @param <U>       The class of the ID attribute.
+     * @param other     The other to test the invariant with respect to.
+     * @param valueOfId A function for accessing the value of the ID attribute for the two
+     *                  objects under test. This should delegate to the getter method of
+     *                  the class. This test method assumes that the getter should never
+     *                  throw exceptions.
+     * @throws NullPointerException If any argument is null
+     */
+    public static <T, U> Matcher<T> hasEntitySemanticsWith(@Nonnull final T other, @Nonnull final Function<T, U> valueOfId) {
+        return EqualsSemanticsVerifier.hasEntitySemanticsWith(other, valueOfId);
+    }
+
+
+    /**
+     * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies a   pairwise invariant, with respect to a given object,
+     * necessary for the class to have <i>value semantics</i>,.
+     * </p>
+     * <p>
+     * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
+     * design</a> we distinguish between classes that are for <i>entities</i> and
+     * classes that are for <i>values<i>. These semantic distinctions have
+     * implications for the required behaviour of the {@code equals(Object)} method
+     * of those classes.
+     * <dfn>Value semantics</dfn> requires that the {@code equals(Object)} method
+     * returns {@code true} if, and only if, the given object is an instance of the
+     * same class <em>and</em> the pairs of object <i>attributes</i> of the two
+     * objects are equivalent.
+     * </p>
+     * <p>
+     * Value semantics implies that if you have two non-null instances of the value
+     * class, and you access the values of one of the  attributes for
+     * both objects, an invariant is that if the {@code equals(Object)} method
+     * returns {@code true}, the attributes also must be
+     * {@linkplain Object#equals(Object)} The matcher tests that invariant for one
+     * attribute. So the method can be general, you provide it with an accessor
+     * function for getting the value of the attribute from the two objects.
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * Use this as a supplement to the
+     * {@link SatisfiesObjectInvariantsWith#create(Object)} method, when testing a
+     * class that you have defined to have <i>value semantics</i>. Call the method
+     * for each object <i>attribute</i> of the class, in addition to asserting
+     * equality or non equality of the objects, to provide better test failure
+     * diagnostic messages.
+     * </p>
+     *
+     * <pre>
+     * {@code @Test}
+     * public void equals_equivalent() {
+     *    final var species1 = new Species("Homo sapiens");
+     *    final var species2 = new Species("Homo sapiens");
+     *
+     *    assertThat(species1, ObjectVerifier.satisfiesInvariantsWith(species2));
+     *    {@code assertThat(species1, EqualsSemanticsVerifier.hasValueSemanticsWith(species2, "name", (species) -> species.getName()));}
+     *    assertThat(species1, is(species2));
+     * }
+     * </pre>
+     *
+     * @param <T>              The class of object to match
+     * @param <U>              The class of the attribute to examine.
+     * @param other            The other object to test the invariant with respect to.
+     * @param attributeName    The name of the attribute to examine.
+     * @param valueOfAttribute A function for accessing the value of the attribute for the two
+     *                         objects under test. This should delegate to the getter method of
+     *                         the class. This matcher assumes that the getter should never
+     *                         throw exceptions.
+     * @throws NullPointerException \If any argument is null.
+     */
+    public static <T, U> Matcher<T> hasValueSemanticsWith(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
+        return EqualsSemanticsVerifier.hasValueSemanticsWith(other, attributeName, valueOfAttribute);
     }
 }

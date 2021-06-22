@@ -490,7 +490,7 @@ public class MatchersTest {
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
-            assertThat(entity1, EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
+            assertThat(entity1, Matchers.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
         }
 
         @Test
@@ -499,7 +499,7 @@ public class MatchersTest {
             final var entity2 = new Entity(UUID.randomUUID(), "B", 2L, 200);
             assert !entity1.equals(entity2);
 
-            assertThat(entity1, EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
+            assertThat(entity1, Matchers.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
         }
 
         @Test
@@ -507,7 +507,7 @@ public class MatchersTest {
             final var entity1 = new Entity(null, "A", 1L, 100);
             final var entity2 = new Entity(UUID.randomUUID(), "B", 1L, 100);
 
-            assertThat(entity1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
+            assertThat(entity1, not(Matchers.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
         }
 
         @Test
@@ -515,7 +515,7 @@ public class MatchersTest {
             final var entity1 = new Entity(UUID.randomUUID(), "A", 1L, 100);
             final var entity2 = new Entity(null, "B", 1L, 100);
 
-            assertThat(entity1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
+            assertThat(entity1, not(Matchers.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
         }
 
         @SuppressWarnings("StringOperationCanBeSimplified")
@@ -523,7 +523,7 @@ public class MatchersTest {
         public void value() {
             final String object1 = "A";
             final String object2 = new String(object1);
-            assertThat(object1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(object2, System::identityHashCode)));
+            assertThat(object1, not(Matchers.hasEntitySemanticsWith(object2, System::identityHashCode)));
         }
 
     }// class
@@ -535,7 +535,7 @@ public class MatchersTest {
         public void attributeEqualsThrows() {
             final var value1 = new ValueAttributeEqualsThrows();
             final var value2 = new ValueAttributeEqualsThrows();
-            assertThat(value1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.attribute)));
+            assertThat(value1, not(Matchers.hasValueSemanticsWith(value2, "attribute", value -> value.attribute)));
         }
 
         @Test
@@ -545,28 +545,28 @@ public class MatchersTest {
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
-            assertThat(entity1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(entity2, "name", entity -> entity.name)));
+            assertThat(entity1, not(Matchers.hasValueSemanticsWith(entity2, "name", entity -> entity.name)));
         }
 
         @Test
         public void equalsThrows() {
             final var value1 = new ValueEqualsThrows(null);
             final var value2 = new ValueEqualsThrows("B");
-            assertThat(value1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "name", value -> value.name)));
+            assertThat(value1, not(Matchers.hasValueSemanticsWith(value2, "name", value -> value.name)));
         }
 
         @Test
         public void nullValue1() {
             final var value1 = new Value(null);
             final var value2 = new Value("B");
-            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
+            assertThat(value1, Matchers.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
         @Test
         public void nullValue2() {
             final var value1 = new Value("A");
             final var value2 = new Value(null);
-            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
+            assertThat(value1, Matchers.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
         @SuppressWarnings("StringOperationCanBeSimplified")
@@ -575,7 +575,7 @@ public class MatchersTest {
             final String name = "A";
             final var value1 = new Value(name);
             final var value2 = new Value(new String(name));
-            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
+            assertThat(value1, Matchers.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
     }// class
