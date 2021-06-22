@@ -16,6 +16,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -295,6 +296,17 @@ public final class ComparableVerifier {
         assertThat(object1, naturalOrderingIsConsistentWithEqualsWith(object2));
     }
 
+    @Nullable
+    private static <T extends Comparable<T>> Integer compareTo(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+        try {
+            return item1.compareTo(item2);
+        } catch (Exception e) {
+            mismatchDescription.appendText("but compareTo() threw exception ");
+            mismatchDescription.appendValue(e);
+            return null;
+        }
+    }
+
     private static final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairMatcher<T> {
         NaturalOrderingIsConsistentWithEquals(@Nonnull T other) {
             super(other);
@@ -303,14 +315,8 @@ public final class ComparableVerifier {
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
             boolean ok = true;
-            int compareTo = 0;
-            try {
-                compareTo = item1.compareTo(item2);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but compareTo() threw exception ");
-                mismatchDescription.appendValue(e);
-                ok = false;
-            }
+            final Integer compareTo = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
+            ok = ok && (compareTo != null);
             final Boolean equals = ObjectVerifier.equals(item1, item2, mismatchDescription);
             ok = ok && (equals != null);
             if (ok && !(compareTo == 0 == equals)) {
@@ -333,21 +339,13 @@ public final class ComparableVerifier {
 
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription) {
-            final int c12;
-            final int c23;
-            final int c13;
-            try {
-                c12 = item1.compareTo(item2);
-                c23 = item2.compareTo(item3);
-                c13 = item1.compareTo(item3);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but compareTo() threw exception ");
-                mismatchDescription.appendValue(e);
-                return false;
-            }
-            final boolean ok = !(c12 > 0 && c23 > 0 && !(c13 > 0));
-            if (!ok) {
+            boolean ok = true;
+            final Integer c12 = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
+            final Integer c23 = ComparableVerifier.compareTo(item2, item3, mismatchDescription);
+            final Integer c13 = ComparableVerifier.compareTo(item1, item3, mismatchDescription);
+            if (ok && c12 > 0 && c23 > 0 && !(c13 > 0)) {
                 mismatchDescription.appendText("not satisfied");
+                ok = false;
             }
             return ok;
         }
@@ -365,19 +363,13 @@ public final class ComparableVerifier {
 
         @Override
         protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
-            final int c12;
-            final int c21;
-            try {
-                c12 = item1.compareTo(item2);
-                c21 = item2.compareTo(item1);
-            } catch (Exception e) {
-                mismatchDescription.appendText("but compareTo() threw exception ");
-                mismatchDescription.appendValue(e);
-                return false;
-            }
-            final boolean ok = Integer.signum(c12) == -Integer.signum(c21);
-            if (!ok) {
+            boolean ok = true;
+            final Integer c12 = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
+            final Integer c21 = ComparableVerifier.compareTo(item2, item1, mismatchDescription);
+            ok = ok && c12 != null && c21 != null;
+            if (ok && Integer.signum(c12) != -Integer.signum(c21)) {
                 mismatchDescription.appendText("not satisfied");
+                ok = false;
             }
             return ok;
         }
@@ -428,5 +420,4 @@ public final class ComparableVerifier {
             description.appendText("this.compareTo(this) does not throw an exception");
         }
     }// class
-
 }
