@@ -188,50 +188,6 @@ public class EqualsSemanticsVerifierTest {
     }// class
 
     @Nested
-    public class AssertIntValueSemantics {
-
-        @Test
-        public void entity() {
-            final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L, 100);
-            final var entity2 = new Entity(id, "B", 2L, 50);
-            assert entity1.equals(entity2);
-            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertIntValueSemantics(entity1, entity2,
-                    "balance", (entity) -> entity.balance));
-        }
-
-        @Test
-        public void string() {
-            final String object = "A";
-            EqualsSemanticsVerifier.assertIntValueSemantics(object, object, "length", String::length);
-        }
-
-    }// class
-
-    @Nested
-    public class AssertLongValueSemantics {
-
-        @Test
-        public void entity() {
-            final UUID id = UUID.randomUUID();
-            final var entity1 = new Entity(id, "A", 1L, 100);
-            final var entity2 = new Entity(id, "B", 2L, 50);
-            assert entity1.equals(entity2);
-
-            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertLongValueSemantics(entity1, entity2,
-                    "version", (entity) -> entity.version));
-        }
-
-        @Test
-        public void uuid() {
-            final UUID object = UUID.randomUUID();
-            EqualsSemanticsVerifier.assertLongValueSemantics(object, object, "leastSignificantBits",
-                    UUID::getLeastSignificantBits);
-        }
-
-    }// class
-
-    @Nested
     public class AssertValueSemantics {
 
         @Test
