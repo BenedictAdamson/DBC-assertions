@@ -9,6 +9,9 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -17,7 +20,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * <p>
@@ -87,9 +89,10 @@ public final class EqualsSemanticsVerifier {
 
     /**
      * <p>
-     * Assert that a pair of objects of a class satisfy the pairwise invariant
-     * necessary for the class to have <i>entity semantics</i>, throwing an
-     * {@link AssertionError} if they do not.
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies the   pairwise invariant, with respect to a given object,
+     * necessary for the class to have <i>entity semantics</i>.     *
      * </p>
      * <p>
      * Entity semantics implies that if you have two non-null instances of the
@@ -97,7 +100,7 @@ public final class EqualsSemanticsVerifier {
      * are that <i>ID attribute</i> are never {@code null} and that the
      * {@code equals(Object)} for the two instances returns {@code true} if, and
      * only if, {@code equals(Object)} returns {@code true} for the <i>ID
-     * attribute</i>. This method tests that invariant for. So the method can be
+     * attribute</i>. This method tests that invariant. So the method can be
      * general, you provide it with an accessor function for getting the value of
      * the <i>ID attribute</i> from the two objects.
      * </p>
@@ -107,7 +110,7 @@ public final class EqualsSemanticsVerifier {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
+     * {@link ObjectVerifier#satisfiesInvariantsWith(Object)}  method, when testing a
      * class that you have defined to have <i>entity semantics</i>.
      * </p>
      *
@@ -118,52 +121,39 @@ public final class EqualsSemanticsVerifier {
      *    final var person1 = new Person(id, "Bobby");
      *    final var person2 = new Person(id, "Hilary");
      *
-     *    ObjectVerifier.assertInvariants(person1, person2);
-     *    {@code EqualsSemanticsVerifier.assertEntitySemantics(person1, person2, (person) -> person.getId());}
-     *    assertEquals(person1, person2);
+     *    assertThat(person1, satisfiesInvariants(person2));
+     *    assertThat(person1, EqualsSemanticsVerifier.hasEntitySematicsWith(person2));
+     *    assertThat(person1, is(person2));
      * }
      * </pre>
      *
-     * @param <T>       The class of {@code object1} and {@code object2}
+     * @param <T>       The class of object to match.
      * @param <U>       The class of the ID attribute.
-     * @param object1   An object to test.
-     * @param object2   An object to test.
+     * @param other     The other to test the invariant with respect to.
      * @param valueOfId A function for accessing the value of the ID attribute for the two
      *                  objects under test. This should delegate to the getter method of
      *                  the class. This test method assumes that the getter should never
-     *                  throw exceptions; it will throw an {@link AssertionError} if the
-     *                  the function does throw an exception.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              <li>If {@code valueOfId} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
+     *                  throw exceptions.
+     * @throws NullPointerException If any argument is null
+     */
+    public static <T, U> Matcher<T> hasEntitySemanticsWith(@Nonnull final T other, @Nonnull final Function<T, U> valueOfId) {
+        return new HasEntitySemantics<>(other, valueOfId);
+    }
+
+    /**
+     * <p>
+     * Assert that a pair of objects of a class satisfy the pairwise invariant
+     * necessary for the class to have <i>entity semantics</i>, throwing an
+     * {@link AssertionError} if they do not.
+     * </p>
+     * <p>
+     * This is a convenience method, equivalent to {@code assertThat(object1, EntitySemanticsVerifier.hasEntitySemanticsWith(object2, valueOfId))}
+     * </p>
      */
     public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
                                                     @Nonnull final Function<T, U> valueOfId) {
         Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(valueOfId, "valueOfId");
-
-        final var stringId1 = ObjectVerifier.safeToString(object1);
-        final var stringId2 = ObjectVerifier.safeToString(object2);
-        /*
-         * Provide good diagnostics if the getter throws an exception.
-         */
-        final U id1 = access(object1, stringId1, "ID", valueOfId);
-        final U id2 = access(object2, stringId2, "ID", valueOfId);
-
-        assertThat("ID not null for [" + stringId1 + "]", id1, notNullValue());// guard
-        assertThat("ID not null for [" + stringId2 + "]", id2, notNullValue());
-
-        /*
-         * Provide good diagnostics if equals throws an exception.
-         */
-        final boolean equals = ObjectVerifier.equals(object1, object2);
-        final boolean equalIds = ObjectVerifier.equals(id1, id2);
-
-        assertThat("Entity semantics for [" + stringId1 + ", " + stringId2 + "]", equals == equalIds);
+        assertThat(object1, hasEntitySemanticsWith(object2, valueOfId));
     }
 
     /**
@@ -408,4 +398,63 @@ public final class EqualsSemanticsVerifier {
                                                                   final Exception e) {
         return new AssertionError("Accessing attribute " + attributeName + " should not throw exception for [" + stringId + "]", e);
     }
+
+    private static final class HasEntitySemantics<T, U> extends PairMatcher<T> {
+
+        @Nonnull
+        private final Function<T, U> valueOfId;
+
+        HasEntitySemantics(@Nonnull final T other, @Nonnull final Function<T, U> valueOfId) {
+            super(other);
+            this.valueOfId = Objects.requireNonNull(valueOfId, "valueOfId");
+        }
+
+        @Nullable
+        private U getId(@Nonnull T item, @Nonnull Description mismatchDescription) {
+            U id = null;
+            try {
+                id = valueOfId.apply(item);
+                if (id == null) {
+                    mismatchDescription.appendText("but the ID was null");
+                }
+            } catch (Exception e) {
+                mismatchDescription.appendText("but getting the ID threw exception ");
+                mismatchDescription.appendValue(e);
+            }
+            return id;
+        }
+
+        @Override
+        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
+            final U id1 = getId(item1, mismatchDescription);
+            final U id2 = getId(item2, mismatchDescription);
+            boolean ok = id1 != null && id2 != null;
+            boolean equals = false;
+            try {
+                equals = item1.equals(item2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            boolean equalIds = false;
+            try {
+                equalIds = Objects.equals(id1, id2);
+            } catch (Exception e) {
+                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendValue(e);
+                ok = false;
+            }
+            if (ok && (equals != equalIds)) {
+                mismatchDescription.appendText("not satisfied");
+                ok = false;
+            }
+            return ok;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("has entity semantics");
+        }
+    }// class
 }
