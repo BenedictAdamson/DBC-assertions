@@ -26,7 +26,7 @@ public abstract class MethodDoesNotThrowException<T> extends TypeSafeDiagnosingM
         try {
             callMethod(item);
         } catch (Throwable e) {
-            mismatchDescription.appendText("but threw exception ");
+            mismatchDescription.appendText("failed because it threw exception ");
             mismatchDescription.appendValue(e);
             return false;
         }

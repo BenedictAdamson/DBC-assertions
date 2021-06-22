@@ -234,7 +234,7 @@ public final class EqualsSemanticsVerifier {
                 attribute1 = valueOfAttribute.apply(item1);
                 attribute2 = valueOfAttribute.apply(item2);
             } catch (Exception e) {
-                mismatchDescription.appendText("but getting the attribute threw exception ");
+                mismatchDescription.appendText("failed because getting the attribute threw exception ");
                 mismatchDescription.appendValue(e);
                 ok = false;
             }
@@ -246,7 +246,7 @@ public final class EqualsSemanticsVerifier {
                 ok = false;
             }
             if (ok && equals && !equalAttributes) {
-                mismatchDescription.appendText("not satisifed");
+                mismatchDescription.appendText("not satisfied");
                 ok = false;
             }
             return ok;
@@ -275,10 +275,10 @@ public final class EqualsSemanticsVerifier {
             try {
                 id = valueOfId.apply(item);
                 if (id == null) {
-                    mismatchDescription.appendText("but the ID was null");
+                    mismatchDescription.appendText("failed because the ID was null");
                 }
             } catch (Exception e) {
-                mismatchDescription.appendText("but getting the ID threw exception ");
+                mismatchDescription.appendText("failed because getting the ID threw exception ");
                 mismatchDescription.appendValue(e);
             }
             return id;

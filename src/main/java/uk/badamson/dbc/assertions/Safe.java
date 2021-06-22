@@ -73,7 +73,7 @@ public final class Safe {
             try {
                 return item1.equals(item2);
             } catch (Exception e) {
-                mismatchDescription.appendText("but equals() threw exception ");
+                mismatchDescription.appendText("failed because equals() threw exception ");
                 mismatchDescription.appendValue(e);
                 return null;
             }

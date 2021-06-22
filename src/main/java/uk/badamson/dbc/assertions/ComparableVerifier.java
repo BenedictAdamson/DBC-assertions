@@ -301,7 +301,7 @@ public final class ComparableVerifier {
         try {
             return item1.compareTo(item2);
         } catch (Exception e) {
-            mismatchDescription.appendText("but compareTo() threw exception ");
+            mismatchDescription.appendText("failed because compareTo() threw exception ");
             mismatchDescription.appendValue(e);
             return null;
         }
