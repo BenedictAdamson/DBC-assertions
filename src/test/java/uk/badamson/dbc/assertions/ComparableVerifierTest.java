@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 /**
  * <p>
@@ -73,88 +74,88 @@ public class ComparableVerifierTest {
     }
 
     @Nested
-    public class AssertInvariants {
+    public class SatisfiesInvariants {
 
         @Test
         public void compareToNullDoesNotThrowNPE() {
             final var object = new CompareToNullDoesNotThrowNPE();
-            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object));
+            assertThat(object, not(ComparableVerifier.satisfiesInvariants()));
         }
 
         @Test
         public void compareToSelfThrows() {
             final var object = new CompareToSelfThrows();
-            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object));
+            assertThat(object, not(ComparableVerifier.satisfiesInvariants()));
         }
 
         @Test
         public void integer() {
-            ComparableVerifier.assertInvariants(0);
+            assertThat(0, ComparableVerifier.satisfiesInvariants());
         }
 
         @Test
         public void string() {
-            ComparableVerifier.assertInvariants("a");
+
+            assertThat("a", ComparableVerifier.satisfiesInvariants());
         }
     }// class
 
     @Nested
-    public class AssertInvariants2 {
+    public class SatisfiesInvariantsWith1 {
 
         @Test
         public void compareToThrows() {
             final var object1 = new CompareToThrows(0);
             final var object2 = new CompareToThrows(1);
-            assertThrows(AssertionError.class, () -> ComparableVerifier.assertInvariants(object1, object2));
+            assertThat(object1, not(ComparableVerifier.satisfiesInvariantsWith(object2)));
         }
 
         @Test
         public void integer() {
-            ComparableVerifier.assertInvariants(0, 1);
+            assertThat(0, ComparableVerifier.satisfiesInvariantsWith(1));
         }
 
         @Test
         public void string() {
-            ComparableVerifier.assertInvariants("a", "b");
+            assertThat("a", ComparableVerifier.satisfiesInvariantsWith("b"));
         }
     }// class
 
     @Nested
-    public class AssertInvariants3 {
+    public class SatisfiesInvariantsWith2 {
 
         @Test
         public void integer() {
-            ComparableVerifier.assertInvariants(3, 2, 1);
+            assertThat(3, ComparableVerifier.satisfiesInvariantsWith(2, 1));
         }
 
         @Test
         public void string() {
-            ComparableVerifier.assertInvariants("c", "b", "a");
+            assertThat("a", ComparableVerifier.satisfiesInvariantsWith("b", "c"));
         }
     }// class
 
     @Nested
-    public class AssertNaturalOrderingIsConsistentWithEquals {
+    public class NaturalOrderingIsConsistentWithEqualsWith {
 
         @Test
         public void bigger() {
-            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(0, 1);
+            assertThat(0, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(1));
         }
 
         @Test
         public void compareToNotConsistentWithEquals() {
-            assertThrows(AssertionError.class, () -> ComparableVerifier
-                    .assertNaturalOrderingIsConsistentWithEquals(new BigDecimal("1.0"), new BigDecimal("1.00")));
+            assertThat(new BigDecimal("1.0"), not(ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(new BigDecimal("1.00"))));
         }
 
         @Test
         public void equivalent() {
-            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(0, 0);
+            assertThat(0, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(0));
         }
 
         @Test
         public void smaller() {
-            ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(1, 0);
+            assertThat(1, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(0));
         }
     }// class
 }

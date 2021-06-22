@@ -18,7 +18,6 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 
 /**
@@ -102,25 +101,6 @@ public final class ComparableVerifier {
                 ));
     }
 
-    /**
-     * <p>
-     * Assert that a given object conforms to all the invariants imposed by the
-     * {@link Comparable} interface, throwing an {@link AssertionError} if it does
-     * not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object, ComparableVerifier.satisfiesInvariants())}
-     * </p>
-     *
-     * @param <T>    The class of {@code object}
-     * @param object The object to test.
-     * @throws NullPointerException If {@code object} is null.
-     * @throws AssertionError       If {@code object} breaks an invariant.
-     */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
-        Objects.requireNonNull(object, "object");
-        assertThat(object, satisfiesInvariants());
-    }
 
     /**
      * <p>
@@ -191,20 +171,6 @@ public final class ComparableVerifier {
 
     /**
      * <p>
-     * Assert that a pair of objects conform to all the relationship (pairwise)
-     * invariants imposed by the {@link Comparable} interface, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.satisfiesInvariantsWith(object2))}
-     * </p>
-     */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
-        assertThat(object1, satisfiesInvariantsWith(object2));
-    }
-
-    /**
-     * <p>
      * Provide a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the  three-way relationship
@@ -224,34 +190,6 @@ public final class ComparableVerifier {
 
     /**
      * <p>
-     * Assert that a triplet of objects conform to the relationship invariant
-     * imposed by the {@link Comparable} interface, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.satisfiesInvariantsWith(object2, object3))}
-     * </p>
-     *
-     * @param <T>     The class of {@code object1}, {@code object2} and {@code object3}
-     * @param object1 An object to test.
-     * @param object2 An object to test.
-     * @param object3 An object to test.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              <li>If {@code object3} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1}, {@code object2} and {@code object3} break an
-     *                              invariant.
-     * @see #assertInvariants(Comparable, Comparable)
-     */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
-                                                                  @Nonnull final T object3) {
-        assertThat(object1, satisfiesInvariantsWith(object2, object3));
-    }
-
-    /**
-     * <p>
      * Provide a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies  the relationship (pairwise)
@@ -267,32 +205,6 @@ public final class ComparableVerifier {
      */
     public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
         return new NaturalOrderingIsConsistentWithEquals<>(other);
-    }
-
-    /**
-     * <p>
-     * Assert that a pair of objects conform to the relationship (pairwise)
-     * invariant required for their {@link Comparable#compareTo(Object)} method to
-     * be consistent with {@linkplain Object#equals(Object)}, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, ComparableVerifier.naturalOrderingIsConsistentWithEqualsWith(object2))}
-     * </p>
-     *
-     * @param <T>     The class of {@code object1} and {@code object2}
-     * @param object1 An object to test.
-     * @param object2 An object to test.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
-     * @see #assertInvariants(Comparable, Comparable)
-     */
-    public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
-                                                                                             @Nonnull final T object2) {
-        assertThat(object1, naturalOrderingIsConsistentWithEqualsWith(object2));
     }
 
     private static final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairMatcher<T> {
