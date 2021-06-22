@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.allOf;
  * </p>
  */
 @SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
-public final class ObjectVerifier {
+final class ObjectVerifier {
 
     private ObjectVerifier() {
         assert false;// must not instance

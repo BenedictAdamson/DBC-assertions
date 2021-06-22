@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.not;
  * Unit tests for code in the {@link ObjectVerifier} class
  * </p>
  */
-public class ObjectVerifierTest {
+public class MatchersTest {
 
     private static final class AsymmetricEquals {
 
@@ -82,7 +82,7 @@ public class ObjectVerifierTest {
     }// class
 
     @Nested
-    public class AssertInvariants {
+    public class SatisfiesObjectInvariants {
 
         @Test
         public void equalsNull() {
@@ -101,7 +101,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesObjectInvariants()));
         }
 
         @Test
@@ -124,7 +124,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesObjectInvariants()));
         }
 
         @Test
@@ -151,7 +151,7 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesObjectInvariants()));
         }
 
         @Test
@@ -170,17 +170,17 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesObjectInvariants()));
         }
 
         @Test
         public void object() {
-            assertThat(new Object(), ObjectVerifier.satisfiesInvariants());
+            assertThat(new Object(), Matchers.satisfiesObjectInvariants());
         }
 
         @Test
         public void string() {
-            assertThat("string", ObjectVerifier.satisfiesInvariants());
+            assertThat("string", Matchers.satisfiesObjectInvariants());
         }
 
         @Test
@@ -193,31 +193,31 @@ public class ObjectVerifierTest {
                 }
 
             };
-            assertThat(object, not(ObjectVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesObjectInvariants()));
         }
     }// class
 
     @Nested
-    public class AssertInvariants2 {
+    public class SatisfiesObjectInvariantsWith {
 
         @Test
         public void equalsAsymmetric() {
-            assertThat(new AsymmetricEquals(1), not(ObjectVerifier.satisfiesInvariantsWith(new AsymmetricEquals(2))));
+            assertThat(new AsymmetricEquals(1), not(Matchers.satisfiesObjectInvariantsWith(new AsymmetricEquals(2))));
         }
 
         @Test
         public void equalsHashCodeInconsistentWithEquals() {
-            assertThat(new HashCodeInconsistentWithEquals(1), not(ObjectVerifier.satisfiesInvariantsWith(new HashCodeInconsistentWithEquals(1))));
+            assertThat(new HashCodeInconsistentWithEquals(1), not(Matchers.satisfiesObjectInvariantsWith(new HashCodeInconsistentWithEquals(1))));
         }
 
         @Test
         public void object() {
-            assertThat(new Object(), ObjectVerifier.satisfiesInvariantsWith(new Object()));
+            assertThat(new Object(), Matchers.satisfiesObjectInvariantsWith(new Object()));
         }
 
         @Test
         public void string() {
-            assertThat("a", ObjectVerifier.satisfiesInvariantsWith("b"));
+            assertThat("a", Matchers.satisfiesObjectInvariantsWith("b"));
         }
     }// class
 
