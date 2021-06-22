@@ -278,24 +278,23 @@ public class MatchersTest {
         @Test
         public void compareToNullDoesNotThrowNPE() {
             final var object = new CompareToNullDoesNotThrowNPE();
-            assertThat(object, not(ComparableVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesComparableInvariants()));
         }
 
         @Test
         public void compareToSelfThrows() {
             final var object = new CompareToSelfThrows();
-            assertThat(object, not(ComparableVerifier.satisfiesInvariants()));
+            assertThat(object, not(Matchers.satisfiesComparableInvariants()));
         }
 
         @Test
         public void integer() {
-            assertThat(0, ComparableVerifier.satisfiesInvariants());
+            assertThat(0, Matchers.satisfiesComparableInvariants());
         }
 
         @Test
         public void string() {
-
-            assertThat("a", ComparableVerifier.satisfiesInvariants());
+            assertThat("a", Matchers.satisfiesComparableInvariants());
         }
     }// class
 

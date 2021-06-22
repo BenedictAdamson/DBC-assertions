@@ -226,4 +226,71 @@ public class Matchers {
     public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
         return new NaturalOrderingIsConsistentWithEquals<>(other);
     }
+
+
+    /**
+     * <p>
+     * Provide a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies all the invariants imposed by the
+     * {@link Comparable} interface.
+     * </p>
+     *
+     * <h2>How to Use this Method</h2>
+     * <p>
+     * In your unit tests of mutators and constructors of classes that implement the
+     * {@link Comparable} class, you will check that the mutators and constructors
+     * make the desired changes, using test code similar to this:
+     * </p>
+     *
+     * <pre>
+     * import static org.hamcrest.MatcherAssert.assertThat;
+     * import static org.hamcrest.Matchers.*;
+     *
+     * {@code @Test}
+     * public void increment_1() {
+     *    final var amount = new Amount(1);
+     *
+     *    amount.increment();
+     *
+     *    assertThat(amount.intValue(), is(2));
+     * }
+     * </pre>
+     *
+     * <p>
+     * But you can do do better than that. The class you are testing does not only
+     * have the behaviour that you have specified for it. It must also conform to
+     * some invariants imposed by the {@link Comparable} interface. You should also
+     * check that the mutated object (still) conforms to those invariants. There are
+     * a couple of them. Checking them can be fiddly. Explicitly checking them all
+     * directly in your test method would be verbose, error prone, and in some cases
+     * provide low value (because in that particular test, it is unlikely that the
+     * invariant would be broken).
+     * <p>
+     * </p>
+     * This method provides a convenient and abstract way to check that the mutated
+     * object still conforms to the invariants imposed by the {@link Comparable}
+     * interface. Simply delegate to this method in your test, like this:
+     * </p>
+     *
+     * <pre>
+     * import static org.hamcrest.MatcherAssert.assertThat;
+     * import static org.hamcrest.Matchers.*;
+     * import static uk.badamson.dbc.assertions.Matchers.*;
+     *
+     * {@code @Test}
+     * public void increment_1() {
+     *    final var amount = new Amount(1);
+     *
+     *    amount.increment();
+     *
+     *    assertThat(amount, satisfiesObjectInvariants());
+     *    assertThat(amount, satisfiesComparableInvariants());
+     *    assertThat(amount.intValue(), is(2));
+     * }
+     * </pre>
+     */
+    public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
+        return ComparableVerifier.satisfiesInvariants();
+    }
 }
