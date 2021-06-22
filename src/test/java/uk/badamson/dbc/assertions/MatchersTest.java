@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.not;
 
 /**
  * <p>
- * Unit tests for code in the {@link ObjectVerifier} class
+ * Unit tests for code in the {@link Matchers} class
  * </p>
  */
 public class MatchersTest {

@@ -106,7 +106,7 @@ public class Matchers {
      */
     @Nonnull
     public static Matcher<Object> satisfiesObjectInvariants() {
-        return ObjectVerifier.satisfiesInvariants();
+        return SatisfiesObjectInvariants.create();
     }
 
     /**
@@ -205,7 +205,7 @@ public class Matchers {
      * @throws NullPointerException If {@code other} is null.
      */
     public static Matcher<Object> satisfiesObjectInvariantsWith(@Nonnull Object other) {
-        return ObjectVerifier.satisfiesInvariantsWith(other);
+        return SatisfiesObjectInvariantsWith.create(other);
     }
 
 }

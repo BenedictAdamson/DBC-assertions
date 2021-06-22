@@ -45,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * </p>
  * <p>
  * This class provides several methods to supplement the
- * {@link ObjectVerifier#assertInvariants(Object, Object)} method. The methods are
+ * {@link SatisfiesObjectInvariants#assertInvariants(Object, Object)} method. The methods are
  * most useful for test cases where the two objects you have are expected to be
  * equivalent, or they are expected to be <i>almost equivalent</i>: not
  * equivalent, but having many attributes that are equivalent.
@@ -80,7 +80,7 @@ public final class EqualsSemanticsVerifier {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectVerifier#satisfiesInvariantsWith(Object)}  method, when testing a
+     * {@link SatisfiesObjectInvariantsWith#create(Object)}  method, when testing a
      * class that you have defined to have <i>entity semantics</i>.
      * </p>
      *
@@ -146,7 +146,7 @@ public final class EqualsSemanticsVerifier {
      * <h2>How to Use this Method</h2>
      * <p>
      * Use this as a supplement to the
-     * {@link ObjectVerifier#satisfiesInvariantsWith(Object)} method, when testing a
+     * {@link SatisfiesObjectInvariantsWith#create(Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each object <i>attribute</i> of the class, in addition to asserting
      * equality or non equality of the objects, to provide better test failure
