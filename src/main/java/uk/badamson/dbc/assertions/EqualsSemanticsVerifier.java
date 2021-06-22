@@ -17,8 +17,6 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 /**
  * <p>
  * Verification methods to assist in unit testing classes that have domain
@@ -92,7 +90,7 @@ public final class EqualsSemanticsVerifier {
      *    final var person2 = new Person(id, "Hilary");
      *
      *    assertThat(person1, satisfiesInvariants(person2));
-     *    assertThat(person1, EqualsSemanticsVerifier.hasEntitySematicsWith(person2));
+     *    assertThat(person1, EqualsSemanticsVerifier.hasEntitySemanticsWith(person2));
      *    assertThat(person1, is(person2));
      * }
      * </pre>
@@ -110,21 +108,6 @@ public final class EqualsSemanticsVerifier {
         return new HasEntitySemantics<>(other, valueOfId);
     }
 
-    /**
-     * <p>
-     * Assert that a pair of objects of a class satisfy the pairwise invariant
-     * necessary for the class to have <i>entity semantics</i>, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, EqualsSemanticsVerifier.hasEntitySemanticsWith(object2, valueOfId))}
-     * </p>
-     */
-    public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                    @Nonnull final Function<T, U> valueOfId) {
-        Objects.requireNonNull(object1, "object1");
-        assertThat(object1, hasEntitySemanticsWith(object2, valueOfId));
-    }
 
     /**
      * <p>
@@ -179,38 +162,6 @@ public final class EqualsSemanticsVerifier {
         return new HasValueSemantics<>(other, attributeName, valueOfAttribute);
     }
 
-    /**
-     * <p>
-     * Assert that a pair of objects of a class satisfy a pairwise invariant
-     * necessary for the class to have <i>value semantics</i>, throwing an
-     * {@link AssertionError} if they do not.
-     * </p>
-     * <p>
-     * This is a convenience method, equivalent to {@code assertThat(object1, EqualsSemanticsVerifier.hasValueSemanticsWith(object2, attributeName, valueOfAttribute))}
-     * </p>
-     *
-     * @param <T>              The class of {@code object1} and {@code object2}
-     * @param <U>              The class of the attribute to examine.
-     * @param object1          An object to test.
-     * @param object2          An object to test.
-     * @param attributeName    The name of the attribute to examine.
-     * @param valueOfAttribute A function for accessing the value of the attribute for the two
-     *                         objects under test. This should delegate to the getter method of
-     *                         the class. This test method assumes that the getter should never
-     *                         throw exceptions; it will throw an {@link AssertionError} if the
-     *                         the function does throw an exception.
-     * @throws NullPointerException <ul>
-     *                              <li>If {@code object1} is null.</li>
-     *                              <li>If {@code object2} is null.</li>
-     *                              <li>If {@code attributeName} is null.</li>
-     *                              <li>If {@code valueOfAttribute} is null.</li>
-     *                              </ul>
-     * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
-     */
-    public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                   @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
-        assertThat(object1, hasValueSemanticsWith(object2, attributeName, valueOfAttribute));
-    }
 
     private static final class HasValueSemantics<T, U> extends PairMatcher<T> {
 

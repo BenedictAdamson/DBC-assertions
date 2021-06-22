@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 /**
  * <p>
@@ -146,7 +147,7 @@ public class EqualsSemanticsVerifierTest {
     }// class
 
     @Nested
-    public class AssertEntitySemantics {
+    public class HasEntitySemanticsWith {
 
         @Test
         public void equivalent() {
@@ -155,7 +156,7 @@ public class EqualsSemanticsVerifierTest {
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
-            EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
+            assertThat(entity1, EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
         }
 
         @Test
@@ -164,7 +165,7 @@ public class EqualsSemanticsVerifierTest {
             final var entity2 = new Entity(UUID.randomUUID(), "B", 2L, 200);
             assert !entity1.equals(entity2);
 
-            EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id);
+            assertThat(entity1, EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id));
         }
 
         @Test
@@ -172,8 +173,7 @@ public class EqualsSemanticsVerifierTest {
             final var entity1 = new Entity(null, "A", 1L, 100);
             final var entity2 = new Entity(UUID.randomUUID(), "B", 1L, 100);
 
-            assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+            assertThat(entity1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
         }
 
         @Test
@@ -181,8 +181,7 @@ public class EqualsSemanticsVerifierTest {
             final var entity1 = new Entity(UUID.randomUUID(), "A", 1L, 100);
             final var entity2 = new Entity(null, "B", 1L, 100);
 
-            assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsVerifier.assertEntitySemantics(entity1, entity2, (entity) -> entity.id));
+            assertThat(entity1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(entity2, (entity) -> entity.id)));
         }
 
         @SuppressWarnings("StringOperationCanBeSimplified")
@@ -190,21 +189,19 @@ public class EqualsSemanticsVerifierTest {
         public void value() {
             final String object1 = "A";
             final String object2 = new String(object1);
-            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertEntitySemantics(object1, object2,
-                    System::identityHashCode));
+            assertThat(object1, not(EqualsSemanticsVerifier.hasEntitySemanticsWith(object2, System::identityHashCode)));
         }
 
     }// class
 
     @Nested
-    public class AssertValueSemantics {
+    public class HasValueSemanticsWith {
 
         @Test
         public void attributeEqualsThrows() {
             final var value1 = new ValueAttributeEqualsThrows();
             final var value2 = new ValueAttributeEqualsThrows();
-            assertThrows(AssertionError.class, () -> EqualsSemanticsVerifier.assertValueSemantics(value1, value2,
-                    "attribute", (value) -> value.attribute));
+            assertThat(value1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.attribute)));
         }
 
         @Test
@@ -214,30 +211,28 @@ public class EqualsSemanticsVerifierTest {
             final var entity2 = new Entity(id, "B", 1L, 100);
             assert entity1.equals(entity2);
 
-            assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsVerifier.assertValueSemantics(entity1, entity2, "name", (entity) -> entity.name));
+            assertThat(entity1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(entity2, "name", entity -> entity.name)));
         }
 
         @Test
         public void equalsThrows() {
             final var value1 = new ValueEqualsThrows(null);
             final var value2 = new ValueEqualsThrows("B");
-            assertThrows(AssertionError.class,
-                    () -> EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name));
+            assertThat(value1, not(EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "name", value -> value.name)));
         }
 
         @Test
         public void nullValue1() {
             final var value1 = new Value(null);
             final var value2 = new Value("B");
-            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
         @Test
         public void nullValue2() {
             final var value1 = new Value("A");
             final var value2 = new Value(null);
-            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
         @SuppressWarnings("StringOperationCanBeSimplified")
@@ -246,7 +241,7 @@ public class EqualsSemanticsVerifierTest {
             final String name = "A";
             final var value1 = new Value(name);
             final var value2 = new Value(new String(name));
-            EqualsSemanticsVerifier.assertValueSemantics(value1, value2, "name", (value) -> value.name);
+            assertThat(value1, EqualsSemanticsVerifier.hasValueSemanticsWith(value2, "attribute", value -> value.name));
         }
 
     }// class
