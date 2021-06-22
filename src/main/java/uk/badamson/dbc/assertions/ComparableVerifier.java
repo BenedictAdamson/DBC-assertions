@@ -343,6 +343,7 @@ public final class ComparableVerifier {
             final Integer c12 = ComparableVerifier.compareTo(item1, item2, mismatchDescription);
             final Integer c23 = ComparableVerifier.compareTo(item2, item3, mismatchDescription);
             final Integer c13 = ComparableVerifier.compareTo(item1, item3, mismatchDescription);
+            ok = ok && c12 != null && c23 != null && c13 != null;
             if (ok && c12 > 0 && c23 > 0 && !(c13 > 0)) {
                 mismatchDescription.appendText("not satisfied");
                 ok = false;
