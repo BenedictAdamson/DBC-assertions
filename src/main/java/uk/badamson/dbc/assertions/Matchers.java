@@ -448,7 +448,7 @@ public class Matchers {
      * @throws NullPointerException If any argument is null
      */
     public static <T, U> Matcher<T> hasEntitySemanticsWith(@Nonnull final T other, @Nonnull final Function<T, U> valueOfId) {
-        return EqualsSemanticsVerifier.hasEntitySemanticsWith(other, valueOfId);
+        return new HasEntitySemantics<>(other, valueOfId);
     }
 
 
@@ -513,6 +513,6 @@ public class Matchers {
      * @throws NullPointerException \If any argument is null.
      */
     public static <T, U> Matcher<T> hasValueSemanticsWith(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
-        return EqualsSemanticsVerifier.hasValueSemanticsWith(other, attributeName, valueOfAttribute);
+        return new HasValueSemantics<>(other, attributeName, valueOfAttribute);
     }
 }
