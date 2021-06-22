@@ -218,7 +218,7 @@ public class Matchers {
      * </p>
      *
      * <p>
-     * This is a supplement to the {@link ComparableVerifier#satisfiesInvariantsWith(Comparable)}
+     * This is a supplement to the {@link SatisfiesComparableInvariantsWith#create(Comparable)}
      * method, for use in the typical case that the natural ordering is consistent
      * with equals.
      * </p>
@@ -291,7 +291,7 @@ public class Matchers {
      * </pre>
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
-        return ComparableVerifier.satisfiesInvariants();
+        return SatisfiesComparableInvariants.create();
     }
 
 
@@ -363,7 +363,7 @@ public class Matchers {
      * @see #naturalOrderingIsConsistentWithEqualsWith(Comparable)
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T other) {
-        return ComparableVerifier.satisfiesInvariantsWith(other);
+        return SatisfiesComparableInvariantsWith.create(other);
     }
 
     /**
@@ -382,6 +382,6 @@ public class Matchers {
      * </p>
      */
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
-        return ComparableVerifier.satisfiesInvariantsWith(item2, item3);
+        return SatisfiesComparableInvariantsWith2.create(item2, item3);
     }
 }

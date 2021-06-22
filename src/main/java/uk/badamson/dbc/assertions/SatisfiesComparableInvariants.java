@@ -16,23 +16,18 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.allOf;
 
-/**
- * <p>
- * Verification methods to assist in unit testing classes that implement the
- * {@link Comparable} interface.
- */
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
-public final class ComparableVerifier {
+final class SatisfiesComparableInvariants {
 
-    private ComparableVerifier() {
+    private SatisfiesComparableInvariants() {
         assert false;// must not instance
     }
 
-    static <T extends Comparable<T>> Matcher<T> satisfiesInvariants() {
+
+    static <T extends Comparable<T>> Matcher<T> create() {
         return Matchers.describedAs("satisfies Comparable interface invariants",
                 allOf(
                         new CompareToNullThrowsNPE<T>(),
@@ -44,68 +39,6 @@ public final class ComparableVerifier {
                         new CompareToSelfDoesNotThrowException<T>()
                 ));
     }
-
-
-    static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T other) {
-        Objects.requireNonNull(other, "other");
-        return Matchers.describedAs("satisfies pairwise Comparable interface invariants with " + Safe.toString(other), allOf(
-                new CompareToIsSymmetric<>(other)
-        ));
-    }
-
-    static <T extends Comparable<T>> Matcher<T> satisfiesInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
-        return new CompareToIsTransitive<>(item2, item3);
-    }
-
-    private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleMatcher<T> {
-        CompareToIsTransitive(@Nonnull T item2, @Nonnull T item3) {
-            super(item2, item3);
-        }
-
-        @Override
-        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription) {
-            boolean ok = true;
-            final Integer c12 = Safe.compareTo(item1, item2, mismatchDescription);
-            final Integer c23 = Safe.compareTo(item2, item3, mismatchDescription);
-            final Integer c13 = Safe.compareTo(item1, item3, mismatchDescription);
-            ok = ok && c12 != null && c23 != null && c13 != null;
-            if (ok && c12 > 0 && c23 > 0 && !(c13 > 0)) {
-                mismatchDescription.appendText("not satisfied");
-                ok = false;
-            }
-            return ok;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("compareTo is transitive");
-        }
-    }// class
-
-    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairMatcher<T> {
-        CompareToIsSymmetric(@Nonnull T other) {
-            super(other);
-        }
-
-        @Override
-        protected boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription) {
-            boolean ok = true;
-            final Integer c12 = Safe.compareTo(item1, item2, mismatchDescription);
-            final Integer c21 = Safe.compareTo(item2, item1, mismatchDescription);
-            ok = ok && c12 != null && c21 != null;
-            if (ok && Integer.signum(c12) != -Integer.signum(c21)) {
-                mismatchDescription.appendText("not satisfied");
-                ok = false;
-            }
-            return ok;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("compareTo is symmetric");
-            description.appendValue(description);
-        }
-    }// class
 
     private static final class CompareToNullThrowsNPE<T extends Comparable<T>> extends TypeSafeDiagnosingMatcher<T> {
         @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
