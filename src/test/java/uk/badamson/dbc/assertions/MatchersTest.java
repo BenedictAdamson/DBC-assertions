@@ -594,4 +594,26 @@ public class MatchersTest {
             })));
         }
     }
+
+    @Nested
+    public class MethodThrows {
+        @Test
+        public void doesNotThrow() {
+            assertThat(1, not(Matchers.methodThrows("toString()", NullPointerException.class, Object::toString)));
+        }
+
+        @Test
+        public void doesThrow() {
+            assertThat(2, Matchers.methodThrows("fake()", RuntimeException.class, i -> {
+                throw new RuntimeException("inevitable");
+            }));
+        }
+
+        @Test
+        public void throwsWrongClass() {
+            assertThat(3, not(Matchers.methodThrows("fake()", IllegalStateException.class, i -> {
+                throw new RuntimeException("inevitable");
+            })));
+        }
+    }
 }

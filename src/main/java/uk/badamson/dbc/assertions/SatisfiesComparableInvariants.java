@@ -10,10 +10,8 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import static org.hamcrest.Matchers.allOf;
 
@@ -28,7 +26,7 @@ final class SatisfiesComparableInvariants {
     static <T extends Comparable<T>> Matcher<T> create() {
         return Matchers.describedAs("satisfies Comparable interface invariants",
                 allOf(
-                        new CompareToNullThrowsNPE<T>(),
+                        new MethodThrows<>("compareTo(null)", NullPointerException.class, c -> c.compareTo(null)),
                         /*
                          * For completeness, check that this.compareTo(this) does not throw an
                          * exception, although it is unlikely that a faulty implementation would throw
@@ -38,31 +36,5 @@ final class SatisfiesComparableInvariants {
                 ));
     }
 
-    private static final class CompareToNullThrowsNPE<T extends Comparable<T>> extends TypeSafeDiagnosingMatcher<T> {
-        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
-        @Override
-        protected boolean matchesSafely(T item, Description mismatchDescription) {
-            try {
-                item.compareTo(null);
-            } catch (final NullPointerException e) {
-                return true;// the required behaviour
-            } catch (final Exception e) {
-                /*
-                 * It is unlikely that a faulty compareTo would throw any other kind of
-                 * exception, but provide good diagnostics just in case.
-                 */
-                mismatchDescription.appendText("but threw a ");
-                mismatchDescription.appendValue(e);
-                return false;
-            }
-            mismatchDescription.appendText("but did not throw an exception");
-            return false;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("compareToNull(null) throws a NullPointerException");
-        }
-    }// class
 
 }

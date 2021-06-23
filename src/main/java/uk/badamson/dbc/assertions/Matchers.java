@@ -206,6 +206,7 @@ public class Matchers {
      * @param other An object to verify with respect to
      * @throws NullPointerException If {@code other} is null.
      */
+    @Nonnull
     public static Matcher<Object> satisfiesObjectInvariantsWith(@Nonnull Object other) {
         return SatisfiesObjectInvariantsWith.create(other);
     }
@@ -225,6 +226,7 @@ public class Matchers {
      * with equals.
      * </p>
      */
+    @Nonnull
     public static <T extends Comparable<T>> Matcher<T> naturalOrderingIsConsistentWithEqualsWith(@Nonnull T other) {
         return new NaturalOrderingIsConsistentWithEquals<>(other);
     }
@@ -292,6 +294,7 @@ public class Matchers {
      * }
      * </pre>
      */
+    @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
         return SatisfiesComparableInvariants.create();
     }
@@ -364,6 +367,7 @@ public class Matchers {
      *
      * @see #naturalOrderingIsConsistentWithEqualsWith(Comparable)
      */
+    @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T other) {
         return SatisfiesComparableInvariantsWith.create(other);
     }
@@ -383,6 +387,7 @@ public class Matchers {
      * {@link #satisfiesComparableInvariantsWith(Comparable)} invariants are all met.
      * </p>
      */
+    @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariantsWith(@Nonnull T item2, @Nonnull T item3) {
         return SatisfiesComparableInvariantsWith2.create(item2, item3);
     }
@@ -448,6 +453,7 @@ public class Matchers {
      *                  throw exceptions.
      * @throws NullPointerException If any argument is null
      */
+    @Nonnull
     public static <T, U> Matcher<T> hasEntitySemanticsWith(@Nonnull final T other, @Nonnull final Function<T, U> valueOfId) {
         return new HasEntitySemantics<>(other, valueOfId);
     }
@@ -513,6 +519,7 @@ public class Matchers {
      *                         throw exceptions.
      * @throws NullPointerException If any argument is null.
      */
+    @Nonnull
     public static <T, U> Matcher<T> hasValueSemanticsWith(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
         return new HasValueSemantics<>(other, attributeName, valueOfAttribute);
     }
@@ -528,13 +535,37 @@ public class Matchers {
      * function for calling the method.
      * </p>
      *
-     * @param <T>        The class of object to match
-     * @param methodName The name of the attribute to examine.
+     * @param <T>        The class of object to match.
+     * @param methodName The name of the method to call.
      * @param method     A method reference (such as {@code Object::toString}) for the method to call,
      *                   or a lambda that indirectly calls the method.
      * @throws NullPointerException If any argument is null.
      */
+    @Nonnull
     public static <T> Matcher<T> methodDoesNotThrow(@Nonnull String methodName, @Nonnull Consumer<T> method) {
         return new MethodDoesNotThrow(methodName, method);
+    }
+
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, a method of the object being matched
+     * throws an exception, of a given class, when called.
+     * </p>
+     * <p>
+     * So the {@link Matcher} can be general, you provide it with an accessor
+     * function for calling the method.
+     * </p>
+     *
+     * @param <T>        The class of object to match.
+     * @param methodName The name of the method to call.
+     * @param exception  The class of the exception that is expected to be thrown.
+     * @param method     A method reference (such as {@code Stack::pop}) for the method to call,
+     *                   or a lambda that indirectly calls the method.
+     * @throws NullPointerException If any argument is null.
+     */
+    @Nonnull
+    public static <T, E extends Throwable> Matcher<T> methodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Consumer<T> method) {
+        return new MethodThrows<>(methodName, exception, method);
     }
 }

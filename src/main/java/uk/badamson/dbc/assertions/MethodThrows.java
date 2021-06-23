@@ -16,16 +16,21 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-final class MethodDoesNotThrow<T> extends TypeSafeDiagnosingMatcher<T> {
+final class MethodThrows<T, E extends Throwable> extends TypeSafeDiagnosingMatcher<T> {
+
 
     @Nonnull
     private final String methodName;
 
     @Nonnull
+    private final Class<E> exception;
+
+    @Nonnull
     private final Consumer<T> method;
 
-    MethodDoesNotThrow(@Nonnull String methodName, @Nonnull Consumer<T> method) {
+    MethodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Consumer<T> method) {
         this.methodName = Objects.requireNonNull(methodName, "methodName");
+        this.exception = Objects.requireNonNull(exception, "exception");
         this.method = Objects.requireNonNull(method, "method");
     }
 
@@ -34,18 +39,23 @@ final class MethodDoesNotThrow<T> extends TypeSafeDiagnosingMatcher<T> {
         try {
             method.accept(item);
         } catch (Throwable e) {
-            mismatchDescription.appendText("failed because it threw exception ");
-            mismatchDescription.appendValue(e);
-            return false;
+            if (exception.isInstance(e)) {
+                return true;
+            } else {
+                mismatchDescription.appendText("failed because it instead threw exception ");
+                mismatchDescription.appendValue(e);
+                return false;
+            }
         }
-        return true;
+        mismatchDescription.appendText("failed because it did not throw an exception");
+        return false;
     }
 
     @Override
     public void describeTo(Description description) {
         description.appendText("method ");
         description.appendText(methodName);
-        description.appendText(" does not throw an exception");
+        description.appendText(" throws an exception of class ");
+        description.appendValue(exception);
     }
-
 }
