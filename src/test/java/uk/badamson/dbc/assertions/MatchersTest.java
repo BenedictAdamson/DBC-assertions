@@ -639,4 +639,25 @@ public class MatchersTest {
         }
 
     }// class
+
+    @Nested
+    public class HasRelationship {
+
+        @Test
+        public void matches() {
+            assertThat(1, Matchers.hasRelationship("< 2", 2, (i, j) -> i.compareTo(j) < 0));
+        }
+
+        @Test
+        public void doesNotMatch() {
+            assertThat(3, not(Matchers.hasRelationship("< 1", 1, (i, j) -> i.compareTo(j) < 0)));
+        }
+
+        @Test
+        public void predicateThrows() {
+            assertThat(1, not(Matchers.hasRelationship("< 2", 2, (i, j) -> {
+                throw new IllegalArgumentException("inevitable");
+            })));
+        }
+    }// class
 }

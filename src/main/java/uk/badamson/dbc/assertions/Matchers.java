@@ -13,6 +13,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.allOf;
@@ -610,4 +611,25 @@ public class Matchers {
         return new DelegatingFeatureMatcher<>(featureMatcher, name, get);
     }
 
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * has a particular relationship
+     * with a given other object
+     * </p>
+     *
+     * @param description The description of the relationship
+     * @param other       The other object, that ought tp have the specified relationship
+     * @param predicate   A method reference
+     *                    or a lambda that evaluates whether the relationship holds between the two objects;
+     *                    return {@code true} if, and only if, the relationship holds.
+     *                    If matcher treats an exception thrown from the predicate as a failure.
+     * @param <T>         The type of the object to match
+     * @param <U>         The type of the other object
+     */
+    @Nonnull
+    public static <T, U> Matcher<T> hasRelationship(@Nonnull String description, @Nonnull final U other, @Nonnull BiPredicate<T, U> predicate) {
+        return new DelegatingPairRelationshipMatcher<>(other, description, predicate);
+    }
 }
