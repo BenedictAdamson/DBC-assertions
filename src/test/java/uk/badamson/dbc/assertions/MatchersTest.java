@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 /**
@@ -593,7 +594,7 @@ public class MatchersTest {
                 throw new RuntimeException("inevitable");
             })));
         }
-    }
+    }// class
 
     @Nested
     public class MethodThrows {
@@ -615,5 +616,27 @@ public class MatchersTest {
                 throw new RuntimeException("inevitable");
             })));
         }
-    }
+    }// class
+
+    @Nested
+    public class Feature {
+
+        @Test
+        public void matches() {
+            assertThat(1, Matchers.feature("string", Object::toString, is("1")));
+        }
+
+        @Test
+        public void doesNotMatch() {
+            assertThat(1, not(Matchers.feature("string", Object::toString, is("2"))));
+        }
+
+        @Test
+        public void accessorThrows() {
+            assertThat(1, not(Matchers.feature("fake", i -> {
+                throw new IllegalStateException("inevitable");
+            }, is("1"))));
+        }
+
+    }// class
 }

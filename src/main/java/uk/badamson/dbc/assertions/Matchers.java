@@ -584,4 +584,29 @@ public class Matchers {
     public static <T, R, E extends Throwable> Matcher<T> methodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Function<T, R> method) {
         return new MethodThrows<>(methodName, exception, method);
     }
+
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * has a <i>feature</i>
+     * (which is typically an attribute)
+     * that successfully matches using a given matcher
+     * </p>
+     *
+     * @param name           The name of the feature
+     * @param get            A method reference (such as {@code Object::toString}) to get the feature,
+     *                       or a lambda that indirectly gets the feature.
+     * @param featureMatcher The matcher to apply to the feature value.
+     *                       The returned matcher will pass null to this feature matcher
+     *                       if the {@code get} function throws an exception.
+     *                       See {@link #methodDoesNotThrow(String, Function)} for a means of distinguishing
+     *                       between a null feature and a feature getter that throws an exception.
+     * @param <T>            The type of the object to match
+     * @param <U>            The type of the feature
+     */
+    @Nonnull
+    public static <T, U> Matcher<T> feature(@Nonnull String name, @Nonnull Function<T, U> get, @Nonnull Matcher<U> featureMatcher) {
+        return new DelegatingFeatureMatcher<>(featureMatcher, name, get);
+    }
 }
