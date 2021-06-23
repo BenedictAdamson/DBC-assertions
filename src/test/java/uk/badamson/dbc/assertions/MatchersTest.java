@@ -697,4 +697,26 @@ public class MatchersTest {
             }, (empty, size) -> empty == (size == 0))));
         }
     }// class
+
+    @Nested
+    public class Satisfies {
+
+        @Test
+        public void matches() {
+            assertThat(new ArrayList<Integer>(), Matchers.satisfies("empty", List::isEmpty));
+        }
+
+        @Test
+        public void doesNotMatch() {
+            assertThat(new ArrayList<Integer>(), not(Matchers.satisfies("not empty", l -> !l.isEmpty())));
+        }
+
+        @Test
+        public void predicateThrows() {
+            assertThat(new ArrayList<Integer>(), not(Matchers.satisfies("empty", l -> {
+                throw new IllegalArgumentException("inevitable");
+            })));
+        }
+
+    }// class
 }

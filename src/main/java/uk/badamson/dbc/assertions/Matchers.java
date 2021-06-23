@@ -15,6 +15,7 @@ import org.hamcrest.Matcher;
 import javax.annotation.Nonnull;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.describedAs;
@@ -648,15 +649,32 @@ public class Matchers {
      *
      * @param description The description of the relationship
      * @param other       The other object, that ought tp have the specified relationship
-     * @param predicate   A method reference
-     *                    or a lambda that evaluates whether the relationship holds between the two objects;
+     * @param predicate   A method reference or a lambda that evaluates whether the relationship holds between the two objects;
      *                    returns {@code true} if, and only if, the relationship holds.
      *                    The matcher treats an exception thrown from the predicate as a failure.
-     * @param <T>         The type of the object to match
-     * @param <U>         The type of the other object
+     * @param <T>         The type of the object to match.
+     * @param <U>         The type of the other object.
      */
     @Nonnull
     public static <T, U> Matcher<T> hasRelationship(@Nonnull String description, @Nonnull final U other, @Nonnull BiPredicate<T, U> predicate) {
         return new DelegatingPairRelationshipMatcher<>(other, description, predicate);
+    }
+
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
+     * satisfies a constraint given by a given predicate.
+     * </p>
+     *
+     * @param description The constraint expressed by the predicate
+     * @param predicate   A method reference (such as {@code List::isEmpty}) or a lambda that evaluates whether the constraint is satisfied.
+     *                    returns {@code true} if, and only if, the constraint is satisfied.
+     *                    The matcher treats an exception thrown from the predicate as a failure.
+     * @param <T>         The type of the object to match.
+     */
+    @Nonnull
+    public static <T> Matcher<T> satisfies(@Nonnull String description, @Nonnull Predicate<T> predicate) {
+        return new DelegatingMatcher<>(description, predicate);
     }
 }
