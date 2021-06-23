@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Function;
 
-final class HasEntitySemantics<T, U> extends PairRelationshipMatcher<T> {
+final class HasEntitySemantics<T, U> extends PairRelationshipMatcher<T, T> {
 
     @Nonnull
     private final Function<T, U> valueOfId;

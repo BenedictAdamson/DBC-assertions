@@ -13,7 +13,7 @@ import org.hamcrest.Description;
 
 import javax.annotation.Nonnull;
 
-final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairRelationshipMatcher<T> {
+final class NaturalOrderingIsConsistentWithEquals<T extends Comparable<T>> extends PairRelationshipMatcher<T, T> {
     NaturalOrderingIsConsistentWithEquals(@Nonnull T other) {
         super(other);
     }

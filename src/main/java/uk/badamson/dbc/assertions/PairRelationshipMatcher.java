@@ -16,17 +16,17 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
- * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being matched has a particular relationship with another given object of the same class.</p>
+ * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being matched has a particular relationship with another given object.</p>
  * <p>To use, implement {@link #matchesSafely(Object, Object, Description)}.</p>
  */
-public abstract class PairRelationshipMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
+public abstract class PairRelationshipMatcher<T, U> extends TypeSafeDiagnosingMatcher<T> {
     @Nonnull
-    private final T other;
+    private final U other;
 
     /**
      * @param other The other object to check the relationship with.
      */
-    protected PairRelationshipMatcher(@Nonnull final T other) {
+    protected PairRelationshipMatcher(@Nonnull final U other) {
         this.other = Objects.requireNonNull(other, "other");
     }
 
@@ -43,5 +43,5 @@ public abstract class PairRelationshipMatcher<T> extends TypeSafeDiagnosingMatch
      * @param mismatchDescription The description appended a failure message to if, and only if, tje relationship does not hold between {@code item1} and {@code item2}.
      * @return whether the expected relationship holds between {@code item1} and {@code item2}.
      */
-    protected abstract boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription);
+    protected abstract boolean matchesSafely(@Nonnull T item1, @Nonnull U item2, @Nonnull Description mismatchDescription);
 }// class

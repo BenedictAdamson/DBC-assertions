@@ -609,4 +609,5 @@ public class Matchers {
     public static <T, U> Matcher<T> feature(@Nonnull String name, @Nonnull Function<T, U> get, @Nonnull Matcher<U> featureMatcher) {
         return new DelegatingFeatureMatcher<>(featureMatcher, name, get);
     }
+
 }

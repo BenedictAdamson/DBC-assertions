@@ -32,7 +32,7 @@ public class SatisfiesObjectInvariantsWith {
         ));
     }
 
-    private static final class EqualityIsSymmetric extends PairRelationshipMatcher<Object> {
+    private static final class EqualityIsSymmetric extends PairRelationshipMatcher<Object, Object> {
 
 
         EqualityIsSymmetric(@Nonnull Object other) {
@@ -65,7 +65,7 @@ public class SatisfiesObjectInvariantsWith {
 
     }// class
 
-    private static final class HashCodeIsConsistentWithEquals extends PairRelationshipMatcher<Object> {
+    private static final class HashCodeIsConsistentWithEquals extends PairRelationshipMatcher<Object, Object> {
 
 
         HashCodeIsConsistentWithEquals(@Nonnull Object other) {
