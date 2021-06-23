@@ -9,6 +9,7 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nonnull;
@@ -299,6 +300,7 @@ public class Matchers {
      */
     @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
+        //noinspection ConstantConditions,EqualsWithItself,ResultOfMethodCallIgnored
         return describedAs("satisfies Comparable interface invariants",
                 allOf(
                         methodThrows("compareTo(null)", NullPointerException.class, c -> c.compareTo(null)),
@@ -555,7 +557,7 @@ public class Matchers {
      */
     @Nonnull
     public static <T> Matcher<T> methodDoesNotThrow(@Nonnull String methodName, @Nonnull Consumer<T> method) {
-        return new MethodDoesNotThrow(methodName, method);
+        return new MethodDoesNotThrow<>(methodName, method);
     }
 
     /**

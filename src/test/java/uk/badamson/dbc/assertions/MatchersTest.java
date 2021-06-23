@@ -582,6 +582,7 @@ public class MatchersTest {
 
     @Nested
     public class MethodDoesNotThrow {
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Test
         public void doesNotThrow() {
             assertThat(1, Matchers.methodDoesNotThrow("toString()", Object::toString));
@@ -597,6 +598,7 @@ public class MatchersTest {
 
     @Nested
     public class MethodThrows {
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Test
         public void doesNotThrow() {
             assertThat(1, not(Matchers.methodThrows("toString()", NullPointerException.class, Object::toString)));

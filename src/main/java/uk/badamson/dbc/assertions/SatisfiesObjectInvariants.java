@@ -26,10 +26,11 @@ final class SatisfiesObjectInvariants {
 
     @Nonnull
     static Matcher<Object> create() {
+        //noinspection ResultOfMethodCallIgnored
         return Matchers.describedAs("satisfies Object class invariants",
                 Matchers.allOf(
-                        new MethodDoesNotThrow("toString", Object::toString),
-                        new MethodDoesNotThrow("hashCode", Object::hashCode),
+                        new MethodDoesNotThrow<>("toString", Object::toString),
+                        new MethodDoesNotThrow<>("hashCode", Object::hashCode),
                         new EqualsSelf(),
                         new NeverEqualsNull()
                 ));
