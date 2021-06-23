@@ -15,6 +15,9 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.describedAs;
+
 /**
  * @see org.hamcrest.Matchers
  */
@@ -296,7 +299,16 @@ public class Matchers {
      */
     @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
-        return SatisfiesComparableInvariants.create();
+        return describedAs("satisfies Comparable interface invariants",
+                allOf(
+                        methodThrows("compareTo(null)", NullPointerException.class, c -> c.compareTo(null)),
+                        /*
+                         * For completeness, check that this.compareTo(this) does not throw an
+                         * exception, although it is unlikely that a faulty implementation would throw
+                         * an exception.
+                         */
+                        methodDoesNotThrow("compareTo(this)", c -> c.compareTo(c))
+                ));
     }
 
 
