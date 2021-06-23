@@ -23,6 +23,9 @@ public abstract class PairMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
     @Nonnull
     private final T other;
 
+    /**
+     * @param other The other object to check the relationship with.
+     */
     protected PairMatcher(@Nonnull final T other) {
         this.other = Objects.requireNonNull(other, "other");
     }
@@ -37,7 +40,7 @@ public abstract class PairMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      *
      * @param item1               The first item to evaluate the relationship against.
      * @param item2               The second item to evaluate the relationship against.
-     * @param mismatchDescription The description to be built or appended to.
+     * @param mismatchDescription The description appended a failure message to if, and only if, tje relationship does not hold between {@code item1} and {@code item2}.
      * @return whether the expected relationship holds between {@code item1} and {@code item2}.
      */
     protected abstract boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull Description mismatchDescription);

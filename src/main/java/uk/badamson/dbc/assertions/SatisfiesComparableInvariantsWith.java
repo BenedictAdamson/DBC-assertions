@@ -49,7 +49,6 @@ final class SatisfiesComparableInvariantsWith {
         @Override
         public void describeTo(Description description) {
             description.appendText("compareTo is symmetric");
-            description.appendValue(description);
         }
     }// class
 }
