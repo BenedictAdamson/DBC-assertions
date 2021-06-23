@@ -16,16 +16,16 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
- * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being  matched has a particular relationship with two other given objects of the same class.</p>
+ * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being matched has a particular relationship with two other given objects of the same class.</p>
  * <p>To use, implement {@link #matchesSafely(Object, Object, Object, Description)}.</p>
  */
-public abstract class TripleMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
+public abstract class TripleRelationshipMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
     @Nonnull
     private final T item2;
     @Nonnull
     private final T item3;
 
-    protected TripleMatcher(@Nonnull final T item2, @Nonnull final T item3) {
+    protected TripleRelationshipMatcher(@Nonnull final T item2, @Nonnull final T item3) {
         this.item2 = Objects.requireNonNull(item2, "item2");
         this.item3 = Objects.requireNonNull(item3, "item3");
     }

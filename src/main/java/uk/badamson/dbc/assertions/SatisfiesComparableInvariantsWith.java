@@ -27,7 +27,7 @@ final class SatisfiesComparableInvariantsWith {
         ));
     }
 
-    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairMatcher<T> {
+    private static final class CompareToIsSymmetric<T extends Comparable<T>> extends PairRelationshipMatcher<T> {
         CompareToIsSymmetric(@Nonnull T other) {
             super(other);
         }

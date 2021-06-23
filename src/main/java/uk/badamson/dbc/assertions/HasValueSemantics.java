@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Function;
 
-final class HasValueSemantics<T, U> extends PairMatcher<T> {
+final class HasValueSemantics<T, U> extends PairRelationshipMatcher<T> {
 
     @Nonnull
     private final String attributeName;
