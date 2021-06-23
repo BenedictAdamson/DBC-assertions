@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -658,6 +660,41 @@ public class MatchersTest {
             assertThat(1, not(Matchers.hasRelationship("< 2", 2, (i, j) -> {
                 throw new IllegalArgumentException("inevitable");
             })));
+        }
+    }// class
+
+    @Nested
+    public class FeaturesHaveRelationship {
+
+        @Test
+        public void matches() {
+            assertThat(new ArrayList<>(), Matchers.featuresHaveRelationship("empty iff has zero size", List::isEmpty, List::size, (empty, size) -> empty == (size == 0)));
+        }
+
+        @Test
+        public void doesNotMatch() {
+            assertThat(new ArrayList<>(), not(Matchers.featuresHaveRelationship("the impossible", List::isEmpty, List::size, (empty, size) -> false)));
+        }
+
+        @Test
+        public void predicateThrows() {
+            assertThat(new ArrayList<>(), not(Matchers.featuresHaveRelationship("the impossible", List::isEmpty, List::size, (empty, size) -> {
+                throw new IllegalArgumentException("inevitable");
+            })));
+        }
+
+        @Test
+        public void get1Throws() {
+            assertThat(new ArrayList<>(), not(Matchers.<List<Integer>, Boolean, Integer>featuresHaveRelationship("empty iff has zero size", l -> {
+                throw new IllegalArgumentException("inevitable");
+            }, List::size, (empty, size) -> empty == (size == 0))));
+        }
+
+        @Test
+        public void get2Throws() {
+            assertThat(new ArrayList<>(), not(Matchers.<List<Integer>, Boolean, Integer>featuresHaveRelationship("empty iff has zero size", List::isEmpty, l -> {
+                throw new IllegalArgumentException("inevitable");
+            }, (empty, size) -> empty == (size == 0))));
         }
     }// class
 }

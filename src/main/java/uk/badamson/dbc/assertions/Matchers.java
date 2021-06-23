@@ -615,6 +615,33 @@ public class Matchers {
      * <p>
      * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
+     * has two <i>features</i>
+     * (which are typically attributes)
+     * that have a given relationship.
+     * </p>
+     *
+     * @param description the description of the expected relationship between the two features
+     * @param get1        A method reference (such as {@code Object::toString}) to get the first feature,
+     *                    or a lambda that indirectly gets the first feature.
+     * @param get2        A method reference to get the second feature,
+     *                    *                           or a lambda that indirectly gets the second feature.
+     * @param predicate   A method reference
+     *                    *                    or a lambda that evaluates whether the relationship holds between the two features;
+     *                    *                    returns {@code true} if, and only if, the relationship holds.
+     *                    *                    The matcher treats an exception thrown from the predicate as a failure.
+     * @param <T>         The type of the object to match.
+     * @param <U>         The type of the first feature.
+     * @param <V>         The type of the second feature.
+     */
+    @Nonnull
+    public static <T, U, V> Matcher<T> featuresHaveRelationship(@Nonnull String description, @Nonnull Function<T, U> get1, @Nonnull Function<T, V> get2, @Nonnull BiPredicate<U, V> predicate) {
+        return new FeaturesHaveRelationshipMatcher<>(description, get1, get2, predicate);
+    }
+
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, the object being matched
      * has a particular relationship
      * with a given other object
      * </p>
@@ -623,8 +650,8 @@ public class Matchers {
      * @param other       The other object, that ought tp have the specified relationship
      * @param predicate   A method reference
      *                    or a lambda that evaluates whether the relationship holds between the two objects;
-     *                    return {@code true} if, and only if, the relationship holds.
-     *                    If matcher treats an exception thrown from the predicate as a failure.
+     *                    returns {@code true} if, and only if, the relationship holds.
+     *                    The matcher treats an exception thrown from the predicate as a failure.
      * @param <T>         The type of the object to match
      * @param <U>         The type of the other object
      */
