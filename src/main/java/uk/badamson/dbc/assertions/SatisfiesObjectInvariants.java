@@ -28,8 +28,8 @@ final class SatisfiesObjectInvariants {
     static Matcher<Object> create() {
         return Matchers.describedAs("satisfies Object class invariants",
                 Matchers.allOf(
-                        new ToStringDoesNotThrow(),
-                        new HashCodeDoesNotThrow(),
+                        new MethodDoesNotThrow("toString", Object::toString),
+                        new MethodDoesNotThrow("hashCode", Object::hashCode),
                         new EqualsSelf(),
                         new NeverEqualsNull()
                 ));
@@ -75,33 +75,5 @@ final class SatisfiesObjectInvariants {
         }
     }// class
 
-    private static final class ToStringDoesNotThrow extends MethodDoesNotThrow<Object> {
-
-        @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        @Override
-        protected void callMethod(@Nonnull Object item) throws RuntimeException {
-            item.toString();
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("toString() does not throw exceptions");
-        }
-    }// class
-
-    private static final class HashCodeDoesNotThrow extends MethodDoesNotThrow<Object> {
-
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        @Override
-        protected void callMethod(@Nonnull Object item) throws RuntimeException {
-            item.hashCode();
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("hashCode() does not throw exceptions");
-        }
-    }// class
 
 }

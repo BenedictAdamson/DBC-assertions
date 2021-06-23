@@ -15,8 +15,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-import javax.annotation.Nonnull;
-
 import static org.hamcrest.Matchers.allOf;
 
 @SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
@@ -36,7 +34,7 @@ final class SatisfiesComparableInvariants {
                          * exception, although it is unlikely that a faulty implementation would throw
                          * an exception.
                          */
-                        new CompareToSelfDoesNotThrow<T>()
+                        new MethodDoesNotThrow<T>("compareTo(this)", c -> c.compareTo(c))
                 ));
     }
 
@@ -67,16 +65,4 @@ final class SatisfiesComparableInvariants {
         }
     }// class
 
-    private static final class CompareToSelfDoesNotThrow<T extends Comparable<T>> extends MethodDoesNotThrow<T> {
-        @SuppressWarnings({"EqualsWithItself", "ResultOfMethodCallIgnored"})
-        @Override
-        protected void callMethod(@Nonnull T item) {
-            item.compareTo(item);
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("this.compareTo(this) does not throw an exception");
-        }
-    }// class
 }

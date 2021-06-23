@@ -579,4 +579,19 @@ public class MatchersTest {
         }
 
     }// class
+
+    @Nested
+    public class MethodDoesNotThrow {
+        @Test
+        public void doesNotThrow() {
+            assertThat(1, Matchers.methodDoesNotThrow("toString()", Object::toString));
+        }
+
+        @Test
+        public void doesThrow() {
+            assertThat(2, not(Matchers.methodDoesNotThrow("fake()", i -> {
+                throw new RuntimeException("inevitable");
+            })));
+        }
+    }
 }

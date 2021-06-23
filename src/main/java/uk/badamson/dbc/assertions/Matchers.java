@@ -12,6 +12,7 @@ package uk.badamson.dbc.assertions;
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -22,7 +23,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the invariants imposed by the
      * {@link Object} base class.
@@ -112,7 +113,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the  relationship (pairwise)
      * invariants imposed by the {@link Object} base class.
@@ -211,7 +212,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies  the relationship (pairwise)
      * invariant required for the {@link Comparable#compareTo(Object)} method to
@@ -231,7 +232,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the invariants imposed by the
      * {@link Comparable} interface.
@@ -298,7 +299,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the  relationship (pairwise)
      * invariants imposed by the  {@link Comparable} interface.
@@ -369,7 +370,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies all the  three-way relationship
      * invariants imposed by the  {@link Comparable} interface.
@@ -389,7 +390,7 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies the   pairwise invariant, with respect to a given object,
      * necessary for the class to have <i>entity semantics</i>.     *
@@ -454,10 +455,10 @@ public class Matchers {
 
     /**
      * <p>
-     * Provide a {@linkplain Matcher matcher}
+     * Create a {@linkplain Matcher matcher}
      * that matches if, and only if, the object being matched
      * satisfies a   pairwise invariant, with respect to a given object,
-     * necessary for the class to have <i>value semantics</i>,.
+     * necessary for the class to have <i>value semantics</i>.
      * </p>
      * <p>
      * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
@@ -510,9 +511,30 @@ public class Matchers {
      *                         objects under test. This should delegate to the getter method of
      *                         the class. This matcher assumes that the getter should never
      *                         throw exceptions.
-     * @throws NullPointerException \If any argument is null.
+     * @throws NullPointerException If any argument is null.
      */
     public static <T, U> Matcher<T> hasValueSemanticsWith(@Nonnull T other, @Nonnull String attributeName, @Nonnull Function<T, U> valueOfAttribute) {
         return new HasValueSemantics<>(other, attributeName, valueOfAttribute);
+    }
+
+    /**
+     * <p>
+     * Create a {@linkplain Matcher matcher}
+     * that matches if, and only if, a method of the object being matched
+     * does not throw an exception when called.
+     * </p>
+     * <p>
+     * So the {@link Matcher} can be general, you provide it with an accessor
+     * function for calling the method.
+     * </p>
+     *
+     * @param <T>        The class of object to match
+     * @param methodName The name of the attribute to examine.
+     * @param method     A method reference (such as {@code Object::toString}) for the method to call,
+     *                   or a lambda that indirectly calls the method.
+     * @throws NullPointerException If any argument is null.
+     */
+    public static <T> Matcher<T> methodDoesNotThrow(@Nonnull String methodName, @Nonnull Consumer<T> method) {
+        return new MethodDoesNotThrow(methodName, method);
     }
 }
