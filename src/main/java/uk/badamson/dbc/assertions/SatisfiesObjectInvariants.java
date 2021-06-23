@@ -26,7 +26,6 @@ final class SatisfiesObjectInvariants {
 
     @Nonnull
     static Matcher<Object> create() {
-        //noinspection ResultOfMethodCallIgnored
         return Matchers.describedAs("satisfies Object class invariants",
                 Matchers.allOf(
                         new MethodDoesNotThrow<>("toString", Object::toString),

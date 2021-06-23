@@ -13,7 +13,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.allOf;
@@ -22,6 +21,7 @@ import static org.hamcrest.Matchers.describedAs;
 /**
  * @see org.hamcrest.Matchers
  */
+@SuppressFBWarnings(value = {"SA_LOCAL_SELF_COMPARISON"}, justification = "checking invariant")
 public class Matchers {
 
 
@@ -300,7 +300,7 @@ public class Matchers {
      */
     @Nonnull
     public static <T extends Comparable<T>> Matcher<T> satisfiesComparableInvariants() {
-        //noinspection ConstantConditions,EqualsWithItself,ResultOfMethodCallIgnored
+        // noinspection ConstantConditions,EqualsWithItself
         return describedAs("satisfies Comparable interface invariants",
                 allOf(
                         methodThrows("compareTo(null)", NullPointerException.class, c -> c.compareTo(null)),
@@ -556,7 +556,7 @@ public class Matchers {
      * @throws NullPointerException If any argument is null.
      */
     @Nonnull
-    public static <T> Matcher<T> methodDoesNotThrow(@Nonnull String methodName, @Nonnull Consumer<T> method) {
+    public static <T, R> Matcher<T> methodDoesNotThrow(@Nonnull String methodName, @Nonnull Function<T, R> method) {
         return new MethodDoesNotThrow<>(methodName, method);
     }
 
@@ -572,14 +572,16 @@ public class Matchers {
      * </p>
      *
      * @param <T>        The class of object to match.
+     * @param <R>        The return type of the method.
+     * @param <E>        The class of the exception that is expected to be thrown.
      * @param methodName The name of the method to call.
-     * @param exception  The class of the exception that is expected to be thrown.
+     * @param exception  The class object of the exception that is expected to be thrown.
      * @param method     A method reference (such as {@code Stack::pop}) for the method to call,
      *                   or a lambda that indirectly calls the method.
      * @throws NullPointerException If any argument is null.
      */
     @Nonnull
-    public static <T, E extends Throwable> Matcher<T> methodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Consumer<T> method) {
+    public static <T, R, E extends Throwable> Matcher<T> methodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Function<T, R> method) {
         return new MethodThrows<>(methodName, exception, method);
     }
 }

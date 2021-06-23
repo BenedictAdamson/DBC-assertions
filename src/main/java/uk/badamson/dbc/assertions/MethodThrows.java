@@ -14,9 +14,9 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
-final class MethodThrows<T, E extends Throwable> extends TypeSafeDiagnosingMatcher<T> {
+final class MethodThrows<T, R, E extends Throwable> extends TypeSafeDiagnosingMatcher<T> {
 
 
     @Nonnull
@@ -26,9 +26,9 @@ final class MethodThrows<T, E extends Throwable> extends TypeSafeDiagnosingMatch
     private final Class<E> exception;
 
     @Nonnull
-    private final Consumer<T> method;
+    private final Function<T, R> method;
 
-    MethodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Consumer<T> method) {
+    MethodThrows(@Nonnull String methodName, @Nonnull final Class<E> exception, @Nonnull Function<T, R> method) {
         this.methodName = Objects.requireNonNull(methodName, "methodName");
         this.exception = Objects.requireNonNull(exception, "exception");
         this.method = Objects.requireNonNull(method, "method");
@@ -37,7 +37,7 @@ final class MethodThrows<T, E extends Throwable> extends TypeSafeDiagnosingMatch
     @Override
     protected final boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            method.accept(item);
+            method.apply(item);
         } catch (Throwable e) {
             if (exception.isInstance(e)) {
                 return true;
