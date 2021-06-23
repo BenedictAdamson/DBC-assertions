@@ -16,16 +16,16 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
- * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being matched has a particular relationship with two other given objects of the same class.</p>
+ * <p>A {@linkplain org.hamcrest.Matcher  matcher} that checks whether the object being matched has a particular relationship with two other given objects.</p>
  * <p>To use, implement {@link #matchesSafely(Object, Object, Object, Description)}.</p>
  */
-public abstract class TripleRelationshipMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
+public abstract class TripleRelationshipMatcher<T, U, V> extends TypeSafeDiagnosingMatcher<T> {
     @Nonnull
-    private final T item2;
+    private final U item2;
     @Nonnull
-    private final T item3;
+    private final V item3;
 
-    protected TripleRelationshipMatcher(@Nonnull final T item2, @Nonnull final T item3) {
+    protected TripleRelationshipMatcher(@Nonnull final U item2, @Nonnull final V item3) {
         this.item2 = Objects.requireNonNull(item2, "item2");
         this.item3 = Objects.requireNonNull(item3, "item3");
     }
@@ -44,5 +44,5 @@ public abstract class TripleRelationshipMatcher<T> extends TypeSafeDiagnosingMat
      * @param mismatchDescription The description to be built or appended to.
      * @return whether the expected relationship holds between {@code item1}, {@code item2} and {@code item3}.
      */
-    protected abstract boolean matchesSafely(@Nonnull T item1, @Nonnull T item2, @Nonnull T item3, @Nonnull Description mismatchDescription);
+    protected abstract boolean matchesSafely(@Nonnull T item1, @Nonnull U item2, @Nonnull V item3, @Nonnull Description mismatchDescription);
 }// class

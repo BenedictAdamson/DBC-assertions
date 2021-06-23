@@ -19,7 +19,7 @@ final class SatisfiesComparableInvariantsWith2 {
         return new CompareToIsTransitive<>(item2, item3);
     }
 
-    private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleRelationshipMatcher<T> {
+    private static class CompareToIsTransitive<T extends Comparable<T>> extends TripleRelationshipMatcher<T, T, T> {
         CompareToIsTransitive(@Nonnull T item2, @Nonnull T item3) {
             super(item2, item3);
         }
