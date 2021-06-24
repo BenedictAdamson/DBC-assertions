@@ -3,10 +3,9 @@
 Java unit-testing assertions to assist a *Design By Contract* style of programming. And in particular, to ensure that
 the *Liskov substitution principle* is honoured.
 
-This library should be test framework agnostic; it should work with any test framework that recognizes
-an `AssertionError` exception as indicating a test failure. It delegates to [Hamcrest](http://hamcrest.org/) for
-checking assertions, and directly throws [opentest4j](https://github.com/ota4j-team/opentest4j) assertions, rather than
-using a test framework. It should not pull in a dependency on a test framework.
+This library provides [Hamcrest](http://hamcrest.org/) matchers;
+it should work with any test framework that can use Hamcrest.
+It should not pull in a dependency on a test framework.
 
 ## License
 
@@ -46,21 +45,24 @@ meet.
 In your unit tests of a class you might have test code similar to this:
 
 ```
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 @Test
 public void increment_1() {
    final var amount = new Amount(1L);
 
    amount.increment();
 
-   assertEquals(2L, amount.longValue());
+   assertThat(amount.longValue(), is(2L));
 }
 
 @Test
-public void compareTo_1_2() {
+public void construct_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
 
-   assertTrue(a1.compareTo(a2) < 0);
+   assertThat(a1.compareTo(a2), lessThan(0));
 }
 ```
 
@@ -78,27 +80,35 @@ The methods of this library provide a convenient and abstract way to check that 
 your tests, simply delegate to methods in this library, like this:
 
 ```
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static uk.badamson.dbc.assertions.Matchers.*;
+
 @Test
 public void increment_1() {
    final var amount = new Amount(1L);
 
    amount.increment();
 
-   ObjectVerifier.assertInvariants(amount);
-   ComparableVerifier.assertInvariants(amount);
-   assertEquals(2, amount.longValue());
+   assertThat(amount, allOf(
+      satisfiesObjectInvariants(),
+      satisfiesComparableInvariants(),
+      feature("longValue", Amount::longValue, is(2))
+      ));
 }
 
 @Test
-public void compareTo_1_2() {
+public void construct_1_2() {
    final var a1 = new Amount(1L);
    final var a2 = new Amount(2L);
 
-   ObjectVerifier.assertInvariants(a1, a2);
-   ComparableVerifier.assertInvariants(a1, a2);
-   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
-   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
-   assertTrue(a1.compareTo(a2) < 0);
+   assertThat(a1, allOf(
+      satisfiesObjectInvariantsWith(a2),
+      satisfiesComparableInvariantsWith(a2),
+      naturalOrderingIsConsistentWithEqualsWith(a2),
+      hasValueSemanticsWith(a2, "longValue", Amount::longValue),
+      hasRelationship("less than amount 2", a2, (x, y) -> x.compareTo(y) < 0)
+      ));
 }
 ```
 
@@ -109,16 +119,25 @@ consider refactoring your test code to extract methods that reduce duplication i
 abstraction. Like this:
 
 ```
-private static assertInvariants(Amount a) {
-   ObjectVerifier.assertInvariants(a);
-   ComparableVerifier.assertInvariants(a);
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static uk.badamson.dbc.assertions.Matchers.*;
+
+private static Matcher<Amount> satisfiesAmountInvariants() {
+   return allOf(
+      satisfiesObjectInvariants(),
+      satisfiesComparableInvariants(),
+      feature("longValue", Amount::longValue, greaterThanOrEqualTo(0))
+      );
 }
 
-private static assertInvariants(Amount a1, Amount a2) {
-   ObjectVerifier.assertInvariants(a1, a2);
-   ComparableVerifier.assertInvariants(a1, a2);
-   ComparableVerifier.assertNaturalOrderingIsConsistentWithEquals(a1, a2);
-   EqualsSemanticsVerifier.assertLongValueSemantics(a1, a2, "longValue", (amount) -> amount.longValue());
+private static Matcher<Amount> satisfiesAmountInvariantsWith(Amount other) {
+   return allOf(
+      satisfiesObjectInvariantsWith(other),
+      satisfiesComparableInvariantsWith(other),
+      naturalOrderingIsConsistentWithEqualsWith(other),
+      hasValueSemanticsWith(other, "longValue", Amount::longValue),
+      );
 }
 
 @Test
@@ -127,8 +146,10 @@ public void increment_1() {
 
    amount.increment();
 
-   assertInvariants(amount);
-   assertEquals(2, amount.longValue());
+   assertThat(amount, allOf(
+      satisfiesAmountInvariants(),
+      feature("longValue", Amount::longValue, is(2))
+      ));
 }
 
 @Test
@@ -138,6 +159,11 @@ public void compareTo_1_2() {
 
    assertInvariants(a1, a2);
    assertTrue(a1.compareTo(a2) < 0);
+
+   assertThat(a1, allOf(
+      satisfiesAmountInvariantsWith(a2),
+      hasRelationship("less than amount 2", a2, (x, y) -> x.compareTo(y) < 0)
+      ));
 }
 ```
 
