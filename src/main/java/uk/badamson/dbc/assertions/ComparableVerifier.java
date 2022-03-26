@@ -23,7 +23,7 @@ import static uk.badamson.dbc.assertions.AssertAll.assertAll;
  * Verification methods to assist in unit testing classes that implement the
  * {@link Comparable} interface.
  */
-@SuppressFBWarnings(justification = "Checking exceptions", value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+@SuppressFBWarnings(justification = "Checking exceptions", value = {"RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT","DCN_NULLPOINTER_EXCEPTION"})
 public final class ComparableVerifier {
 
     private ComparableVerifier() {
