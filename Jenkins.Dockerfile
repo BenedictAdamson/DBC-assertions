@@ -1,7 +1,7 @@
 # Dockerfile for the use in the Jenkinsfile for the DBC-assertions project,
 # to set up the build environment for Jenkins to use.
 
-# © Copyright Benedict Adamson 2018-21.
+# © Copyright Benedict Adamson 2018-22.
 # 
 # This file is part of DBC-assertions.
 #
@@ -19,7 +19,7 @@
 # along with DBC-assertions.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-FROM debian:10
+FROM debian:11
 RUN apt-get -y update && apt-get -y install \
    maven \
    openjdk-11-jdk-headless
