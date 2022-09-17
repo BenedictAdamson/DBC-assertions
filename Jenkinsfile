@@ -29,22 +29,7 @@ pipeline {
                sh 'rm -rf "$WORKSPACE/target"'
             }
         }
-        stage('Build and verify') {
-            when{
-                not{
-                    branch 'main'
-                }
-            } 
-            steps {
-                configFileProvider([configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]){ 
-                    sh 'mvn -B -s $MAVEN_SETTINGS verify'
-                }
-            }
-        }
         stage('Build, verify and deploy') {
-            when{
-                 branch 'main'
-            } 
             steps {
                 configFileProvider([configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]){ 
                     sh 'mvn -B -s $MAVEN_SETTINGS deploy'
