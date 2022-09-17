@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,2021 the original author or authors.
+ * Copyright 2018,21-22 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -58,7 +58,7 @@ public final class ComparableVerifier {
      * not.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * In your unit tests of mutators and constructors of classes that implement the
      * {@link Comparable} class, you will check that the mutators and constructors
@@ -85,8 +85,8 @@ public final class ComparableVerifier {
      * directly in your test method would be verbose, error prone, and in some cases
      * provide low value (because in that particular test, it is unlikely that the
      * invariant would be broken).
-     * <p>
      * </p>
+     * <p>
      * This method provides a convenient and abstract way to check that the mutated
      * object still conforms to the invariants imposed by the {@link Comparable}
      * interface. Simply delegate to this method in your test, like this:
@@ -128,7 +128,7 @@ public final class ComparableVerifier {
      * {@link AssertionError} if they do not.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * If the type you are testing implements the {@link Comparable} interface, you
      * will be testing that your {@link Comparable#compareTo(Object)} method is
@@ -154,8 +154,8 @@ public final class ComparableVerifier {
      * Explicitly checking them all directly in your test method would be verbose,
      * error prone, and in some cases provide low value (because in that particular
      * test, it is unlikely that the invariant would be broken).
-     * <p>
      * </p>
+     * <p>
      * This method provides a convenient and abstract way to check that the objects
      * conform to the relationship invariants imposed by the {@link Comparable}
      * class. Simply delegate to this method in your test, like this:

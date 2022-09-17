@@ -46,7 +46,7 @@ public final class ObjectVerifier {
      * {@link Object} base class, throwing an {@link AssertionError} if it does not.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * In your unit tests of mutators, you will check that the mutators make the
      * desired changes, using test code similar to this:
@@ -72,8 +72,8 @@ public final class ObjectVerifier {
      * directly in your test method would be verbose, error prone, and in some cases
      * provide low value (because in that particular test, it is unlikely that the
      * invariant would be broken).
-     * <p>
      * </p>
+     * <p>
      * This method provides a convenient and abstract way to check that the mutated
      * object still conforms to the invariants imposed by the {@link Object} class.
      * Simply delegate to this method in your test, like this:
@@ -91,7 +91,7 @@ public final class ObjectVerifier {
      * }
      * </pre>
      *
-     * <h2>How to Use this Method for Thorough Testing</h2>
+     * <h4>How to Use this Method for Thorough Testing</h4>
      * <p>
      * The invariants imposed by {@link Object} pertain to the
      * {@link Object#equals(Object)} and {@link Object#hashCode()} methods. In
@@ -132,7 +132,7 @@ public final class ObjectVerifier {
      * {@link AssertionError} if they do not.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * In your unit tests, you will check factory methods and getters, using test
      * code similar to this:
@@ -160,8 +160,8 @@ public final class ObjectVerifier {
      * your test method would be verbose, error prone, and in some cases provide low
      * value (because in that particular test, it is unlikely that the invariant
      * would be broken).
-     * <p>
      * </p>
+     * <p>
      * This method provides a convenient and abstract way to check that the objects
      * conform to the relationship invariants imposed by the {@link Object} class.
      * Simply delegate to this method in your test, like this:
@@ -182,7 +182,7 @@ public final class ObjectVerifier {
      * }
      * </pre>
      *
-     * <h2>How to Use this Method for Thorough Testing</h2>
+     * <h4>How to Use this Method for Thorough Testing</h4>
      * <p>
      * The relationship invariants imposed by {@link Object} pertain to the
      * {@link Object#equals(Object)} and {@link Object#hashCode()} methods, so using

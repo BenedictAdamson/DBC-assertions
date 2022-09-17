@@ -76,6 +76,7 @@ public final class ThreadSafetyTest {
      * A convenience method for delegating to a {@link Future#get()} that provides
      * access to the result of running some unit testing code.
      * </p>
+     * <p>
      * This method rethrows an {@link InterruptedException} as an
      * {@link AssertionError}: it interprets thread interruption as a test failure.
      * It unwraps a throw {@link ExecutionException}, rethrowing the
@@ -131,6 +132,7 @@ public final class ThreadSafetyTest {
      * {@link List} of {@link Future}s that provide access to the results of running
      * some unit testing code.
      * </p>
+     * <p>
      * This method delegates to {@link #get(Future)} for each of the futures in the
      * list. If those calls result in an exception being thrown the method rethrows
      * that exception. If more than one of those calls throws an exception, the

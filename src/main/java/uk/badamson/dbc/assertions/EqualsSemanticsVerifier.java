@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,2021 the original author or authors.
+ * Copyright 2018,21-22 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.notNullValue;
  * <p>
  * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
  * design</a> we distinguish between classes that are for <i>entities</i> and
- * classes that are for <i>values<i>. These semantic distinctions have
+ * classes that are for <i>values</i>. These semantic distinctions have
  * implications for the required behaviour of the {@code equals(Object)} method
  * of those classes.
  * </p>
@@ -102,9 +102,7 @@ public final class EqualsSemanticsVerifier {
      * the <i>ID attribute</i> from the two objects.
      * </p>
      *
-     * </p>
-     *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * Use this as a supplement to the
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
@@ -182,7 +180,7 @@ public final class EqualsSemanticsVerifier {
      * objects.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * Use this as a supplement to the
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
@@ -260,7 +258,7 @@ public final class EqualsSemanticsVerifier {
      * objects.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * Use this as a supplement to the
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
@@ -338,7 +336,7 @@ public final class EqualsSemanticsVerifier {
      * function for getting the value of the attribute from the two objects.
      * </p>
      *
-     * <h2>How to Use this Method</h2>
+     * <h4>How to Use this Method</h4>
      * <p>
      * Use this as a supplement to the
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
