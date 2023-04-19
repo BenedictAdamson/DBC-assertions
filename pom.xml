@@ -2,13 +2,13 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- This POM declares two Maven repository servers, with IDs DBC.repo
+    <!-- This POM declares two Maven repository servers, with IDs releases.repo
        (the release repository) and DBC-SNAPSHOT.repo (the SNAPSHOT repository).
-       Therefore if you use this POM to deploy artifacts, your settings.xml configuration
+       Therefore, if you use this POM to deploy artifacts, your settings.xml configuration
        file should contain credentials (in a servers/server element) for those servers. -->
     <groupId>uk.badamson</groupId>
     <artifactId>DBC-assertions</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <packaging>jar</packaging>
     <organization>
         <name>Benedict Adamson</name>
@@ -27,6 +27,8 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <repository.releases.url>http://thegn:8081/repository/maven-releases/</repository.releases.url>
+        <repository.snapshot.url>http://thegn:8081/repository/maven-snapshots/</repository.snapshot.url>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -167,14 +169,14 @@
     </reporting>
     <distributionManagement>
         <repository>
-            <id>local.repo</id>
+            <id>releases.repo</id>
             <name>DBC-assertions Releases Repository</name>
-            <url>http://weorc:8081/repository/maven-releases/</url>
+            <url>${repository.releases.url}</url>
         </repository>
         <snapshotRepository>
-            <id>local-SNAPSHOT.repo</id>
+            <id>snapshot.repo</id>
             <name>DBC-assertions Snapshots Repository</name>
-            <url>http://weorc:8081/repository/maven-snapshots/</url>
+            <url>${repository.snapshot.url}</url>
         </snapshotRepository>
     </distributionManagement>
     <dependencies>
