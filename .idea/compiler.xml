@@ -9,8 +9,5 @@
         <module name="DBC-assertions" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="DBC-assertions" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
