@@ -8,7 +8,7 @@
        file should contain credentials (in a servers/server element) for those servers. -->
     <groupId>uk.badamson</groupId>
     <artifactId>DBC-assertions</artifactId>
-    <version>3.0.4-SNAPSHOT</version>
+    <version>3.0.4</version>
     <packaging>jar</packaging>
     <organization>
         <name>Benedict Adamson</name>
