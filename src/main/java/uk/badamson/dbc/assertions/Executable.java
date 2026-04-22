@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2015-2021 the original author or authors.
+ * Copyright 2015-2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -13,10 +13,13 @@ package uk.badamson.dbc.assertions;
  * The uk.badamson.dbc.assertions package has it so it does not have a dependency on JUnit 5.
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @SuppressWarnings("RedundantThrows")
 @FunctionalInterface
 interface Executable {
 
-    void execute() throws Throwable;
+    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
+    void execute() throws Exception, AssertionError;
 
 }

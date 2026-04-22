@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,2021 the original author or authors.
+ * Copyright 2018,2021,2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -8,8 +8,6 @@ package uk.badamson.dbc.assertions;
  *
  * https://www.eclipse.org/legal/epl-v20.html
  */
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +23,6 @@ import static uk.badamson.dbc.assertions.AssertAll.assertAll;
  * directly or indirectly derived from the {@link Object} class).
  * </p>
  */
-@SuppressFBWarnings(justification = "Checking contract", value = "EC_NULL_ARG")
 public final class ObjectVerifier {
 
     ObjectVerifier() {
