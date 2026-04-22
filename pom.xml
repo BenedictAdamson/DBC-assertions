@@ -183,7 +183,7 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <version>4.6.0</version>
+            <version>4.9.8</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
