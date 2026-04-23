@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2021 the original author or authors.
+ * Copyright 2021,2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -9,10 +9,10 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,7 +43,7 @@ public class ComparableVerifierTest {
         }
 
         @Override
-        public int compareTo(@Nonnull final CompareToSelfThrows that) {
+        public int compareTo(@NonNull final CompareToSelfThrows that) {
             if (this == that) {
                 throw new RuntimeException("Fake");
             }

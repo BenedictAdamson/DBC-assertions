@@ -9,8 +9,9 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +30,7 @@ public final class ObjectVerifier {
         assert false;// must not instance
     }
 
-    private static void assertEqualsSelf(@Nonnull final Object object) {
+    private static void assertEqualsSelf(@NonNull final Object object) {
         /*
          * A faulty equals method is unlikely to give !this.equals(this), but check for
          * completeness.
@@ -114,7 +115,7 @@ public final class ObjectVerifier {
      * @throws NullPointerException If {@code object} is null.
      * @throws AssertionError       If {@code object} breaks an invariant.
      */
-    public static void assertInvariants(@Nonnull final Object object) {
+    public static void assertInvariants(@NonNull final Object object) {
         Objects.requireNonNull(object, "object");
         assertAll("Object invariants [" + safeToString(object) + "]",
                 () -> assertThat("toString", toString(object), anything()), // check for exception
@@ -210,7 +211,7 @@ public final class ObjectVerifier {
      *                                          </ul>
      * @throws AssertionError       If {@code object1} and {@code object1} break an invariant.
      */
-    public static void assertInvariants(@Nonnull final Object object1, @Nonnull final Object object2) {
+    public static void assertInvariants(@NonNull final Object object1, @NonNull final Object object2) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
@@ -234,7 +235,7 @@ public final class ObjectVerifier {
                 () -> assertThat("hashCode() is consistent with equals()", !(equals12 && hashCode1 != hashCode2)));
     }
 
-    private static void assertNeverEqualsNull(@Nonnull final Object object) {
+    private static void assertNeverEqualsNull(@NonNull final Object object) {
         /*
          * A faulty equals method is unlikely to give this.equals(null). But a naive
          * implementation might throw a NullPointerException because a null argument
@@ -243,7 +244,7 @@ public final class ObjectVerifier {
         assertThat("An object is never equivalent to null", !equals(object, null));
     }
 
-    static boolean equals(@Nonnull final Object object1, @Nullable final Object object2) {
+    static boolean equals(@NonNull final Object object1, @Nullable final Object object2) {
         try {
             return object1.equals(object2);
         } catch (final Exception e) {
@@ -256,7 +257,7 @@ public final class ObjectVerifier {
         }
     }
 
-    private static int hashCode(@Nonnull final Object object) {
+    private static int hashCode(@NonNull final Object object) {
         try {
             return object.hashCode();
         } catch (final Exception e) {
@@ -269,7 +270,7 @@ public final class ObjectVerifier {
         }
     }
 
-    @Nonnull
+    @NonNull
     private static String identityString(@Nullable final Object object) {
         if (object == null) {
             return "null";
@@ -297,7 +298,7 @@ public final class ObjectVerifier {
      * if {@link Object#hashCode()} is not overridden.
      * </p>
      */
-    @Nonnull
+    @NonNull
     public static String safeToString(@Nullable final Object object) {
         try {
             return Objects.requireNonNull(object).toString();
@@ -306,7 +307,7 @@ public final class ObjectVerifier {
         }
     }
 
-    private static String toString(@Nonnull final Object object) {
+    private static String toString(@NonNull final Object object) {
         try {
             return object.toString();
         } catch (final Exception e) {

@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,2021 the original author or authors.
+ * Copyright 2018,2021,2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -9,10 +9,10 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.opentest4j.MultipleFailuresError;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -36,8 +36,8 @@ public final class CollectionVerifier {
      * method is equivalent to calling assertForAllElements(String, Collection,
      * Verifier) with a null heading argument
      */
-    public static <T> void assertForAllElements(@Nonnull final Collection<T> collection,
-                                                @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
+    public static <T> void assertForAllElements(@NonNull final Collection<T> collection,
+                                                @NonNull final Verifier<T> verifier) throws MultipleFailuresError {
         assertForAllElements(null, collection, verifier);
     }
 
@@ -77,12 +77,12 @@ public final class CollectionVerifier {
      *                   message.
      * @param collection A collection to verify
      * @param verifier   The function for verifying each element
-     * @throws NullPointerException  If any {@link Nonnull} argument is null.
+     * @throws NullPointerException  If any {@link NonNull} argument is null.
      * @throws MultipleFailuresError If any of the elements of the {@code collection} fail
      *                               verification.
      */
-    public static <T> void assertForAllElements(@Nullable final String heading, @Nonnull final Collection<T> collection,
-                                                @Nonnull final Verifier<T> verifier) throws MultipleFailuresError {
+    public static <T> void assertForAllElements(@Nullable final String heading, @NonNull final Collection<T> collection,
+                                                @NonNull final Verifier<T> verifier) throws MultipleFailuresError {
         Objects.requireNonNull(collection, "collection");
         Objects.requireNonNull(verifier, "verifier");
 

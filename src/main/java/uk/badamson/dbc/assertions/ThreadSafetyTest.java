@@ -10,10 +10,9 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.jspecify.annotations.NonNull;
 import org.opentest4j.AssertionFailedError;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +23,7 @@ import java.util.concurrent.Future;
 
 /**
  * <p>
- * Auxiliary methods to assist in unit testing classes that should be
- * {@link ThreadSafe}.
+ * Auxiliary methods to assist in unit testing classes that should be ThreadSafe.
  * </p>
  * <p>
  * Testing thread safety requires setting up and coordinating multiple threads
@@ -213,9 +211,9 @@ public final class ThreadSafetyTest {
      *                                          <li>If {@code operation} is null.</li>
      *                                          </ul>
      */
-    @Nonnull
-    public static Future<Void> runInOtherThread(@Nonnull final CountDownLatch ready,
-                                                @Nonnull final Runnable operation) {
+    @NonNull
+    public static Future<Void> runInOtherThread(@NonNull final CountDownLatch ready,
+                                                @NonNull final Runnable operation) {
         Objects.requireNonNull(ready, "ready");
         Objects.requireNonNull(operation, "operation");
 

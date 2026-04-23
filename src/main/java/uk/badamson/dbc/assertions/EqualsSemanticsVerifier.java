@@ -9,8 +9,9 @@ package uk.badamson.dbc.assertions;
  * https://www.eclipse.org/legal/epl-v20.html
  */
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -58,8 +59,8 @@ public final class EqualsSemanticsVerifier {
     }
 
     @Nullable
-    private static <T, U> U access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-                                   @Nonnull final Function<T, U> valueOfAttribute) {
+    private static <T, U> U access(@NonNull final T object, final String stringId, @NonNull final String attributeName,
+                                   @NonNull final Function<T, U> valueOfAttribute) {
         try {
             return valueOfAttribute.apply(object);
         } catch (final Exception e) {
@@ -67,8 +68,8 @@ public final class EqualsSemanticsVerifier {
         }
     }
 
-    private static <T> int access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-                                  @Nonnull final ToIntFunction<T> valueOfAttribute) {
+    private static <T> int access(@NonNull final T object, final String stringId, @NonNull final String attributeName,
+                                  @NonNull final ToIntFunction<T> valueOfAttribute) {
         try {
             return valueOfAttribute.applyAsInt(object);
         } catch (final Exception e) {
@@ -76,8 +77,8 @@ public final class EqualsSemanticsVerifier {
         }
     }
 
-    private static <T> long access(@Nonnull final T object, final String stringId, @Nonnull final String attributeName,
-                                   @Nonnull final ToLongFunction<T> valueOfAttribute) {
+    private static <T> long access(@NonNull final T object, final String stringId, @NonNull final String attributeName,
+                                   @NonNull final ToLongFunction<T> valueOfAttribute) {
         try {
             return valueOfAttribute.applyAsLong(object);
         } catch (final Exception e) {
@@ -138,8 +139,8 @@ public final class EqualsSemanticsVerifier {
      *                                          </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
-    public static <T, U> void assertEntitySemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                    @Nonnull final Function<T, U> valueOfId) {
+    public static <T, U> void assertEntitySemantics(@NonNull final T object1, @NonNull final T object2,
+                                                    @NonNull final Function<T, U> valueOfId) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(valueOfId, "valueOfId");
@@ -219,8 +220,8 @@ public final class EqualsSemanticsVerifier {
      *                                          </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
-    public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                   @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
+    public static <T> void assertIntValueSemantics(@NonNull final T object1, @NonNull final T object2,
+                                                   @NonNull final String attributeName, @NonNull final ToIntFunction<T> valueOfAttribute) {
         assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
@@ -295,8 +296,8 @@ public final class EqualsSemanticsVerifier {
      *                                          </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
-    public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                    @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
+    public static <T> void assertLongValueSemantics(@NonNull final T object1, @NonNull final T object2,
+                                                    @NonNull final String attributeName, @NonNull final ToLongFunction<T> valueOfAttribute) {
         assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
@@ -372,8 +373,8 @@ public final class EqualsSemanticsVerifier {
      *                                          </ul>
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      */
-    public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
-                                                   @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
+    public static <T, U> void assertValueSemantics(@NonNull final T object1, @NonNull final T object2,
+                                                   @NonNull final String attributeName, @NonNull final Function<T, U> valueOfAttribute) {
         assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
@@ -382,8 +383,8 @@ public final class EqualsSemanticsVerifier {
         /*
          * Provide good diagnostics if the getter throws an exception.
          */
-        @Nullable final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
-        @Nullable final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
+        final U attribute1 = access(object1, stringId1, attributeName, valueOfAttribute);
+        final U attribute2 = access(object2, stringId2, attributeName, valueOfAttribute);
         /*
          * Provide good diagnostics if equals throws an exception. Handle null
          * attributes.
@@ -397,7 +398,7 @@ public final class EqualsSemanticsVerifier {
     }
 
     private static <T> void assertValueSemanticsCommonPreconditions(
-            @Nonnull T object1, @Nonnull T object2, @Nonnull String attributeName) {
+            @NonNull T object1, @NonNull T object2, @NonNull String attributeName) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(attributeName, "attributeName");

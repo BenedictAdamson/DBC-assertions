@@ -10,9 +10,9 @@ package uk.badamson.dbc.assertions;
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.jspecify.annotations.NonNull;
 import org.opentest4j.AssertionFailedError;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,7 +31,7 @@ public final class ComparableVerifier {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@Nonnull final T object) {
+    private static <T extends Comparable<T>> void assertCompareToNullThrowsNPE(@NonNull final T object) {
         try {
             //noinspection ConstantConditions
             object.compareTo(null);
@@ -110,7 +110,7 @@ public final class ComparableVerifier {
      * @throws NullPointerException If {@code object} is null.
      * @throws AssertionError       If {@code object} breaks an invariant.
      */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object) {
+    public static <T extends Comparable<T>> void assertInvariants(@NonNull final T object) {
         Objects.requireNonNull(object, "object");
         assertAll("Comparable invariants [" + ObjectVerifier.safeToString(object) + "]",
                 /*
@@ -188,7 +188,7 @@ public final class ComparableVerifier {
      * @throws AssertionError       If {@code object1} and {@code object2} break an invariant.
      * @see #assertNaturalOrderingIsConsistentWithEquals(Comparable, Comparable)
      */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2) {
+    public static <T extends Comparable<T>> void assertInvariants(@NonNull final T object1, @NonNull final T object2) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
@@ -229,8 +229,8 @@ public final class ComparableVerifier {
      *                              invariant.
      * @see #assertInvariants(Comparable, Comparable)
      */
-    public static <T extends Comparable<T>> void assertInvariants(@Nonnull final T object1, @Nonnull final T object2,
-                                                                  @Nonnull final T object3) {
+    public static <T extends Comparable<T>> void assertInvariants(@NonNull final T object1, @NonNull final T object2,
+                                                                  @NonNull final T object3) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
         Objects.requireNonNull(object3, "object3");
@@ -271,8 +271,8 @@ public final class ComparableVerifier {
      * @throws AssertionError       If {@code object1} and {@code object2} break the invariant.
      * @see #assertInvariants(Comparable, Comparable)
      */
-    public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@Nonnull final T object1,
-                                                                                             @Nonnull final T object2) {
+    public static <T extends Comparable<T>> void assertNaturalOrderingIsConsistentWithEquals(@NonNull final T object1,
+                                                                                             @NonNull final T object2) {
         Objects.requireNonNull(object1, "object1");
         Objects.requireNonNull(object2, "object2");
 
@@ -286,7 +286,7 @@ public final class ComparableVerifier {
                 + ObjectVerifier.safeToString(object2) + "]", compareTo == 0 == equals);
     }
 
-    private static <T extends Comparable<T>> int compareTo(@Nonnull final T object1, @Nonnull final T object2) {
+    private static <T extends Comparable<T>> int compareTo(@NonNull final T object1, @NonNull final T object2) {
         try {
             return object1.compareTo(object2);
         } catch (final Exception e) {
