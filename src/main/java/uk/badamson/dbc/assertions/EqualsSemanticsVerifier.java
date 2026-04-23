@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,21-22 the original author or authors.
+ * Copyright 2018-26 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -221,9 +221,7 @@ public final class EqualsSemanticsVerifier {
      */
     public static <T> void assertIntValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
                                                    @Nonnull final String attributeName, @Nonnull final ToIntFunction<T> valueOfAttribute) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(attributeName, "attributeName");
+        assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
         final var stringId1 = ObjectVerifier.safeToString(object1);
@@ -299,9 +297,7 @@ public final class EqualsSemanticsVerifier {
      */
     public static <T> void assertLongValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
                                                     @Nonnull final String attributeName, @Nonnull final ToLongFunction<T> valueOfAttribute) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(attributeName, "attributeName");
+        assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
         final var stringId1 = ObjectVerifier.safeToString(object1);
@@ -378,9 +374,7 @@ public final class EqualsSemanticsVerifier {
      */
     public static <T, U> void assertValueSemantics(@Nonnull final T object1, @Nonnull final T object2,
                                                    @Nonnull final String attributeName, @Nonnull final Function<T, U> valueOfAttribute) {
-        Objects.requireNonNull(object1, "object1");
-        Objects.requireNonNull(object2, "object2");
-        Objects.requireNonNull(attributeName, "attributeName");
+        assertValueSemanticsCommonPreconditions(object1, object2, attributeName);
         Objects.requireNonNull(valueOfAttribute, "valueOfAttribute");
 
         final var stringId1 = ObjectVerifier.safeToString(object1);
@@ -400,6 +394,13 @@ public final class EqualsSemanticsVerifier {
 
         assertThat("Value semantics with attribute [" + attributeName + "] for [" + stringId1 + ", " + stringId2 + "]",
                 !(equals && !attributesEquals));
+    }
+
+    private static <T> void assertValueSemanticsCommonPreconditions(
+            @Nonnull T object1, @Nonnull T object2, @Nonnull String attributeName) {
+        Objects.requireNonNull(object1, "object1");
+        Objects.requireNonNull(object2, "object2");
+        Objects.requireNonNull(attributeName, "attributeName");
     }
 
     private static AssertionError createUnexpectedAccessException(final String stringId, final String attributeName,
