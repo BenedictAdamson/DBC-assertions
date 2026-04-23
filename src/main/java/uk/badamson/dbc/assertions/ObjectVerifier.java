@@ -61,12 +61,12 @@ public final class ObjectVerifier {
      * </pre>
      *
      * <p>
-     * But you can do do better than that. The class you are testing does not only
+     * But you can do better than that. The class you are testing does not only
      * have the behaviour that you have specified for it. It must also conform to
      * some invariants imposed by the {@link Object} class. You should also check
      * that the mutated object (still) conforms to those invariants. There are
      * several of them. Checking them can be fiddly. Explicitly checking them all
-     * directly in your test method would be verbose, error prone, and in some cases
+     * directly in your test method would be verbose, error-prone, and in some cases
      * provide low value (because in that particular test, it is unlikely that the
      * invariant would be broken).
      * </p>
@@ -93,7 +93,7 @@ public final class ObjectVerifier {
      * The invariants imposed by {@link Object} pertain to the
      * {@link Object#equals(Object)} and {@link Object#hashCode()} methods. In
      * practice, only mishandling of {@code null} values is likely to cause code to
-     * break those invariants. Therefore if you wish to thoroughly unit test your
+     * break those invariants. Therefore, if you wish to thoroughly unit test your
      * code, you should have some test cases that set values to {@code null}. For
      * example:
      * </p>
@@ -148,13 +148,13 @@ public final class ObjectVerifier {
      * </pre>
      *
      * <p>
-     * But you can do do better than that. The class you are testing and the return
+     * But you can do better than that. The class you are testing and the return
      * type of the method do not only have the behaviour that you have specified for
      * them. They must also conform to some invariants imposed by the {@link Object}
      * class and that constrain relationships between those two objects. You should
      * check that the objects conform to those invariants. There are several of
      * them. Checking them can be fiddly. Explicitly checking them all directly in
-     * your test method would be verbose, error prone, and in some cases provide low
+     * your test method would be verbose, error-prone, and in some cases provide low
      * value (because in that particular test, it is unlikely that the invariant
      * would be broken).
      * </p>
@@ -237,7 +237,7 @@ public final class ObjectVerifier {
     private static void assertNeverEqualsNull(@Nonnull final Object object) {
         /*
          * A faulty equals method is unlikely to give this.equals(null). But a naive
-         * implementation might throw a NullPointerException, because a null argument
+         * implementation might throw a NullPointerException because a null argument
          * must be handled as a special case.
          */
         assertThat("An object is never equivalent to null", !equals(object, null));

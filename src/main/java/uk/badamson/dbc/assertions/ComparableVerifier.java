@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2018,21-22 the original author or authors.
+ * Copyright 2018,21-22,26 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -77,12 +77,12 @@ public final class ComparableVerifier {
      * </pre>
      *
      * <p>
-     * But you can do do better than that. The class you are testing does not only
+     * But you can do better than that. The class you are testing does not only
      * have the behaviour that you have specified for it. It must also conform to
      * some invariants imposed by the {@link Comparable} interface. You should also
      * check that the mutated object (still) conforms to those invariants. There are
      * a couple of them. Checking them can be fiddly. Explicitly checking them all
-     * directly in your test method would be verbose, error prone, and in some cases
+     * directly in your test method would be verbose, error-prone, and in some cases
      * provide low value (because in that particular test, it is unlikely that the
      * invariant would be broken).
      * </p>
@@ -147,12 +147,12 @@ public final class ComparableVerifier {
      * </pre>
      *
      * <p>
-     * But you can do do better than that. The class you are testing does not only
+     * But you can do better than that. The class you are testing does not only
      * have the behaviour that you have specified for it. It must also conform to
      * some invariants imposed by the {@link Comparable} interface. You should check
-     * that the objects conform to those invariants. There are couple of them.
+     * that the objects conform to those invariants. There are a couple of them.
      * Explicitly checking them all directly in your test method would be verbose,
-     * error prone, and in some cases provide low value (because in that particular
+     * error-prone, and in some cases provide low value (because in that particular
      * test, it is unlikely that the invariant would be broken).
      * </p>
      * <p>
@@ -204,7 +204,7 @@ public final class ComparableVerifier {
 
     /**
      * <p>
-     * Assert that a triplet of objects conform to the relationship invariant
+     * Assert that a triplet of objects conforms to the relationship invariant
      * imposed by the {@link Comparable} interface, throwing an
      * {@link AssertionError} if they do not.
      * </p>

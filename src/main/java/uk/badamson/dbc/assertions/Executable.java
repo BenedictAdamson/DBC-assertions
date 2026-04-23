@@ -10,7 +10,7 @@ package uk.badamson.dbc.assertions;
  *
  * This is an adapted copy of the Executable interface of JUnit 5:
  * https://github.com/junit-team/junit5/blob/main/junit-jupiter-api/src/main/java/org/junit/jupiter/api/function/Executable.java
- * The uk.badamson.dbc.assertions package has it so it does not have a dependency on JUnit 5.
+ * The uk.badamson.dbc.assertions package copies it so it does not have a dependency on JUnit 5.
  */
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

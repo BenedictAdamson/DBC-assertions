@@ -55,7 +55,6 @@ import java.util.concurrent.Future;
  *     {@code for (int t = 0; t < nThreads; ++t) {}
  *         {@code futures.add(ThreadSafetyTest.runInOtherThread(ready, () -> {}
  *             thing.mutate(random.nextInt());
- *
  *             ObjectVerifier.assertInvariants(thing);
  *         }));
  *     }
@@ -136,7 +135,7 @@ public final class ThreadSafetyTest {
      * </p>
      * <p>
      * This method delegates to {@link #get(Future)} for each of the futures in the
-     * list. If those calls result in an exception being thrown the method rethrows
+     * list. If those calls result in an exception being thrown, the method rethrows
      * that exception. If more than one of those calls throws an exception, the
      * method rethrows the first such exception, with the other exceptions
      * {@linkplain Exception#addSuppressed(Throwable) added as suppressed
