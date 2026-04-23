@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.notNullValue;
  * semantics for their override of the {@link Object#equals(Object)} method.
  * </p>
  * <p>
- * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain driven
+ * In <a href="https://en.wikipedia.org/wiki/Domain-driven_design">domain-driven
  * design</a> we distinguish between classes that are for <i>entities</i> and
  * classes that are for <i>values</i>. These semantic distinctions have
  * implications for the required behaviour of the {@code equals(Object)} method
@@ -130,7 +130,7 @@ public final class EqualsSemanticsVerifier {
      *                  objects under test. This should delegate to the getter method of
      *                  the class. This test method assumes that the getter should never
      *                  throw exceptions; it will throw an {@link AssertionError} if the
-     *                  the function does throw an exception.
+     *                  function does throw an exception.
      * @throws NullPointerException <ul>
      *                                          <li>If {@code object1} is null.</li>
      *                                          <li>If {@code object2} is null.</li>
@@ -186,7 +186,7 @@ public final class EqualsSemanticsVerifier {
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each {@code int} <i>attribute</i> of the class, in addition to asserting
-     * equality or non equality of the objects, to provide better test failure
+     * equality or non-equality of the objects, to provide better test failure
      * diagnostic messages.
      * </p>
      *
@@ -210,7 +210,7 @@ public final class EqualsSemanticsVerifier {
      *                         objects under test. This should delegate to the getter method of
      *                         the class. This test method assumes that the getter should never
      *                         throw exceptions; it will throw an {@link AssertionError} if the
-     *                         the function does throw an exception.
+     *                         function does throw an exception.
      * @throws NullPointerException <ul>
      *                                          <li>If {@code object1} is null.</li>
      *                                          <li>If {@code object2} is null.</li>
@@ -262,7 +262,7 @@ public final class EqualsSemanticsVerifier {
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each {@code long} <i>attribute</i> of the class, in addition to asserting
-     * equality or non equality of the objects, to provide better test failure
+     * equality or non-equality of the objects, to provide better test failure
      * diagnostic messages.
      * </p>
      *
@@ -286,7 +286,7 @@ public final class EqualsSemanticsVerifier {
      *                         objects under test. This should delegate to the getter method of
      *                         the class. This test method assumes that the getter should never
      *                         throw exceptions; it will throw an {@link AssertionError} if the
-     *                         the function does throw an exception.
+     *                         function does throw an exception.
      * @throws NullPointerException <ul>
      *                                          <li>If {@code object1} is null.</li>
      *                                          <li>If {@code object2} is null.</li>
@@ -338,7 +338,7 @@ public final class EqualsSemanticsVerifier {
      * {@link ObjectVerifier#assertInvariants(Object, Object)} method, when testing a
      * class that you have defined to have <i>value semantics</i>. Call the method
      * for each object <i>attribute</i> of the class, in addition to asserting
-     * equality or non equality of the objects, to provide better test failure
+     * equality or non-equality of the objects, to provide better test failure
      * diagnostic messages.
      * </p>
      *
@@ -363,7 +363,7 @@ public final class EqualsSemanticsVerifier {
      *                         objects under test. This should delegate to the getter method of
      *                         the class. This test method assumes that the getter should never
      *                         throw exceptions; it will throw an {@link AssertionError} if the
-     *                         the function does throw an exception.
+     *                         function does throw an exception.
      * @throws NullPointerException <ul>
      *                                          <li>If {@code object1} is null.</li>
      *                                          <li>If {@code object2} is null.</li>
