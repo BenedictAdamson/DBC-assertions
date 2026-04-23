@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2021 the original author or authors.
+ * Copyright 2021,2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -12,7 +12,6 @@ package uk.badamson.dbc.assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,10 +41,9 @@ public class EqualsSemanticsVerifierTest {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof Entity)) {
+            if (!(obj instanceof Entity other)) {
                 return false;
             }
-            final Entity other = (Entity) obj;
             return id.equals(other.id);
         }
 
@@ -61,39 +59,7 @@ public class EqualsSemanticsVerifierTest {
 
     }// class
 
-    private static final class Value {
-        final String name;
-
-        Value(final String name) {
-            this.name = name;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof Value)) {
-                return false;
-            }
-            final Value other = (Value) obj;
-            return Objects.equals(name, other.name);
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + (name == null ? 0 : name.hashCode());
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Value [name=" + name + "]";
-        }
-
-    }// class
+    private record Value(String name) {}
 
     private static final class ValueAttributeEqualsThrows {
 
@@ -127,10 +93,9 @@ public class EqualsSemanticsVerifierTest {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof ValueEqualsThrows)) {
+            if (!(obj instanceof ValueEqualsThrows other)) {
                 return false;
             }
-            final ValueEqualsThrows other = (ValueEqualsThrows) obj;
             // Throws NPE for this.name == null
             return name.equals(other.name);
         }

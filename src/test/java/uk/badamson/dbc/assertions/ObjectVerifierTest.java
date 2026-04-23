@@ -1,6 +1,6 @@
 package uk.badamson.dbc.assertions;
 /*
- * Copyright 2021 the original author or authors.
+ * Copyright 2021,2026 the original author or authors.
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License v2.0 which
@@ -34,10 +34,9 @@ public class ObjectVerifierTest {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof AsymmetricEquals)) {
+            if (!(obj instanceof AsymmetricEquals other)) {
                 return false;
             }
-            final AsymmetricEquals other = (AsymmetricEquals) obj;
             return value <= other.value;
         }
 
@@ -61,10 +60,9 @@ public class ObjectVerifierTest {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof HashCodeInconsistentWithEquals)) {
+            if (!(obj instanceof HashCodeInconsistentWithEquals other)) {
                 return false;
             }
-            final HashCodeInconsistentWithEquals other = (HashCodeInconsistentWithEquals) obj;
             return value == other.value;
         }
 

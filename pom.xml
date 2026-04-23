@@ -8,7 +8,7 @@
        file should contain credentials (in a servers/server element) for those servers. -->
     <groupId>uk.badamson</groupId>
     <artifactId>DBC-assertions</artifactId>
-    <version>3.0.4</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
     <organization>
         <name>Benedict Adamson</name>
@@ -69,9 +69,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
+                <version>3.15.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                     <testIncludes>
                         <include>**/*.java</include>
                     </testIncludes>
@@ -82,6 +82,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
+                    <doclint>all,-missing</doclint>
                     <additionalJOptions>
                         <additionalJOption>-html5</additionalJOption>
                     </additionalJOptions>
@@ -113,7 +114,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <targetJdk>11</targetJdk>
+                    <targetJdk>17</targetJdk>
                     <failurePriority>2</failurePriority>
                     <excludeRoots>
                         <excludeRoot>target/</excludeRoot>
